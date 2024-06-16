@@ -10,14 +10,12 @@ using Newtonsoft.Json;
 
 namespace PokescapeServer
 {
-    public class Message
-    {
-        public string MessageType { get; set; } // move_left, Moveright, Moveup, Movedown, battle, save, load, grid,
-        public string Data { get; set; } // 
-    } 
+   
+  
     class WebsocketServer
     {
-     
+        static Dictionary<string, Game> socketIdsToGames = new();
+
         public static async Task Listen()
         {
             HttpListener listener = new HttpListener();
@@ -49,6 +47,15 @@ namespace PokescapeServer
         {
             Console.WriteLine("New client connected");
             var grid = Pokescape.CreateGridV1(10);
+
+            var loginMessage = new Message();
+            string socketId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+            loginMessage.MessageType = "login";
+            loginMessage.Data = socketId;
+
+            socketIdsToGames.Add(socketId, new Game());
+
+            Thread.Sleep(500);
             var message = new Message();
             message.MessageType = "grid";
             message.Data = JsonConvert.SerializeObject(grid);
@@ -82,12 +89,9 @@ namespace PokescapeServer
 
         public static void HandleMessage(Message message)
         {
-            switch (message.MessageType)
-            {
-                case "MOVE_LEFT":
-                        //handle this;
-                        break;
-            }
+
+            Game gameForUser = socketIdsToGames[message.SocketId];
+            gameForUser.HandleMessage(message);
         }
         private static string GetMessageType(string message)
         {

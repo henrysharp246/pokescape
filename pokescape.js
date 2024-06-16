@@ -15,6 +15,8 @@ connection.onopen = () => {
     
 };
 
+
+var socketId = null;
 connection.onmessage = (event) => {
     
     console.log(1);
@@ -22,6 +24,9 @@ connection.onmessage = (event) => {
     console.log(message);
     switch (message.MessageType) {
         case 'grid':
+            socketId = message.Data;
+            break;
+        case 'login':
             handleGrid(message.Data);
             break;
       
@@ -88,7 +93,8 @@ function handleGrid(eventMessage) {
 function moveLeft() {
     var messageToSend = {
         "MessageType":"MOVE_LEFT",
-        "Data": ""
+        "Data": "",
+        "SocketId": socketId
     };
     connection.send(JSON.stringify(messageToSend));
 

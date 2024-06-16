@@ -1,14 +1,26 @@
-﻿public class Game
+﻿public class Message
 {
+    public string MessageType { get; set; } // move_left, Moveright, Moveup, Movedown, battle, save, load, grid,
+    public string Data { get; set; } //
+    public string SocketId { get; set; }                          // public string Data { get; set; } // 
+}
+public class Game
+{
+    public void HandleMessage(Message message)
+    {
+
+    } 
     public enum GameModeType
     {
         Hard,
         Easy
     }
+    private string Id;
+    private string gameState;
     private GameModeType gameMode;
     private string seed;
     private User user;
-    private List<Dictionary<(int x, int y), Block>> grid;
+    private Dictionary<(int x, int y), Block> grid;
 
     public GameModeType GetGameMode() { return gameMode; }
     public void SetGameMode(GameModeType value) { gameMode = value; }
@@ -18,7 +30,24 @@
 
     public User GetUser() { return user; }
     public void SetUser(User value) { user = value; }
+    public string GetGameState()
+    {
+        return gameState; 
+    }
+    public Dictionary<(int x, int y), Block> GetGrid()
+    {
+        return null;
+    }
 
+    private Dictionary<(int x, int y), Block> LoadGameFromFile()
+    {
+        return null;
+    }
+
+    private Dictionary<(int x, int y), Block> GetGridFromFile()
+    {
+        return null;
+    }
     public List<Dictionary<(int x, int y), Block>> GetGrid() { return grid; }
     public void SetGrid(List<Dictionary<(int x, int y), Block>> value) { grid = value; }
 }
