@@ -46,19 +46,20 @@ namespace PokescapeServer
         private static async Task OnClientConnected(WebSocket webSocket)
         {
             Console.WriteLine("New client connected");
-            var grid = Pokescape.CreateGridV1(10);
+            var game = new Game();
+            game.CreateGrid();
 
             var loginMessage = new Message();
             string socketId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             loginMessage.MessageType = "login";
             loginMessage.Data = socketId;
-
-            socketIdsToGames.Add(socketId, new Game());
+            await SendMessage(webSocket, loginMessage);
+            socketIdsToGames.Add(socketId, game);
 
             Thread.Sleep(500);
             var message = new Message();
             message.MessageType = "grid";
-            message.Data = JsonConvert.SerializeObject(grid);
+            message.Data = JsonConvert.SerializeObject(game.GetVisibleGrid()) ;
             
             // Send a welcome message to the client
             await SendMessage(webSocket, message);
@@ -78,7 +79,7 @@ namespace PokescapeServer
 
               
                 Message requestFromFrontEnd = JsonConvert.DeserializeObject<Message>(message);
-                HandleMessage(requestFromFrontEnd);
+                 HandleMessage(webSocket, requestFromFrontEnd);
 
                 result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
@@ -87,11 +88,18 @@ namespace PokescapeServer
             webSocket.Dispose();
         }
 
-        public static void HandleMessage(Message message)
+        public static async Task HandleMessage(WebSocket webSocket, Message message)
         {
-
+            Console.WriteLine("FROM USER: " + JsonConvert.SerializeObject(message));
             Game gameForUser = socketIdsToGames[message.SocketId];
-            gameForUser.HandleMessage(message);
+            var messagesToSend = gameForUser.HandleMessage(message); Console.WriteLine(JsonConvert.SerializeObject(messagesToSend));
+            foreach (var messageToSend in messagesToSend)
+            {
+                Console.WriteLine("SERVER SENDING >"+ JsonConvert.SerializeObject(messageToSend));  
+               await SendMessage(webSocket, messageToSend);
+
+            }
+           
         }
         private static string GetMessageType(string message)
         {

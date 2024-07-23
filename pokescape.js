@@ -1,36 +1,39 @@
-// JavaScript source code
 function toggleInventory() {
     $("#inventoryBox").toggle();
 }
+
 function closeWelcomeMessage() {
     $("#welcomeMessage").hide();
 }
 
-var websocket; 
 const url = 'ws://localhost:5000/ws';
 const connection = new WebSocket(url);
 
+let socketId = null;
+
 connection.onopen = () => {
     console.log('WebSocket connection opened');
-    
 };
 
-
-var socketId = null;
 connection.onmessage = (event) => {
-    
-    console.log(1);
     const message = JSON.parse(event.data);
     console.log(message);
     switch (message.MessageType) {
         case 'grid':
-            socketId = message.Data;
-            break;
-        case 'login':
             handleGrid(message.Data);
             break;
-      
-     
+        case 'user':
+            handleUser(message.Data);
+            break;
+        case 'login':
+            console.log("logged in");
+            socketId = message.Data;
+            break;
+        case 'moveResponse':
+            handleMoveResponse(message.Data);
+            break;
+        default:
+            console.warn('Unhandled message type:', message.MessageType);
     }
 };
 
@@ -41,70 +44,72 @@ connection.onerror = (error) => {
 connection.onclose = () => {
     console.log('WebSocket connection closed');
 };
-
-function handleGrid(eventMessage) {
-
-    console.log("2");
-    console.log(eventMessage);
-    var dict = JSON.parse(eventMessage);
-
-
-    var allText = '';
-    var openCol = '<div class="col">';
-    var closeCol ='</div>'
-
-    var gridSize = 10; 
+function handleUser(eventMessage) {
+    var user = JSON.parse(eventMessage);
+    console.log("Eventmessage:", user.userImage);
+    $("#character-one").attr("src", user.userImage);
     
-    var count = 0;
-    allText = allText + openCol;
+}
+function handleGrid(eventMessage) {
+    const dict = JSON.parse(eventMessage);
+    let allText = '<div class="col">';
+    const gridSize = 21;
+    let count = 0;
+    let percentageWidth = 100 / gridSize;
+    $("#character-one").css("width", percentageWidth.toString() + "%");
     for (let key in dict) {
-        count++;
-        if (count == gridSize) {
-            allText += closeCol;
-            allText += openCol;
-            count = 0;
-        }
-
         if (dict.hasOwnProperty(key)) {
-            let value = dict[key];
-            /*  '<div class="col">'
+            if (count === gridSize) {
+                allText += '</div><div class="col">';
+                count = 0;
+            }
 
-            '</div>'
-            */
-            var xCoord = key.slice(1, -1)
-            // Convert the key string back to a tuple (array in JS)
-            let tuple = JSON.parse("[" + key.slice(1, -1) + "]");
-
-
-            var blockToAdd = '<div class="block block-' + value.Name + '">' + '</div>'
+            let block = dict[key];
+      
+            let blockToAdd = `
+                <div style="width: ${percentageWidth}%; height: ${percentageWidth}%;"
+                     class="block block-a">
+                    <img src="${block.image}" />
+                </div>`;
             allText += blockToAdd;
-         
+            count++;
         }
-       
     }
-    $("#grid").append(allText);
-    //convert data from string to dictionary
-    //iterate through every columnn
-
-    //using js add a column in html to the id=grid
-    //in each column add all the rows.
+    allText += '</div>';
+    $("#grid").html(allText);
 }
 
-function moveLeft() {
-    var messageToSend = {
-        "MessageType":"MOVE_LEFT",
-        "Data": "",
+document.addEventListener('keydown', (e) => {
+    if (!socketId) {
+        console.error('Socket ID is not set. Cannot move player.');
+        return;
+    }
+    var messageType = "";
+    switch (e.key) {
+        case 'w':
+            messageType = "MOVE_UP";
+            break;
+        case 'a':
+            messageType = "MOVE_LEFT";
+            break;
+        case 's':
+            messageType = "MOVE_DOWN";
+            break;
+        case 'd':  
+            messageTpe = "MOVE_RIGHT";
+            break;
+
+    }
+    const messageToSend = {
+        "MessageType": messageType,
         "SocketId": socketId
     };
+    console.log('Sending message:', messageToSend);
     connection.send(JSON.stringify(messageToSend));
+});
 
-}
-function moveRight() {
 
-}
-function moveUp(){
 
-}
-function moveDown() {
-
+function handleMoveResponse(data) {
+    console.log('Move response:', data);
 }
