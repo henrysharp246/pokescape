@@ -28,14 +28,6 @@ public class ScrollItem : Item
     }
 }
 
-public class SerializableBlock
-{
-    public string BlockId { get; set; }
-    public string Name { get; set; }
-    public bool CanPass { get; set; }
-    public bool CanSpawn { get; set; }
-    public string Image { get; set; }
-}
 
 public class Block
 {
@@ -46,18 +38,7 @@ public class Block
     public string Image { get; set; }
     public int RoomIndex { get; set; }
 
-    public string Serialize()
-    {
-        var block = new SerializableBlock
-        {
-            BlockId = this.BlockId,
-            Name = this.Name,
-            CanPass = this.CanPass,
-            CanSpawn = this.CanSpawn,
-            Image = this.Image,
-        };
-        return JsonConvert.SerializeObject(block);
-    }
+    
 }
 
 public class FloorBlock : Block
@@ -74,7 +55,7 @@ public class StoneBlock : FloorBlock
 
     public StoneBlock()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Stonefloorblock.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
     }
 }
 
@@ -83,7 +64,7 @@ public class Blank : Block
     public Blank()
     {
         CanPass = false;
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Blankblock.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Blankblock.png";
     }
 }
 
@@ -99,7 +80,7 @@ public class StoneWallBlock : WallBlock
 {
     public StoneWallBlock()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Wallblock.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Wallblock.png";
     }
 }
 
@@ -107,7 +88,7 @@ public class WaterBlock : FloorBlock
 {
     public WaterBlock()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Waterblock.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
     }
 }
 
@@ -125,7 +106,7 @@ public class TopEntrance : Entrance
 
     public TopEntrance()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Topentrance.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Topentrance.png";
     }
 }
 
@@ -135,7 +116,7 @@ public class BottomEntrance : Entrance
 
     public BottomEntrance()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Bottomentrance.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Bottomentrance.png";
     }
 }
 
@@ -145,7 +126,7 @@ public class RightEntrance : Entrance
 
     public RightEntrance()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Rightentrance.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Rightentrance.png";
     }
 }
 
@@ -155,7 +136,7 @@ public class LeftEntrance : Entrance
 
     public LeftEntrance()
     {
-        Image = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Leftentrance.png";
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Leftentrance.png";
     }
 }
 
@@ -167,7 +148,7 @@ public class User
     public string Password { get; set; }
     public int UserGold { get; set; }
     public (int x, int y) UserCoordinates { get; set; } = (60, 60);
-    public string UserImage { get; set; } = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Characterfacingdownblock.png";
+    public string UserImage { get; set; } = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
 }
 
 public class ScapeMonster

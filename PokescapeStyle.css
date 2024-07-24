@@ -53,12 +53,17 @@
     display: flex;
     max-height: 100vh;
     height: 100vh;
-}.grid-container{
-     position:relative;
- }
-#grid{
-   
-
+}
+.grid-container {
+    position: relative;
+    height: calc(70vh);
+    width: calc(70vh);
+}
+#grid {
+    position: absolute;
+    height: calc(70vh);
+    width: calc(70vh);
+    display: flex;
 }
 .character-one {
     position: absolute;
@@ -68,7 +73,7 @@
     transform: translate(-50%, -50%);
 }
 .content-left-span {
-    width: 70%;
+    
 }
 .content-left-span .col{
     flex-grow:1;

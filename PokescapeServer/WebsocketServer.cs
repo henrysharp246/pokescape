@@ -12,7 +12,7 @@ namespace PokescapeServer
 {
    
   
-    class WebsocketServer
+    static class WebsocketServer
     {
         static Dictionary<string, Game> socketIdsToGames = new();
 
@@ -46,24 +46,14 @@ namespace PokescapeServer
         private static async Task OnClientConnected(WebSocket webSocket)
         {
             Console.WriteLine("New client connected");
-            var game = new Game();
-            game.CreateGrid();
-
             var loginMessage = new Message();
             string socketId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             loginMessage.MessageType = "login";
             loginMessage.Data = socketId;
             await SendMessage(webSocket, loginMessage);
+            var game = new Game(webSocket);
             socketIdsToGames.Add(socketId, game);
-
-            Thread.Sleep(500);
-            var message = new Message();
-            message.MessageType = "grid";
-            message.Data = JsonConvert.SerializeObject(game.GetVisibleGrid()) ;
-            
-            // Send a welcome message to the client
-            await SendMessage(webSocket, message);
-
+            await game.StartGame();
             // Handle the WebSocket connection
             await HandleWebSocketConnection(webSocket);
         }
@@ -75,11 +65,11 @@ namespace PokescapeServer
             while (result.MessageType != WebSocketMessageType.Close)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                Console.WriteLine("Received: " + message);
+                
 
               
                 Message requestFromFrontEnd = JsonConvert.DeserializeObject<Message>(message);
-                 HandleMessage(webSocket, requestFromFrontEnd);
+                await HandleMessage(webSocket, requestFromFrontEnd);
 
                 result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
@@ -90,15 +80,8 @@ namespace PokescapeServer
 
         public static async Task HandleMessage(WebSocket webSocket, Message message)
         {
-            Console.WriteLine("FROM USER: " + JsonConvert.SerializeObject(message));
             Game gameForUser = socketIdsToGames[message.SocketId];
-            var messagesToSend = gameForUser.HandleMessage(message); Console.WriteLine(JsonConvert.SerializeObject(messagesToSend));
-            foreach (var messageToSend in messagesToSend)
-            {
-                Console.WriteLine("SERVER SENDING >"+ JsonConvert.SerializeObject(messageToSend));  
-               await SendMessage(webSocket, messageToSend);
-
-            }
+           await gameForUser.HandleMessage(message); 
            
         }
         private static string GetMessageType(string message)
@@ -119,13 +102,21 @@ namespace PokescapeServer
             return "unknown";
         }
 
-        private static async Task SendMessage(WebSocket webSocket, Message messageToSend)
+        public static async Task SendMessage(this WebSocket webSocket, Message messageToSend)
         {
           
             string messageJson = JsonConvert.SerializeObject(messageToSend);
             byte[] responseBuffer = Encoding.UTF8.GetBytes(messageJson);
             await webSocket.SendAsync(new ArraySegment<byte>(responseBuffer), WebSocketMessageType.Text, true, CancellationToken.None);
         }
-    }
+
+        public static void SendMessageNoWait(this WebSocket webSocket, Message messageToSend)
+        {
+            string messageJson = JsonConvert.SerializeObject(messageToSend);
+            byte[] responseBuffer = Encoding.UTF8.GetBytes(messageJson);
+            webSocket.SendAsync(new ArraySegment<byte>(responseBuffer), WebSocketMessageType.Text, true, CancellationToken.None).Wait();
+        }
 
     }
+
+}

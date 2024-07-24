@@ -1,3 +1,11 @@
+//THESE ARE IMPORTANT V
+const visibleGridSize = 21;
+const gridSize = 210;
+var blockPercentageWidth = 100 / visibleGridSize;
+
+
+
+
 function toggleInventory() {
     $("#inventoryBox").toggle();
 }
@@ -46,17 +54,45 @@ connection.onclose = () => {
 };
 function handleUser(eventMessage) {
     var user = JSON.parse(eventMessage);
-    console.log("Eventmessage:", user.userImage);
-    $("#character-one").attr("src", user.userImage);
-    
+    console.log("Eventmessage:", user.UserImage);
+    $("#character-one").attr("src", user.UserImage);
+    console.log("coords");
+    console.log(user.UserCoordinates);
+    handleUserGridPosition(user.UserCoordinates);
 }
+
+
+function handleUserGridPosition(userCoordinates) {
+    const grid = $('#grid');
+    const container = $('.grid-container');
+
+    const gridWidth = grid.outerWidth();
+    const gridHeight = grid.outerHeight();
+    const containerWidth = container.outerWidth();
+    const containerHeight = container.outerHeight();
+
+    // Calculate the new position for the grid based on user coordinates
+    let newLeft = -(userCoordinates.Item1 * gridWidth / 100) + (containerWidth / 2);
+    // Invert the direction for vertical movement
+    let newTop = (userCoordinates.Item2 * gridHeight / 100) - (containerHeight / 2);
+
+    console.log("new top and left before adjustment");
+    console.log("new top: " + newTop);
+    console.log("new left: " + newLeft);
+
+    grid.css({
+        top: newTop + 'px',
+        left: newLeft + 'px'
+    });
+}
+
 function handleGrid(eventMessage) {
     const dict = JSON.parse(eventMessage);
     let allText = '<div class="col">';
-    const gridSize = 21;
+  
     let count = 0;
-    let percentageWidth = 100 / gridSize;
-    $("#character-one").css("width", percentageWidth.toString() + "%");
+    
+    $("#character-one").css("width", blockPercentageWidth.toString() + "%");
     for (let key in dict) {
         if (dict.hasOwnProperty(key)) {
             if (count === gridSize) {
@@ -65,11 +101,12 @@ function handleGrid(eventMessage) {
             }
 
             let block = dict[key];
+           
       
             let blockToAdd = `
-                <div style="width: ${percentageWidth}%; height: ${percentageWidth}%;"
+                <div style="width: ${blockPercentageWidth}%; height: ${blockPercentageWidth}%;"
                      class="block block-a">
-                    <img src="${block.image}" />
+                    <img src="${block.Image}" />
                 </div>`;
             allText += blockToAdd;
             count++;
@@ -96,7 +133,7 @@ document.addEventListener('keydown', (e) => {
             messageType = "MOVE_DOWN";
             break;
         case 'd':  
-            messageTpe = "MOVE_RIGHT";
+            messageType = "MOVE_RIGHT";
             break;
 
     }

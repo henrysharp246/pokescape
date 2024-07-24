@@ -3,17 +3,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
+using PokescapeServer;
 
-namespace PokescapeServer
-{
+
     public class Pokescape
     {
-        public static string GetImagePath(string relativePath)
-        {
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
-            var fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(basePath, relativePath));
-            return fullPath;
-        }
+
+        public static readonly string ImageFolderPath = "C:\\Users\\edcha\\source\\repos\\pokescapeCorrect\\Image";
+    //REPLACE THIS WITH YOURS :
+    //"C:\\Users\\henry\\source\\repos\\pokescape\\Image
+  
         //STEP 1
         //1. Find various images for the grid coordinate classes
         //2. Add more types of grid coordinate classes
@@ -23,18 +22,8 @@ namespace PokescapeServer
         // Create websocket server
         public static async Task Main(string[] args)
         {
-            // var grid = CreateGrid(20);
-            //  LogGrid(grid);
-            var directoryPath = "./";
-            directoryPath = GetImagePath(directoryPath);
-            var fullPath = System.IO.Path.GetFullPath(directoryPath);
-            var folderName = new System.IO.DirectoryInfo(fullPath).Name;
-            var files = System.IO.Directory.GetFiles(directoryPath);
-            foreach (var file in files)
-            {
-                Console.WriteLine(file);
-            }
-            Console.WriteLine(folderName);
+          
+
             await WebsocketServer.Listen();
 
         }
@@ -42,4 +31,4 @@ namespace PokescapeServer
     
 
 
-} }
+} 

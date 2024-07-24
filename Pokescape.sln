@@ -13,33 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.txt = README.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{C1A83D80-DE0B-4D79-9C93-D98AF8D8B790}"
-	ProjectSection(SolutionItems) = preProject
-		Image\blockImages\Bluetwistblock.png = Image\blockImages\Bluetwistblock.png
-		Image\blockImages\Bottomentrance.png = Image\blockImages\Bottomentrance.png
-		Image\blockImages\Characterfacingdownblock.png = Image\blockImages\Characterfacingdownblock.png
-		Image\blockImages\Characterfacingleftblock.png = Image\blockImages\Characterfacingleftblock.png
-		Image\blockImages\Characterfacingrightblock.png = Image\blockImages\Characterfacingrightblock.png
-		Image\blockImages\Characterfacingupblock.png = Image\blockImages\Characterfacingupblock.png
-		Image\blockImages\Combatcharmblock.png = Image\blockImages\Combatcharmblock.png
-		Image\blockImages\Fortificationblock.png = Image\blockImages\Fortificationblock.png
-		Image\blockImages\Goldblock.png = Image\blockImages\Goldblock.png
-		Image\blockImages\Guavaberryblock.png = Image\blockImages\Guavaberryblock.png
-		Image\blockImages\Hystericalpotioncharmblock.png = Image\blockImages\Hystericalpotioncharmblock.png
-		Image\blockImages\Keyblock.png = Image\blockImages\Keyblock.png
-		Image\blockImages\Leftentrance.png = Image\blockImages\Leftentrance.png
-		Image\blockImages\Lockedchestblock.png = Image\blockImages\Lockedchestblock.png
-		Image\blockImages\Mysticorbcharmblock.png = Image\blockImages\Mysticorbcharmblock.png
-		Image\blockImages\Openchestblock.png = Image\blockImages\Openchestblock.png
-		Image\blockImages\Resistancecharmblock.png = Image\blockImages\Resistancecharmblock.png
-		Image\blockImages\Rightentrance.png = Image\blockImages\Rightentrance.png
-		Image\blockImages\Stonefloorblock.png = Image\blockImages\Stonefloorblock.png
-		Image\blockImages\Topentrance.png = Image\blockImages\Topentrance.png
-		Image\blockImages\Ultracharmblock.png = Image\blockImages\Ultracharmblock.png
-		Image\blockImages\Wallblock.png = Image\blockImages\Wallblock.png
-		Image\blockImages\Waterblock.png = Image\blockImages\Waterblock.png
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,9 +26,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C1A83D80-DE0B-4D79-9C93-D98AF8D8B790} = {A409785F-7DF4-4D1F-8E32-9871C1E55CC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C46156E-2EA7-401E-B94E-FC7D54055BD4}

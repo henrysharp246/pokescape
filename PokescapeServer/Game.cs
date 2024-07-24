@@ -1,10 +1,19 @@
 ﻿using Newtonsoft.Json;
+using PokescapeServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
+using PokescapeServer;
 
+
+
+//ALL THE MAIN LOGIC IS DONE INSIDE THE GAME CLASS
+//There is one game per user... i.e. if 10 users are connected there are 10 games
+
+//When we send the user, it updates the grid shown in the game based on where the user is
 public class Game
 {
 
@@ -13,64 +22,88 @@ public class Game
         Hard,
         Easy
     }
-    public int gridSize = 121;
-    public int virtualGridSize = 21;
+    public int gridSize = 210;
     private string GameId;
     private string gameState;
     private GameModeType gameMode;
     private string seed;
     private User user;
     private Dictionary<(int x, int y), Block> grid;
+    private WebSocket currentSocket;
 
-    public Game()
+    //WHEN THIS RUNS A NEW GAME HAS BEEN CREATED
+    public Game(WebSocket webSocket) 
+
     {
         user = new User();
+        currentSocket = webSocket;
+        //When there is a new game we want to send them a new grid
+    }
+
+    //all [async Task] means here is that when we run this method,
+    //we can wait for it to complete before moving to the next line, by using await StartGame
+    public async Task StartGame()
+    {
+        grid = CreateGrid();
+        await SendMessage("grid",grid);
+        await SendMessage("user", user);
+
+
 
     }
 
+    //THE BELOW 3 METHODS ARE THE SAME, JUST ACCEPT DIFFERENT TYPES TO MAKE PROGRAMMING EASIER
+    public async Task SendMessage(string messageType, object messageData)
+    {
+        
+        await SendMessage(messageType, JsonConvert.SerializeObject(messageData));
+
+    }
+    public async Task SendMessage(string messageType, string messageData)
+    {
+        Message message = new Message();
+        message.MessageType = messageType;
+        message.Data = messageData;
+        await SendMessage(message);
+        
+    }
+    public async Task SendMessage(Message message) 
+    {
+        Console.WriteLine("SENDING TO WEB PAGE: " + JsonConvert.SerializeObject(message));
+        await currentSocket.SendMessage(message);
+    }
+
     /// <summary>
-    /// 
+    /// This Is called when the user has sent us something
     /// </summary>
     /// <param name="message"></param>
     /// <returns>MESSAGES TO SEND</returns>
-    public List<Message> HandleMessage(Message message)
+    public async Task HandleMessage(Message message)
     {
-        var messagesToSend = new List<Message>();
-        var gridMessage = new Message();
-        message.MessageType = "grid";
-        message.Data = JsonConvert.SerializeObject(grid);
+        Console.WriteLine("RECEIVED FROM USER: " + JsonConvert.SerializeObject(message));
 
-        var playerMessage = new Message();
-        message.MessageType = "player";
-        message.Data = JsonConvert.SerializeObject(grid);
-
+    
         switch (message.MessageType)
         {
             case "MOVE_UP": //here based on the message type, we add messages to the messagesToSend list based on how we respond
-                MoveUp();
-                messagesToSend.Add(gridMessage);
-                messagesToSend.Add(playerMessage);
+                await MoveUp();
+           
                 break;
             case "MOVE_DOWN":
-                MoveDown();
-                messagesToSend.Add(gridMessage);
-                messagesToSend.Add(playerMessage);
+                await MoveDown();
+    
                 break;
             case "MOVE_LEFT":
-                MoveLeft();
-                messagesToSend.Add(gridMessage);
-                messagesToSend.Add(playerMessage);
+                await MoveLeft();
+
                 break;
             case "MOVE_RIGHT":
-                MoveRight();
-                messagesToSend.Add(gridMessage);
-                messagesToSend.Add(playerMessage);
+                await MoveRight();
+  
                 break;
 
 
         }
-        Console.WriteLine(message.MessageType, message.Data);
-        return messagesToSend;
 
     }
 
@@ -94,9 +127,6 @@ public class Game
     }
 
 
-
-
-
     public static void LogGrid(Block[][] grid)
     {
         for (int x = 0; x < grid.Length; x++)
@@ -109,7 +139,10 @@ public class Game
         }
     }
 
-    public void MoveUp()
+
+ 
+
+    public async Task MoveUp()
     {
         var coords = user.UserCoordinates;
         coords.y += 1;
@@ -121,30 +154,34 @@ public class Game
         var folderName = new System.IO.DirectoryInfo(fullPath).Name;
         Console.WriteLine(folderName);
 
-        user.UserImage = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Characterfacingupblock.png";
+        user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
+        await SendMessage("user", user);
     }
-    public void MoveDown()
+    public async Task MoveDown()
     {
         var coords = user.UserCoordinates;
         coords.y -= 1;
         user.UserCoordinates = coords;
-        user.UserImage = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Characterfacingdownblock.png";
+        user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
+        await SendMessage("user", user);
 
     }
-    public void MoveLeft()
+    public async Task MoveLeft()
     {
         var coords = user.UserCoordinates;
         coords.x -= 1;
         user.UserCoordinates = coords;
-        user.UserImage = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Characterfacingleftblock.png";
+        user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingleftblock.png";
+        await SendMessage("user", user);
 
     }
-    public void MoveRight()
+    public async Task MoveRight()
     {
         var coords = user.UserCoordinates;
         coords.x += 1; user.UserCoordinates = coords; 
         user.UserCoordinates = coords;
-        user.UserImage = "C:\\Users\\henry\\source\\repos\\pokescape\\Image\\blockImages\\Characterfacingrightblock.png";
+        user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
+        await SendMessage("user", user);
     }
     public GameModeType GetGameMode() { return gameMode; }
     public void SetGameMode(GameModeType value) { gameMode = value; }
@@ -168,9 +205,9 @@ public class Game
     {
         return grid;
     }
-    public Dictionary<(int x, int y), Block> GetVisibleGrid()
+/**     public Dictionary<(int x, int y), Block> GetVisibleGrid()
     {
-        Dictionary<(int x, int y), Block> visibleGrid = new();
+       Dictionary<(int x, int y), Block> visibleGrid = new();
         var coords = user.UserCoordinates;
         int xCount = 0; int yCount = 0;
         for (int x = coords.x - virtualGridSize / 2; x <= coords.x + virtualGridSize / 2; x++)
@@ -183,7 +220,8 @@ public class Game
             xCount++;
         }
         return visibleGrid;
-    }
+    }**/
+    
     public Dictionary<(int x, int y), Block> GetGrid() { return grid; }
     public void SetGrid(Dictionary<(int x, int y), Block> value) { grid = value; }
 }
