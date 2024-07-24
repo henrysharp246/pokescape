@@ -8,6 +8,12 @@ namespace PokescapeServer
 {
     public class Pokescape
     {
+        public static string GetImagePath(string relativePath)
+        {
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(basePath, relativePath));
+            return fullPath;
+        }
         //STEP 1
         //1. Find various images for the grid coordinate classes
         //2. Add more types of grid coordinate classes
@@ -19,6 +25,16 @@ namespace PokescapeServer
         {
             // var grid = CreateGrid(20);
             //  LogGrid(grid);
+            var directoryPath = "./";
+            directoryPath = GetImagePath(directoryPath);
+            var fullPath = System.IO.Path.GetFullPath(directoryPath);
+            var folderName = new System.IO.DirectoryInfo(fullPath).Name;
+            var files = System.IO.Directory.GetFiles(directoryPath);
+            foreach (var file in files)
+            {
+                Console.WriteLine(file);
+            }
+            Console.WriteLine(folderName);
             await WebsocketServer.Listen();
 
         }
