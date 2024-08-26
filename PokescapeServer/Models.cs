@@ -49,12 +49,14 @@ public class FloorBlock : Block
     }
 }
 
-public class StoneBlock : FloorBlock
+public class StoneFloorBlock : FloorBlock
 {
     public bool ContainsItem { get; set; }
 
-    public StoneBlock()
+    public StoneFloorBlock()
     {
+        Name = "stonefloorblock";
+        CanPass = true;
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
     }
 }
@@ -63,6 +65,7 @@ public class Blank : Block
 {
     public Blank()
     {
+        Name = "blank";
         CanPass = false;
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Blankblock.png";
     }
@@ -72,6 +75,7 @@ public class WallBlock : Block
 {
     public WallBlock()
     {
+        Name = "wallblock";
         CanPass = false;
     }
 }
@@ -81,6 +85,7 @@ public class StoneWallBlock : WallBlock
     public StoneWallBlock()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Wallblock.png";
+        Name = "stonewallblock";
     }
 }
 
@@ -147,7 +152,7 @@ public class User
     public string UserName { get; set; }
     public string Password { get; set; }
     public int UserGold { get; set; }
-    public (int x, int y) UserCoordinates { get; set; } = (60, 60);
+    public (int x, int y) UserCoordinates { get; set; } = (60, -110);
     public string UserImage { get; set; } = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
 }
 

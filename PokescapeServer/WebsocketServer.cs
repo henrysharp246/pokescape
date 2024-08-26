@@ -41,7 +41,7 @@ namespace PokescapeServer
                 }
             }
         }
-
+        
 
         private static async Task OnClientConnected(WebSocket webSocket)
         {

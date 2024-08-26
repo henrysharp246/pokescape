@@ -1,6 +1,6 @@
 //THESE ARE IMPORTANT V
-const visibleGridSize = 21;
-const gridSize = 210;
+const visibleGridSize = 15;
+const gridSize = 225;
 var blockPercentageWidth = 100 / visibleGridSize;
 
 
@@ -13,6 +13,8 @@ function toggleInventory() {
 function closeWelcomeMessage() {
     $("#welcomeMessage").hide();
 }
+ 
+
 
 const url = 'ws://localhost:5000/ws';
 const connection = new WebSocket(url);
@@ -47,7 +49,7 @@ connection.onmessage = (event) => {
 
 connection.onerror = (error) => {
     console.error('WebSocket error:', error);
-};
+};s
 
 connection.onclose = () => {
     console.log('WebSocket connection closed');
@@ -72,9 +74,9 @@ function handleUserGridPosition(userCoordinates) {
     const containerHeight = container.outerHeight();
 
     // Calculate the new position for the grid based on user coordinates
-    let newLeft = -(userCoordinates.Item1 * gridWidth / 100) + (containerWidth / 2);
+    let newLeft = /*-(userCoordinates.Item1 * gridWidth / 100) + (containerWidth / 2);*/ -(userCoordinates.Item1 * blockPercentageWidth)
     // Invert the direction for vertical movement
-    let newTop = (userCoordinates.Item2 * gridHeight / 100) - (containerHeight / 2);
+    let newTop = /*(userCoordinates.Item2 * gridHeight / 100) - (containerHeight / 2);*/ +(userCoordinates.Item2 * blockPercentageWidth)
 
     console.log("new top and left before adjustment");
     console.log("new top: " + newTop);

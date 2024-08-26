@@ -22,7 +22,7 @@ public class Game
         Hard,
         Easy
     }
-    public int gridSize = 210;
+    public int gridSize = 225;
     private string GameId;
     private string gameState;
     private GameModeType gameMode;
@@ -38,6 +38,7 @@ public class Game
         user = new User();
         currentSocket = webSocket;
         //When there is a new game we want to send them a new grid
+        grid = new Dictionary<(int x, int y), Block>();
     }
 
     //all [async Task] means here is that when we run this method,
@@ -114,17 +115,126 @@ public class Game
         {
             for (int y = 0; y < gridSize; y++)
             {
-                Block block = new StoneBlock();
-                block.CanPass = true;
-                block.Name = "grass"; //changed to setting like this for easier format
-                grid.Add((x, y), block);
+                string blockToLeftName = GetBlockToLeft(x, y);
+                string blockToRightName = GetBlockToRight(x, y);
+                string blockAboveName = GetBlockAbove(x, y);
+                string blockBelowName = GetBlockBelow(x, y);
+                string blockToTopLeftName = GetBlockToTopLeft(x, y);
+                string blockToTopRightName = GetBlockToTopRight(x, y);
+                string blockToBottomLeftName = GetBlockToBottomLeft(x, y);
+                string blockToBottomRightName = GetBlockToBottomRight(x, y);
 
+
+                if (x < 55)
+                {
+                    if (y < -105)
+                    {
+                       
+                        Block blankblock = new Blank();
+                        blankblock.CanPass = true;
+
+                        grid.Add((x, y), blankblock);
+                    }
+
+                }
+                else
+                {
+                    Random random = new Random();
+                    int rand = random.Next(0, 10);
+                    if (blockToLeftName == "blank"|| blockAboveName == "blank" || blockToRightName == "blank" || blockBelowName == "blank" || blockToTopLeftName == "blank" || blockToTopRightName == "blank" || blockToBottomRightName == "blank" || blockToBottomLeftName == "blank"  )
+                    {
+                        Block wallblock = new StoneWallBlock();
+                        wallblock.CanPass = true;
+                        grid.Add((x, y), wallblock);
+                    }
+
+                    if (blockToLeftName == "stonewallblock" || blockAboveName == "stonewallblock" || blockToRightName == "stonewallblock" || blockBelowName == "stonewallblock") 
+                    {
+                        Block stonefloorblock = new StoneWallBlock();
+                        grid.Add((x, y), stonefloorblock);
+                    }
+
+
+                
+                    
+                }
             }
         }
         this.grid = grid;
         return grid;
-
     }
+    public string GetBlockToLeft(int x, int y)
+    {
+        if (x > 0 && grid.ContainsKey((x - 1, y)))
+        {
+            return grid[(x - 1, y)].Name;
+        }
+        else { return "default"; } // Or any other default name you prefer
+    }
+
+    public string GetBlockToRight(int x, int y)
+    {
+        if (x < gridSize - 1 && grid.ContainsKey((x + 1, y)))
+        {
+            return grid[(x + 1, y)].Name;
+        }
+        else { return "default"; }
+    }
+
+    public string GetBlockAbove(int x, int y)
+    {
+        if (y < gridSize - 1 && grid.ContainsKey((x, y + 1)))
+        {
+            return grid[(x, y + 1)].Name;
+        }
+        else { return "default"; }
+    }
+
+    public string GetBlockBelow(int x, int y)
+    {
+        if (y > 0 && grid.ContainsKey((x, y - 1)))
+        {
+            return grid[(x, y - 1)].Name;
+        }
+        else { return "default"; }
+    }
+
+    public string GetBlockToTopLeft(int x, int y)
+    {
+        if (x > 0 && y < gridSize - 1 && grid.ContainsKey((x - 1, y + 1)))
+        {
+            return grid[(x - 1, y + 1)].Name;
+        }
+        else { return "default"; }
+    }
+
+    public string GetBlockToTopRight(int x, int y)
+    {
+        if (x < gridSize - 1 && y < gridSize - 1 && grid.ContainsKey((x + 1, y + 1)))
+        {
+            return grid[(x + 1, y + 1)].Name;
+        }
+        else { return "default"; }
+    }
+
+    public string GetBlockToBottomLeft(int x, int y)
+    {
+        if (x > 0 && y > 0 && grid.ContainsKey((x - 1, y - 1)))
+        {
+            return grid[(x - 1, y - 1)].Name;
+        }
+        else { return "default"; }
+    }
+
+    public string GetBlockToBottomRight(int x, int y)
+    {
+        if (x < gridSize - 1 && y > 0 && grid.ContainsKey((x + 1, y - 1)))
+        {
+            return grid[(x + 1, y - 1)].Name;
+        }
+        else { return "default"; }
+    }
+
 
 
     public static void LogGrid(Block[][] grid)
