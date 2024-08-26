@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PokescapeServer;
 using System;
 using System.Collections.Generic;
 
@@ -31,6 +32,7 @@ public class ScrollItem : Item
 
 public class Block
 {
+    public bool HasUser { get; set; } = false;  
     public string BlockId { get; set; }
     public string Name { get; set; }
     public bool CanPass { get; set; }
@@ -61,9 +63,9 @@ public class StoneFloorBlock : FloorBlock
     }
 }
 
-public class Blank : Block
+public class BlankBlock : Block
 {
-    public Blank()
+    public BlankBlock()
     {
         Name = "blank";
         CanPass = false;
@@ -152,7 +154,7 @@ public class User
     public string UserName { get; set; }
     public string Password { get; set; }
     public int UserGold { get; set; }
-    public (int x, int y) UserCoordinates { get; set; } = (60, -110);
+    public (int x, int y) UserCoordinates { get; set; } 
     public string UserImage { get; set; } = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
 }
 

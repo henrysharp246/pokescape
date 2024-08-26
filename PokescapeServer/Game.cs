@@ -22,8 +22,8 @@ public class Game
         Hard,
         Easy
     }
-    public int gridSize = GameConfig.GridWidth* GameConfig.GridWidth;
-    public int gridWidth = GameConfig.GridWidth;
+    public int gridSize = GameConfig.VisibleGridWidth* GameConfig.VisibleGridWidth;
+    public int gridWidth = GameConfig.VisibleGridWidth;
     private string GameId;
     private string gameState;
     private GameModeType gameMode;
@@ -109,11 +109,31 @@ public class Game
         }
 
     }
+    public void SetUserCoordinatesBasedOnGrid(Dictionary<(int x, int y), Block> grid)
+    {
+        for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
+        {
+            for (int y = 0; y < GameConfig.VisibleGridWidth; y++)
+            {
+                if (grid[(x, y)].CanPass) {
+                    var block = grid[(x, y)];
+                    block.HasUser = true;
+                    grid[(x, y)] = block;
+                    user.UserCoordinates = (x,y);
+
+                   
+                    return;
+                }
+            }
+        }
+    }
     public Dictionary<(int x, int y), Block> CreateGrid()
     {
-        Random rnd = new Random();
-        int numOfRooms = rnd.Next(GameConfig.MinRooms, GameConfig.MaxRooms);
-
+        var room = GenerateRoom();
+        var finalGrid = RoomToGrid(room);
+        grid = finalGrid;
+        SetUserCoordinatesBasedOnGrid(grid);
+        return finalGrid;
 
     }
     /// <summary>
@@ -151,7 +171,87 @@ public class Game
             }
         }
 
+        Console.WriteLine($"Room Generated has a width of {roomWidth} and a height of {roomHeight}");
+
+
         return room;
+    }
+
+    public int GetRoomWidth(Dictionary<(int x, int y), Block> room)
+    {
+        // Find the maximum x coordinate to determine the width of the room
+        int maxX = room.Keys.Max(key => key.x);
+
+        // The width is maxX + 1 because coordinates are 0-based
+        return maxX + 1;
+    }
+    public int GetRoomHeight(Dictionary<(int x, int y), Block> room)
+    {
+        // Find the maximum y coordinate to determine the height of the room
+        int maxY = room.Keys.Max(key => key.y);
+
+        // The height is maxY + 1 because coordinates are 0-based
+        return maxY + 1;
+    }
+
+
+    public Dictionary<(int x, int y), Block> RoomToGrid(Dictionary<(int x, int y), Block>  room)
+    {
+        Dictionary<(int x, int y), Block> gridGenerated = new Dictionary<(int x, int y), Block>();
+        try
+        {
+            int roomHeight = GetRoomHeight(room);
+            int roomWidth = GetRoomWidth(room);
+
+            int roomStartXPosition = (GameConfig.VisibleGridWidth / 2) - roomWidth/2 ;
+        int roomStartYPosition = (GameConfig.VisibleGridWidth / 2) - roomHeight/2;
+    
+            foreach (var coordAndBlock in room)
+         {
+            //translates the room by half of the grid width and height (places the room in the middle of the grid)
+            gridGenerated[((roomStartXPosition + coordAndBlock.Key.x), (roomStartYPosition + coordAndBlock.Key.y))] = coordAndBlock.Value;
+        
+         }
+
+        //we need to fill the rest of the grid with blank spaces
+
+
+           // Console.WriteLine(gridGenerated);
+        
+            for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
+            {
+                for (int y = 0; y < GameConfig.VisibleGridWidth; y++)
+                {
+                   // Console.WriteLine($"x{x} y{y}");
+                    if (!gridGenerated.ContainsKey((x, y)))
+                    {
+                        Block block = new BlankBlock();
+
+                        gridGenerated.Add((x, y), block);
+                    }
+
+                }
+            }
+
+            Console.WriteLine($"Room Start x Position Is {roomStartXPosition} Room Start y Position Is {roomStartYPosition}");
+
+        }
+        catch (Exception ex) { Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+        }
+        gridGenerated = SortDictionary(gridGenerated);
+
+
+       
+        return gridGenerated;
+    }
+
+    public static Dictionary<(int x, int y), Block> SortDictionary(Dictionary<(int x, int y), Block> dictionary)
+    {
+        return dictionary
+            .OrderBy(kvp => kvp.Key.x)  // First sort by x
+            .ThenBy(kvp => kvp.Key.y)    // Then sort by y
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     public Dictionary<(int x, int y), Block> CreateGridV0()
@@ -209,7 +309,7 @@ public class Game
                     if (y < -105)
                     {
                        
-                        Block blankblock = new Blank();
+                        Block blankblock = new BlankBlock();
                         blankblock.CanPass = true;
 
                         grid.Add((x, y), blankblock);
@@ -322,9 +422,9 @@ public class Game
         {
             for (int y = 0; y < grid.Length; y++)
             {
-                Console.WriteLine(grid[x][y].Name);
+                //Console.WriteLine(grid[x][y].Name);
             }
-            Console.WriteLine("\n");
+            //Console.WriteLine("\n");
         }
     }
 

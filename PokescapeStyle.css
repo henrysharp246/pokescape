@@ -86,6 +86,7 @@
     width: calc(70vh);
     position: relative;
     overflow: hidden;
+    /*overflow:visible;*/
     border-radius: 20px;
     display: flex;
     border: solid 2px white;
