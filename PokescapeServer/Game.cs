@@ -22,7 +22,8 @@ public class Game
         Hard,
         Easy
     }
-    public int gridSize = 225;
+    public int gridSize = GameConfig.GridWidth* GameConfig.GridWidth;
+    public int gridWidth = GameConfig.GridWidth;
     private string GameId;
     private string gameState;
     private GameModeType gameMode;
@@ -30,6 +31,7 @@ public class Game
     private User user;
     private Dictionary<(int x, int y), Block> grid;
     private WebSocket currentSocket;
+
 
     //WHEN THIS RUNS A NEW GAME HAS BEEN CREATED
     public Game(WebSocket webSocket) 
@@ -107,8 +109,85 @@ public class Game
         }
 
     }
-
     public Dictionary<(int x, int y), Block> CreateGrid()
+    {
+        Random rnd = new Random();
+        int numOfRooms = rnd.Next(GameConfig.MinRooms, GameConfig.MaxRooms);
+
+
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="minRoomWidth"></param>
+    /// <param name="maxRoomWidth"></param>
+    /// <param name="minRoomHeight"></param>
+    /// <param name="maxRoomHeight"></param>
+    /// <returns></returns>
+    public Dictionary<(int x, int y), Block> GenerateRoom(int minRoomWidth = GameConfig.MinRoomWidth, int maxRoomWidth = GameConfig.MaxRoomWidth, int minRoomHeight = GameConfig.MinRoomWidth, int maxRoomHeight = GameConfig.MaxRoomWidth)
+    {
+        Random rnd = new Random();
+        
+        int roomWidth = rnd.Next(minRoomWidth, maxRoomWidth);
+        int roomHeight = rnd.Next(minRoomHeight, maxRoomHeight);
+
+        Dictionary<(int x, int y), Block> room = new();
+        for (int x = 0; x < roomWidth; x++)
+        {
+            for (int y = 0; y < roomHeight; y++)
+            {
+                Block blockToAdd;
+                if (x == 0 || y == roomHeight - 1 || x == roomWidth - 1  || y == 0)
+                {
+                    blockToAdd = new StoneWallBlock();
+                }
+                else
+                {
+                    blockToAdd = new StoneFloorBlock();
+                }
+                room.Add((x, y), blockToAdd);
+                
+
+            }
+        }
+
+        return room;
+    }
+
+    public Dictionary<(int x, int y), Block> CreateGridV0()
+    {
+        int totalRoomSize = 0;
+
+        while (totalRoomSize < gridSize)
+        {
+
+            //GENERATE ROOM
+
+            //totalRoomSize += newRoomSize 
+
+        }
+        return null;
+
+    }
+
+    public Dictionary<(int x, int y), Block> CreateGridBlank()
+    {
+        Dictionary<(int x, int y), Block> grid = new();
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int y = 0; y < gridSize; y++)
+            {
+                Block block = new StoneFloorBlock();
+    
+                grid.Add((x, y), block);
+
+            }
+        }
+        this.grid = grid;
+        return grid;
+
+    }
+    public Dictionary<(int x, int y), Block> CreateGridV2()
     {
         Dictionary<(int x, int y), Block> grid = new();
         for (int x = 0; x < gridSize; x++)

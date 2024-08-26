@@ -49,7 +49,7 @@ connection.onmessage = (event) => {
 
 connection.onerror = (error) => {
     console.error('WebSocket error:', error);
-};s
+};
 
 connection.onclose = () => {
     console.log('WebSocket connection closed');
