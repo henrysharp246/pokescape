@@ -11,7 +11,45 @@
         <h3 class="welcome-subtitle">
             In Pokescape you find yourself lost in a mysterious dungeon. You must look for clues, tame and defeat various Scapemonsters in order to escape the dungeon and complete the game! Good luck.
         </h3>
+
         <img src="Image/icons/solid/xmark.svg" onclick="closeWelcomeMessage()" class="close-icon">
+        <div class="pokescape-monster-card-container">
+            <div class="pokescape-monster-card">
+                <div class="pokescape-monster-name">
+                    Fuzzy
+                </div>
+                <div class="type-badge" style="background-color: #603082;">
+                    Mystical
+                </div>
+                <img class="pokescape-monster-img" src="C:\Users\edcha\Downloads\Telegram Desktop\FuzzyOpponent.png" />
+                <div class="pokescape-monster-hp-container">
+
+                    <div class="row cont-1-row">
+                        <div class="card-label">HP:</div>
+                        <div class="card-label-2">90%</div>
+                    </div>
+                    <div class="pokescape-monster-hp-bar">
+
+                        <div class="pokescape-monster-hp-bar-filled" style="width:50%;">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="pokescape-monster-attack-container">
+                    <div class="row cont-1-row">
+                        <div class="card-label">Attack:</div>
+                        <div class="card-label-2">1200/1300</div>
+                    </div>
+
+                    <div class="pokescape-monster-attack-bar">
+                        <div class="pokescape-monster-attack-bar-filled" style="width:90%;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
     </div>
     <div class="main-content">
         
@@ -29,6 +67,9 @@
                 <a onclick="toggleInventory()" id="inventoryButton" class="button inventoryButton">Inventory</a>
                 <div id="inventoryBox" class="inventory-box">
                     <h4 class="inventory-title">ScapeMonsters:</h4>
+                    <div id="scapemonsterInventory">
+
+                    </div>
                 </div>
                 <a class="button saveButton">Save game</a>
                 <a class="button loadButton">Load game</a>

@@ -13,7 +13,49 @@ function toggleInventory() {
 function closeWelcomeMessage() {
     $("#welcomeMessage").hide();
 }
- 
+function populateMonsterCards(monsterList) {
+    var cards = '';
+    monsterList.forEach(function (monster) {
+        var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
+        var attackPercentage = (monster.BaseDamage / 1300) * 100;  // assuming max attack is 1300
+
+        var card = `
+            <div class="pokescape-monster-card">
+                <div class="pokescape-monster-name">
+                    ${monster.ScapeMonsterName}
+                </div>
+                <div class="type-badge" style="background-color: ${monster.IsBoss ? '#FF0000' : '#603082'};">
+                    ${monster.IsBoss ? 'Boss' : 'Mystical'}
+                </div>
+                <img class="pokescape-monster-img" src="${monster.OpponentImage}" />
+                <div class="pokescape-monster-hp-container">
+                    <div class="row cont-1-row">
+                        <div class="card-label">HP:</div>
+                        <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
+                    </div>
+                    <div class="pokescape-monster-hp-bar">
+                        <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
+                        </div>
+                    </div>
+                </div>
+                <div class="pokescape-monster-attack-container">
+                    <div class="row cont-1-row">
+                        <div class="card-label">Attack:</div>
+                        <div class="card-label-2">${monster.BaseDamage}/1300</div>
+                    </div>
+                    <div class="pokescape-monster-attack-bar">
+                        <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        cards += card;
+    });
+
+    // Inject the cards into the scapemonsterInventory container
+    $('#scapemonsterInventory').html(cards);
+}
 
 
 const url = 'ws://localhost:5000/ws';
@@ -61,6 +103,7 @@ function handleUser(eventMessage) {
     console.log("coords");
     console.log(user.UserCoordinates);
     handleUserGridPosition(user.UserCoordinates);
+    populateMonsterCards(user.ScapeMonsters);
 }
 
 function handleUserGridPosition(userCoordinates) {

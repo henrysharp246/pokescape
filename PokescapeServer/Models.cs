@@ -59,7 +59,24 @@ public class StoneFloorBlock : FloorBlock
     {
         Name = "stonefloorblock";
         CanPass = true;
-        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
+        Random random = new Random();
+        int num = random.Next(1,5);
+        switch (num) 
+        {
+
+            case 1: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
+                break;
+           /* case 2: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
+                break;*/
+            default: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
+                break;
+
+
+        }
+
+
+
+     
     }
 }
 
@@ -101,6 +118,8 @@ public class WaterBlock : FloorBlock
 
 public class Entrance : WallBlock
 {
+    public int EntranceId { get; set; }
+    public int CorrespondingRoomId { get; set; } = -1;
     public Entrance()
     {
         CanPass = true;
@@ -109,17 +128,18 @@ public class Entrance : WallBlock
 
 public class TopEntrance : Entrance
 {
-    public int CorrespondingBottomEntrance { get; set; }
-
+  
+  
     public TopEntrance()
     {
+      
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Topentrance.png";
     }
 }
 
 public class BottomEntrance : Entrance
 {
-    public int CorrespondingTopEntrance { get; set; }
+   
 
     public BottomEntrance()
     {
@@ -129,7 +149,7 @@ public class BottomEntrance : Entrance
 
 public class RightEntrance : Entrance
 {
-    public int CorrespondingLeftEntrance { get; set; }
+  
 
     public RightEntrance()
     {
@@ -139,7 +159,7 @@ public class RightEntrance : Entrance
 
 public class LeftEntrance : Entrance
 {
-    public int CorrespondingRightEntrance { get; set; }
+    
 
     public LeftEntrance()
     {
@@ -150,6 +170,11 @@ public class LeftEntrance : Entrance
 public class User
 {
     public List<Item> Inventory { get; set; } = new List<Item>();
+    public List<ScapeMonster> ScapeMonsters = new List<ScapeMonster>();
+
+    public User(){
+        ScapeMonsters.Add(new Fuzzy());
+    }
     public string UserId { get; set; }
     public string UserName { get; set; }
     public string Password { get; set; }
@@ -158,22 +183,3 @@ public class User
     public string UserImage { get; set; } = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
 }
 
-public class ScapeMonster
-{
-    public class ScapeMonsterMove
-    {
-        public int MoveDamage { get; set; }
-        public string MoveName { get; set; }
-        public Type MoveType { get; set; }
-    }
-
-    public string ScapeMonsterID { get; set; }
-    public (int xCord, int yCord) ScapemonsterCoordinates { get; set; }
-    public string ScapeMonsterName { get; set; }
-    public double MaximumHealth { get; set; }
-    public bool IsBoss { get; set; }
-    public double Health { get; set; }
-    public double DamagePerHit { get; set; }
-    public List<ScapeMonsterMove> Moves { get; set; } = new List<ScapeMonsterMove>();
-    public int Level { get; set; }
-}
