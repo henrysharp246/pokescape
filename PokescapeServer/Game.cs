@@ -433,42 +433,60 @@ public class Game
 
     public async Task MoveUp()
     {
-        var coords = user.UserCoordinates;
-        coords.y += 1;
-        user.UserCoordinates = coords;
-        //log what is in folder with ./ file path here
+        Block blockabove = grid[(user.UserCoordinates.x, user.UserCoordinates.y + 1)];
+        if (blockabove.CanPass == true)
+        {
+            var coords = user.UserCoordinates;
+            coords.y += 1;
+            user.UserCoordinates = coords;
 
-        var directoryPath = "./";
-        var fullPath = System.IO.Path.GetFullPath(directoryPath);
-        var folderName = new System.IO.DirectoryInfo(fullPath).Name;
-        Console.WriteLine(folderName);
+            //log what is in folder with ./ file path here
 
+            var directoryPath = "./";
+            var fullPath = System.IO.Path.GetFullPath(directoryPath);
+            var folderName = new System.IO.DirectoryInfo(fullPath).Name;
+            Console.WriteLine(folderName);
+
+           
+        }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
         await SendMessage("user", user);
     }
     public async Task MoveDown()
     {
-        var coords = user.UserCoordinates;
-        coords.y -= 1;
-        user.UserCoordinates = coords;
+        Block blockbelow = grid[(user.UserCoordinates.x, user.UserCoordinates.y - 1)];
+        if (blockbelow.CanPass == true)
+        {
+            var coords = user.UserCoordinates;
+            coords.y -= 1;
+            user.UserCoordinates = coords;
+        }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
         await SendMessage("user", user);
 
     }
     public async Task MoveLeft()
     {
-        var coords = user.UserCoordinates;
-        coords.x -= 1;
-        user.UserCoordinates = coords;
+        Block blockabove = grid[(user.UserCoordinates.x-1, user.UserCoordinates.y )];
+        if (blockabove.CanPass == true)
+        {
+            var coords = user.UserCoordinates;
+            coords.x -= 1;
+            user.UserCoordinates = coords;
+        }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingleftblock.png";
         await SendMessage("user", user);
 
     }
     public async Task MoveRight()
     {
-        var coords = user.UserCoordinates;
-        coords.x += 1; user.UserCoordinates = coords; 
-        user.UserCoordinates = coords;
+        Block blockabove = grid[(user.UserCoordinates.x+1, user.UserCoordinates.y)];
+        if (blockabove.CanPass == true)
+        {
+            var coords = user.UserCoordinates;
+            coords.x += 1; user.UserCoordinates = coords;
+            user.UserCoordinates = coords;
+        }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
         await SendMessage("user", user);
     }
