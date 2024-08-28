@@ -23,21 +23,23 @@
     justify-content:center;
 }
 .pokescape-monster-card {
-    width: 300px;
+    width: 150px;
     margin-left: 10px;
+    margin-bottom:10px;
     background-color: #475564;
     padding: 20px;
     position: relative;
     border-radius: 1rem;
+    box-shadow: #000000a1 0px 4px 2px 0px;
 }
-.pokescape-monster-img{
-    width:180px;
-    max-width:180px;
+.pokescape-monster-img {
+    width: 140px;
+    max-width: 180px;
 }
 .pokescape-monster-hp-bar, .pokescape-monster-attack-bar {
     background: black;
     width: 100%;
-    height: 10px;
+    height: 6px;
     border-radius:5px;
 }
 .pokescape-monster-hp-bar-filled, .pokescape-monster-attack-bar-filled {
@@ -57,9 +59,15 @@
     top: 15px;
     right: 15px;
 }
-.green-dragon{
-    right: 600px;
-    top: 500px:;
+.green-dragon {
+    right: -50px;
+    top: 180px;
+    position: absolute;
+    width: 100vw;
+    max-width: 1050px;
+    height: auto;
+    z-index: -1;
+    opacity: 0.3;
 }
 
 
@@ -95,7 +103,7 @@
     margin-left: 15px;
     max-height: 80%;
     height: 80vh;
-    max-width: 80%;
+    max-width: 100%;
 }
 
 .welcome-subtitle {
@@ -130,6 +138,87 @@
     height: calc(70vh);
     width: calc(70vh);
 }
+.defendant-options {
+    position: absolute;
+    bottom: 200px;
+    font-size: 30px;
+    color: white;
+    font-weight: 600;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    animation: fadeIn 4s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+#battle-screen-1{
+    position:absolute;
+    z-index:2;
+}
+.opponent-info, .defendant-info {
+    max-width: 250px;
+    min-width: 250px;
+    position: absolute;
+    background-color: #ffffff87;
+    border-radius: 15px;
+    padding: 10px;
+    z-index:3;
+}
+#opponent-rock {
+    position: absolute;
+    top: 330px;
+    width: 500px;
+    transform: translateY(-100%) ;
+    right: -25px;
+}
+#defendant-rock {
+    position: absolute;
+    bottom: 20px;
+    width: 700px;
+        left: -180px;
+}
+#opponent-image {
+    position: absolute;
+    top: 330px;
+    width: 340px;
+    right: 40px;
+    height:auto;
+    transform: translateY(-100%);
+}
+
+.opponent-info {
+    top: 50px;
+    left: 50px;
+}
+.defendant-info {
+    bottom: 100px;
+    right: 100px;
+}
+#defendant-image {
+    position: absolute;
+    bottom: 50px;
+    left: 0px;
+    width: 340px;height:auto;
+}
+#battle-screen-2 {
+    padding: 30px 25px;
+    background-image: url(./Image/BattleBackground.png);
+    position: absolute;
+    z-index: 11;
+    width: 100%;
+    height:100%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+#scapemonsterInventory {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 #grid {
     position: absolute;
     height: calc(70vh);
@@ -143,8 +232,10 @@
     z-index: 10;
     transform: translate(-50%, -50%);
 }
+.content-right{
+    max-width:50%;
+}
 .content-left-span {
-    
 }
 .content-left-span .col{
     flex-grow:1;
@@ -165,8 +256,11 @@
 }
 
 .content-right {
-    width: 30%;
-    background-image: url(./Image/pattern1.png);
+    flex: 1;
+    flex-grow: 1;
+    padding: 0 20px;
+    background-color: #ffffff5e;
+    /*background-image: url(./Image/BattleBackground.png);*/
     background-size: 100% 100%;
     border-radius: 1rem;
     margin-left: 20px;
@@ -191,28 +285,35 @@
     border: solid 2px white;
     border-radius: 13px;
     text-align: center;
-    font-size: 40px;
+    font-size: 20px;
     padding-top: 4px;
-    margin-left: 36px;
+    padding-bottom:4px;
     width: calc(100% - 55px) !important;
     display: block;
-    height: 55px;
-    background-color: lightblue;
+    height: auto;
+    background-color: cadetblue;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .inventory-box {
     height: 400px;
     display: none;
     background-color: lightblue;
-    opacity: 0.6;
+  
     margin-left: 36px;
     width: calc(100% - 51px) !important;
     margin-top: -15px;
     border-radius: 15px;
 }
-
+.button-controls .button{
+    width:30%; 
+    max-width:30%;
+}
+.button-controls{
+    display:flex;
+    justify-content:space-between;
+}
 .inventory-title {
     position: relative;
     margin: 0px !important;

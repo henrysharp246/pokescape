@@ -26,6 +26,7 @@ namespace PokescapeServer
         public const int MinRooms = 5; //IN USE
         public const int MaxRooms = 100;//IN USE
 
+        public const double ProbabilityOfScapemonster = 0.1;
         
 
         public const int MaxItemsInRoom = 2;

@@ -7,6 +7,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 using PokescapeServer;
+using System.Net.Http.Headers;
 
 
 
@@ -138,8 +139,13 @@ public class Game
 
     public async Task ScapeMonsterEncounter()
     {
-     
-
+        Random random = new Random();
+        double num = random.NextDouble();
+        if(num < GameConfig.ProbabilityOfScapemonster)
+        {
+            user.ScapeMonsters.Add(ScapeMonster.GetRandomScapeMonster());
+        }
+        return;
     }
     
     public void SetUserCoordinatesBasedOnGrid(Dictionary<(int x, int y), Block> grid, Type entranceType = null)
@@ -695,8 +701,9 @@ public class Game
             var fullPath = System.IO.Path.GetFullPath(directoryPath);
             var folderName = new System.IO.DirectoryInfo(fullPath).Name;
             Console.WriteLine(folderName);
+            await ScapeMonsterEncounter();
 
-           
+
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
         await SendMessage("user", user);
@@ -726,6 +733,7 @@ public class Game
             var coords = user.UserCoordinates;
             coords.y -= 1;
             user.UserCoordinates = coords;
+            await ScapeMonsterEncounter();
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
         await SendMessage("user", user);
@@ -756,6 +764,7 @@ public class Game
             var coords = user.UserCoordinates;
             coords.x -= 1;
             user.UserCoordinates = coords;
+            await ScapeMonsterEncounter();
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingleftblock.png";
         await SendMessage("user", user);
@@ -786,6 +795,7 @@ public class Game
             var coords = user.UserCoordinates;
             coords.x += 1; user.UserCoordinates = coords;
             user.UserCoordinates = coords;
+            await ScapeMonsterEncounter();
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
         await SendMessage("user", user);

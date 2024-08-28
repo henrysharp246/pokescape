@@ -48,19 +48,115 @@
                     </div>
                  </div>
             </div>
-                 </div>
-                    </div>
-                        <img class="green-dragon" src="ScapeMonsters\Greendragon.png">
-                    </div>
-                </div>
-            </div>
         </div>
+    </div>
+                        <img class="green-dragon" src="Image/scapeMonsters/Greendragon.png">
+                    
             <div class="main-content">
 
                 <div class="row full-height">
                     <div class="col content-left">
                         <div class="grid-container content-left-span">
+                            <div id="battle-screen-1" style="display:none;">
+
+                            </div>
+                            <div id="battle-screen-2" style="">
+                                <div class="opponent-row">
+                                    <div class="opponent-info">
+                                        <div class="pokescape-monster-name">
+                                            Fuzzy
+                                        </div>
+                                        <div class="type-badge" style="background-color: #603082;">
+                                            Mystical
+                                        </div>
+                                        <div class="pokescape-monster-hp-container">
+
+                                            <div class="row cont-1-row">
+                                                <div class="card-label">HP:</div>
+                                                <div class="card-label-2">90%</div>
+                                            </div>
+                                            <div class="pokescape-monster-hp-bar">
+
+                                                <div class="pokescape-monster-hp-bar-filled" style="width:50%;">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pokescape-monster-attack-container">
+                                            <div class="row cont-1-row">
+                                                <div class="card-label">Attack:</div>
+                                                <div class="card-label-2">1200/1300</div>
+                                            </div>
+
+                                            <div class="pokescape-monster-attack-bar">
+                                                <div class="pokescape-monster-attack-bar-filled" style="width:90%;">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="opponent-img-container">
+                                        <img id="opponent-rock" src="Image/OpponentRock.png" />
+                                        <img id="opponent-image" src="C:\Users\edcha\Downloads\Telegram Desktop\FuzzyOpponent.png" />
+                                    </div>
+                                 
+                                </div>
+                                <div class="defendant-options">
+                                    Choose Your Scapemonster...
+                                </div>
+                               <div class="defendant-row" style="display:none;">
+                                   <div class="defendant-info">
+                                       <div class="pokescape-monster-name">
+                                           Fuzzy
+                                       </div>
+                                       <div class="type-badge" style="background-color: #603082;">
+                                           Mystical
+                                       </div>
+                                       <div class="pokescape-monster-hp-container">
+
+                                           <div class="row cont-1-row">
+                                               <div class="card-label">HP:</div>
+                                               <div class="card-label-2">90%</div>
+                                           </div>
+                                           <div class="pokescape-monster-hp-bar">
+
+                                               <div class="pokescape-monster-hp-bar-filled" style="width:50%;">
+
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="pokescape-monster-attack-container">
+                                           <div class="row cont-1-row">
+                                               <div class="card-label">Attack:</div>
+                                               <div class="card-label-2">1200/1300</div>
+                                           </div>
+
+                                           <div class="pokescape-monster-attack-bar">
+                                               <div class="pokescape-monster-attack-bar-filled" style="width:90%;">
+
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="defendant-img-container">
+                                       <img id="defendant-rock" src="Image/OpponentRock.png" />
+                                       <img id="defendant-image" src="C:\Users\edcha\Downloads\Telegram Desktop\FuzzyTamed.png"/>
+                                   </div>
+                                   
+                               </div>
+
+                            </div>
                             <div class="" id="grid"></div><img id="character-one" class="character-one" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\Characterfacingdownblock.png" />
+                        </div>
+
+                        <div class="button-controls">
+                            <a onclick="toggleInventory()" class="button inventoryButton">Inventory</a>
+                            <div id="inventoryBox" class="inventory-box">
+                                <h4 class="inventory-title">ScapeMonsters:</h4>
+                             
+                            </div>
+                            <a class="button saveButton">Save game</a>
+                            <a class="button loadButton">Load game</a>
                         </div>
 
                     </div>
@@ -68,15 +164,16 @@
                         <div class="row logo-row">
                             <img class="logo" src="Image/pokescapelogo.png">
                         </div>
-                        <a onclick="toggleInventory()" id="inventoryButton" class="button inventoryButton">Inventory</a>
-                        <div id="inventoryBox" class="inventory-box">
-                            <h4 class="inventory-title">ScapeMonsters:</h4>
+                        <div class="row">
+                            <h4>My Scapemonsters</h4>
                             <div id="scapemonsterInventory">
 
                             </div>
                         </div>
-                        <a class="button saveButton">Save game</a>
-                        <a class="button loadButton">Load game</a>
+                    
+
+
+
                     </div>
                 </div>
             </div>

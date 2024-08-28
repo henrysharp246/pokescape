@@ -17,10 +17,10 @@ function populateMonsterCards(monsterList) {
     var cards = '';
     monsterList.forEach(function (monster) {
         var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
-        var attackPercentage = (monster.BaseDamage / 1300) * 100;  // assuming max attack is 1300
+        var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
 
         var card = `
-            <div class="pokescape-monster-card">
+            <div class="pokescape-monster-card card-${monster.ScapeMonsterName}">
                 <div class="pokescape-monster-name">
                     ${monster.ScapeMonsterName}
                 </div>
@@ -41,7 +41,7 @@ function populateMonsterCards(monsterList) {
                 <div class="pokescape-monster-attack-container">
                     <div class="row cont-1-row">
                         <div class="card-label">Attack:</div>
-                        <div class="card-label-2">${monster.BaseDamage}/1300</div>
+                        <div class="card-label-2">${monster.BaseDamage}/1000</div>
                     </div>
                     <div class="pokescape-monster-attack-bar">
                         <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
