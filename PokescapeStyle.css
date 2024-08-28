@@ -57,6 +57,12 @@
     top: 15px;
     right: 15px;
 }
+.green-dragon{
+    right: 600px;
+    top: 500px:;
+}
+
+
 .pokescape-monster-hp-bar-filled {
     background-color: orange;
     height: 100%;
