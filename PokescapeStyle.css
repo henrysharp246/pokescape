@@ -168,7 +168,15 @@
     bottom: 200px;
     font-size: 30px;
     color: white;
+    right: -350px;
+    padding: 10px;
+    padding-right: -200px;
+    text-shadow: 1px black 1px black 1px black 1px black;
+    background-color: cadetblue;
+    border-radius: 13px;
     font-weight: 600;
+    border: solid;
+    border-color: darkslateblue;
     left: 50%;
     transform: translateX(-50%);
     opacity: 0;

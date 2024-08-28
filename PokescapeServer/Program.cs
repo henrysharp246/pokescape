@@ -9,7 +9,7 @@ using PokescapeServer;
     public class Pokescape
     {
 
-        public static readonly string ImageFolderPath = "C:\\Users\\edcha\\source\\repos\\pokescapeCorrect\\Image";
+        public static readonly string ImageFolderPath = "C:\\Users\\henry\\OneDrive\\Desktop\\pokescape\\Image";
     //REPLACE THIS WITH YOURS :
     //"C:\\Users\\henry\\source\\repos\\pokescape\\Image
   
@@ -27,8 +27,7 @@ using PokescapeServer;
             await WebsocketServer.Listen();
 
         }
-
-    
+   
 
 
 } 
