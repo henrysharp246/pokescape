@@ -42,7 +42,7 @@ public class Game
     private List<Dictionary<(int x, int y), Block>> grids;
     private WebSocket currentSocket;
     private int currentGridCount = 1 ;
-    
+
 
     //WHEN THIS RUNS A NEW GAME HAS BEEN CREATED
     public Game(WebSocket webSocket) 
@@ -113,28 +113,50 @@ public class Game
         Console.WriteLine("RECEIVED FROM USER: " + JsonConvert.SerializeObject(message));
 
     
-        switch (message.MessageType)
+        switch (message.MessageType.ToUpper())
         {
             case "MOVE_UP": //here based on the message type, we add messages to the messagesToSend list based on how we respond
-                await MoveUp();
-                
+                if (user.InBattle == false){
+                    await MoveUp();
+                }
                 break;
             case "MOVE_DOWN":
-                await MoveDown();
-    
+                if (user.InBattle == false)
+                {
+                    await MoveDown();
+                }
+
                 break;
             case "MOVE_LEFT":
-                await MoveLeft();
+                if (user.InBattle == false)
+                {
+                    await MoveLeft();
+                }
 
                 break;
             case "MOVE_RIGHT":
-                await MoveRight();
-  
-                break;
+                if (user.InBattle == false)
+                {
+                    await MoveRight();
+                }
 
+                break;
+            case "MONSTER_SELECTED_FOR_BATTLE":
+                if (user.InBattle)
+                {
+                    await MonsterSelectedForBattle(message.Data);
+                }
+                break;
+            case "ATTACK_MOVE":
+                break;
 
         }
 
+    }
+    public async Task MonsterSelectedForBattle(string monsterId)
+    {
+        user.CurrentBattle.UserScapeMonster = user.ScapeMonsters.First(monster => monster.ScapeMonsterID == monsterId);
+        await SendMessage("battle", user.CurrentBattle);
     }
 
     public async Task ScapeMonsterEncounter()
@@ -143,7 +165,13 @@ public class Game
         double num = random.NextDouble();
         if(num < GameConfig.ProbabilityOfScapemonster)
         {
-            user.ScapeMonsters.Add(ScapeMonster.GetRandomScapeMonster());
+            Battle newBattle= new Battle();
+            newBattle.OpponentScapeMonster = ScapeMonster.GetRandomScapeMonster();
+            user.CurrentBattle = newBattle;
+            user.InBattle = true;
+           
+            await SendMessage("newBattle", newBattle);
+            // user.ScapeMonsters.Add(ScapeMonster.GetRandomScapeMonster());
         }
         return;
     }

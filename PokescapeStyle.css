@@ -138,6 +138,31 @@
     height: calc(70vh);
     width: calc(70vh);
 }
+.move-row{
+    display:flex;
+    flex-direction:row;
+}
+.button:hover{
+    filter:brightness(1.2);
+}
+.move-button:hover {
+    filter: brightness(1.5);
+}
+.move-button {
+    margin: 2px;
+    justify-content: center;
+    display: flex;
+    width: calc(50%);
+    border-radius: 8px;
+    padding: 20px;
+    background: #ffffffcc;
+    border: solid 3px white;
+    text-align: center;
+    text-shadow: -1px 0 lightblue, 0 1px lightblue, 1px 0 lightblue, 0 -1px lightgreen;
+    font-weight: 600;
+    font-size: large;
+}
+
 .defendant-options {
     position: absolute;
     bottom: 200px;

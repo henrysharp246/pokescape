@@ -17,6 +17,7 @@ namespace PokescapeServer
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\EmraluxOpponent.png";
             this.ScapeMonsterName = "Emralux";
             this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
         }
     }
 
@@ -30,6 +31,7 @@ namespace PokescapeServer
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\FuzzyOpponent.png";
             this.ScapeMonsterName = "Fuzzy";
             this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
         }
     }
 
@@ -43,6 +45,7 @@ namespace PokescapeServer
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\GolemOpponent.png";
             this.ScapeMonsterName = "Golem";
             this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() { new RockSmash() };
         }
     }
     public class Inferna : ScapeMonster
@@ -55,6 +58,7 @@ namespace PokescapeServer
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaOpponent.png";
             this.ScapeMonsterName = "Fuzzy";
             this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
         }
     }
 
@@ -67,6 +71,7 @@ namespace PokescapeServer
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\KahunaTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\KahunaOpponent.png";
             this.ScapeMonsterName = "Kahuna";
+            this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
             this.Health = this.MaximumHealth;
         }
     }
@@ -81,6 +86,7 @@ namespace PokescapeServer
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\MonkeOpponent.png";
             this.ScapeMonsterName = "Monke";
             this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
         }
     }
 
@@ -94,10 +100,56 @@ namespace PokescapeServer
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\ObsaditeOpponent.png";
             this.ScapeMonsterName = "Obsadite";
             this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() {new QuickAttack()};
         }
     }
 
+    public class ScapeMonsterMove
+    {
+        public string MoveDescription { get; set; }
+        public int MoveDamage { get; set; }
+        public string MoveName { get; set; }
 
+        public virtual ScapeMonster PerformMove(ScapeMonster opponent)
+        {
+            return null;
+        }
+    }
+    public class QuickAttack : ScapeMonsterMove
+    {
+        public QuickAttack()
+        {
+            this.MoveDamage = 10;
+            this.MoveName = "Quick Attack";
+            this.MoveDescription = "Standard attack";
+        }
+        public virtual ScapeMonster PerformMove(ScapeMonster opponent)
+        {
+
+            var newOpponentAfterDamage = opponent;
+            newOpponentAfterDamage.Health -= MoveDamage;
+            return newOpponentAfterDamage;
+         
+        }
+    }
+
+    public class RockSmash : ScapeMonsterMove
+    {
+        public RockSmash()
+        {
+            this.MoveDamage = 10;
+            this.MoveName = "Rock Smash";
+            this.MoveDescription = "Smash";
+        }
+        public virtual ScapeMonster PerformMove(ScapeMonster opponent)
+        {
+
+            var newOpponentAfterDamage = opponent;
+            newOpponentAfterDamage.Health -= MoveDamage;
+            return newOpponentAfterDamage;
+
+        }
+    }
     public class ScapeMonster
     {
         public static ScapeMonster GetRandomScapeMonster()
@@ -126,14 +178,9 @@ namespace PokescapeServer
             }
         }
         public ScapeMonster() {
-          
+            ScapeMonsterID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
-        public class ScapeMonsterMove
-        {
-            public int MoveDamage { get; set; }
-            public string MoveName { get; set; }
-            public Type MoveType { get; set; }
-        }
+      
 
         public string TamedImage { get; set; }
         public string OpponentImage { get; set; }

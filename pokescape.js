@@ -20,7 +20,7 @@ function populateMonsterCards(monsterList) {
         var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
 
         var card = `
-            <div class="pokescape-monster-card card-${monster.ScapeMonsterName}">
+            <div onclick="selectScapemonster(${monster.ScapeMonsterID})" class="pokescape-monster-card card-${monster.ScapeMonsterName}">
                 <div class="pokescape-monster-name">
                     ${monster.ScapeMonsterName}
                 </div>
@@ -84,6 +84,12 @@ connection.onmessage = (event) => {
         case 'moveResponse':
             handleMoveResponse(message.Data);
             break;
+        case 'newBattle':
+            handleNewBattle(message.Data);
+            break;
+        case 'battle':
+            handleBattle(message.Data);
+            break;
         default:
             console.warn('Unhandled message type:', message.MessageType);
     }
@@ -96,6 +102,94 @@ connection.onerror = (error) => {
 connection.onclose = () => {
     console.log('WebSocket connection closed');
 };
+function selectScapemonster(scapeMonsterId) {
+    var messageType = "";
+    const messageToSend = {
+        "MessageType": "MONSTER_SELECTED_FOR_BATTLE",
+        "SocketId": socketId,
+        "Data": scapeMonsterId
+    };
+    console.log('Sending message:', messageToSend);
+    connection.send(JSON.stringify(messageToSend));
+}
+function handleBattle(battle) {
+    var convertedBattle = JSON.parse(battle);
+    console.log(convertedBattle);
+    var monster = convertedBattle.UserScapeMonster;
+    var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
+    var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
+    var opponentString = `
+
+    <div class="pokescape-monster-name">
+       ${monster.ScapeMonsterName}
+    </div>
+    <div class="type-badge" style="background-color: #603082;">
+        Mystical
+    </div>
+    <div class="pokescape-monster-hp-container">
+        <div class="row cont-1-row">
+            <div class="card-label">HP:</div>
+            <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
+        </div>
+        <div class="pokescape-monster-hp-bar">
+          <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
+        </div>
+    </div>
+    <div class="pokescape-monster-attack-container">
+        <div class="row cont-1-row">
+            <div class="card-label">Attack:</div>
+            <div class="card-label-2">${monster.BaseDamage}/1000</div>
+        </div>
+        <div class="pokescape-monster-attack-bar">
+          <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
+        </div>
+  
+</div>
+`; $('#defendant-info').html(opponentString);
+    $('#defendant-image').attr("src", monster.TamedImage);
+    $('.defendant-options').hide();
+    $('.defendant-row').show();
+
+}
+function handleNewBattle(battle) {
+    var convertedBattle = JSON.parse(battle);
+    console.log(convertedBattle);
+    var monster = convertedBattle.OpponentScapeMonster;
+    var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
+    var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
+    var opponentString = `
+
+    <div class="pokescape-monster-name">
+       ${monster.ScapeMonsterName}
+    </div>
+    <div class="type-badge" style="background-color: #603082;">
+        Mystical
+    </div>
+    <div class="pokescape-monster-hp-container">
+        <div class="row cont-1-row">
+            <div class="card-label">HP:</div>
+            <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
+        </div>
+        <div class="pokescape-monster-hp-bar">
+          <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
+        </div>
+    </div>
+    <div class="pokescape-monster-attack-container">
+        <div class="row cont-1-row">
+            <div class="card-label">Attack:</div>
+            <div class="card-label-2">${monster.BaseDamage}/1000</div>
+        </div>
+        <div class="pokescape-monster-attack-bar">
+          <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
+        </div>
+  
+</div>
+`; $('#opponent-info').html(opponentString);
+    $('#opponent-image').attr("src", monster.OpponentImage);
+    $('#battle-screen-2').show();
+
+
+}
 function handleUser(eventMessage) {
     var user = JSON.parse(eventMessage);
     console.log("Eventmessage:", user.UserImage);

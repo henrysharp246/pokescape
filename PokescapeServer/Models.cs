@@ -9,6 +9,13 @@ public class Message
     public string Data { get; set; }
     public string SocketId { get; set; }
 }
+public class Battle
+{
+    public ScapeMonster UserScapeMonster { get; set; } 
+    public ScapeMonster OpponentScapeMonster { get; set; }
+
+}
+
 
 public abstract class Item
 {
@@ -171,10 +178,13 @@ public class User
 {
     public List<Item> Inventory { get; set; } = new List<Item>();
     public List<ScapeMonster> ScapeMonsters = new List<ScapeMonster>();
+   
 
     public User(){
         ScapeMonsters.Add(new Fuzzy());
     }
+    public bool InBattle { get; set; }= false;
+public Battle CurrentBattle { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }
     public string Password { get; set; }
