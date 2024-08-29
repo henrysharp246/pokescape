@@ -88,26 +88,8 @@
                             <div class="" id="grid"></div><img id="character-one" class="character-one" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\Characterfacingdownblock.png" />
                         </div>
 
-                        <div class="button-controls">
-                            <a onclick="toggleInventory()" class="button inventoryButton">Inventory</a>
-                            <div id="inventoryBox" class="inventory-box">
-                                <h4 class="inventory-title">ScapeMonsters:</h4>
-                             
-                            </div>
-                            <a class="button saveButton">Save game</a>
-                            <a class="button loadButton">Load game</a>
-                        </div>
-                        <div class="move-controls">
-                            <h4>Moves/Attacks:</h4>
-                            <div class="move-row">
-                                <a class="move-button">Quick Attack</a>
-                                <a class="move-button">Rock Smash</a>
-                            </div>
-                            <div class="move-row">
-
-                                <a class="move-button">Destroyer</a>
-                                <a class="move-button">Smash</a>
-                            </div>
+                       
+                        <div id="move-controls" class="move-controls" style="display:none;">
                            
                         </div>
 
@@ -116,10 +98,22 @@
                     <div class="col content-right">
                         <div class="row logo-row">
                             <img class="logo" src="Image/pokescapelogo.png">
+                            <div class="button-controls">
+                                <a onclick="showScapeMonsters()" class="button selected scapeMonstersButton">Scapemonsters</a>
+                                <a onclick="showInventory()" class="button inventoryButton">Inventory</a>
+
+                                <a class="button saveButton">Save game</a>
+                                <a class="button loadButton">Load game</a>
+                            </div>
+
                         </div>
+                        <div class="line-row"></div>
                         <div class="row">
-                            <h4>My Scapemonsters</h4>
+
                             <div id="scapemonsterInventory">
+
+                            </div>
+                            <div id="itemInventory" style="display:none;">
 
                             </div>
                         </div>

@@ -19,26 +19,60 @@ public class Battle
 
 public abstract class Item
 {
+    public Item(){
+        this.ItemId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+    }
+    public static Item GetRandomItem()
+    {
+        Random random = new Random();
+        int num = random.Next(1, 120);
+        switch (num)
+        {
+            case >118:
+                return new BlueBerryItem(); 
+                break;
+            default:
+                return new BlueBerryItem();
+
+
+        }
+
+    }
+    public string Name { get; set; }
     public string ItemId { get; set; }
     public bool IsPortable { get; set; }
+
+    public string Image { get; set; }   
     public bool IsInventory { get; set; }
 
-    public virtual void UseItem() { }
+    public virtual ScapeMonster UseItem(ScapeMonster monster) { return null; }
 }
 
-public class ScrollItem : Item
+public class BlueBerryItem : Item
 {
-    public string Text { get; set; }
-
-    public override void UseItem()
+    public BlueBerryItem() {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Bluetwistblock.png";
+        Name = "Blueberry";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
     {
-        Console.WriteLine(Text);
+        var newMonster = monster;
+        newMonster.Health += 100;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
     }
 }
 
 
 public class Block
 {
+    public string DefaultImage { get; set; }
+    public bool ContainsItem { get; set; } = false;
+
+    public Item item { get; set; }
     public bool HasUser { get; set; } = false;  
     public string BlockId { get; set; }
     public string Name { get; set; }
@@ -52,6 +86,7 @@ public class Block
 
 public class FloorBlock : Block
 {
+   
     public FloorBlock()
     {
         CanPass = true;
@@ -60,22 +95,28 @@ public class FloorBlock : Block
 
 public class StoneFloorBlock : FloorBlock
 {
-    public bool ContainsItem { get; set; }
+    
 
     public StoneFloorBlock()
     {
+        DefaultImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
         Name = "stonefloorblock";
         CanPass = true;
         Random random = new Random();
-        int num = random.Next(1,5);
+        int num = random.Next(1,150);
         switch (num) 
         {
 
-            case 1: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
+            case <15: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
                 break;
-           /* case 2: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
-                break;*/
-            default: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
+            case < 149:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
+                break;
+            default:
+                var item = Item.GetRandomItem();
+               this.item = item;
+                this.Image = item.Image;
+                this.ContainsItem = true;
                 break;
 
 
@@ -184,6 +225,9 @@ public class User
         ScapeMonsters.Add(new Fuzzy());
     }
     public bool InBattle { get; set; }= false;
+    public bool IsTurn { get; set; }= false;
+
+    public string ItemSelectedId { get; set; }  
 public Battle CurrentBattle { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }

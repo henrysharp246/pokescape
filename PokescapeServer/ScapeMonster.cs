@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace PokescapeServer
 {
@@ -106,10 +107,20 @@ namespace PokescapeServer
 
     public class ScapeMonsterMove
     {
+        
+        public ScapeMonsterMove()
+        {
+            Id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+        }
+        public string Id { get; set; }
         public string MoveDescription { get; set; }
         public int MoveDamage { get; set; }
         public string MoveName { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="opponent"></param>
+        /// <returns> Opponent</returns>
         public virtual ScapeMonster PerformMove(ScapeMonster opponent)
         {
             return null;
@@ -119,11 +130,11 @@ namespace PokescapeServer
     {
         public QuickAttack()
         {
-            this.MoveDamage = 10;
+            this.MoveDamage = 100;
             this.MoveName = "Quick Attack";
             this.MoveDescription = "Standard attack";
         }
-        public virtual ScapeMonster PerformMove(ScapeMonster opponent)
+        public override ScapeMonster PerformMove(ScapeMonster opponent)
         {
 
             var newOpponentAfterDamage = opponent;
@@ -141,7 +152,7 @@ namespace PokescapeServer
             this.MoveName = "Rock Smash";
             this.MoveDescription = "Smash";
         }
-        public virtual ScapeMonster PerformMove(ScapeMonster opponent)
+        public override ScapeMonster PerformMove(ScapeMonster opponent)
         {
 
             var newOpponentAfterDamage = opponent;
@@ -177,6 +188,20 @@ namespace PokescapeServer
                 default: return new Inferna();
             }
         }
+
+        public ScapeMonsterMove GetMove(string id)
+        {
+            return this.Moves.First(move => move.Id == id);
+        }
+
+        public ScapeMonsterMove GetRandomMove()
+        {
+            Random rnd = new Random();
+            int num = rnd.Next(0, Moves.Count-1);
+            return this.Moves[num];
+           
+        }
+
         public ScapeMonster() {
             ScapeMonsterID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }

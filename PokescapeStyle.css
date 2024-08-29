@@ -22,7 +22,7 @@
     display:flex;
     justify-content:center;
 }
-.pokescape-monster-card {
+.pokescape-monster-card, .pokescape-item-card {
     width: 150px;
     margin-left: 10px;
     margin-bottom:10px;
@@ -91,7 +91,7 @@
     margin-bottom: 2px;
     text-align: left;
 }
-.pokescape-monster-name {
+.pokescape-monster-name, .pokescape-item-name {
     font-weight: 600;
     font-size: 18px;
 }
@@ -165,19 +165,20 @@
 
 .defendant-options {
     position: absolute;
-    bottom: 200px;
-    font-size: 30px;
+    bottom: 50%;
+    font-size: 24px;
     color: white;
-    right: -350px;
+  
     padding: 10px;
-    padding-right: -200px;
+  
+    width:fit-content;
     text-shadow: 1px black 1px black 1px black 1px black;
     background-color: cadetblue;
     border-radius: 13px;
     font-weight: 600;
     border: solid;
     border-color: darkslateblue;
-    left: 50%;
+    left: 240px;
     transform: translateX(-50%);
     opacity: 0;
     animation: fadeIn 4s forwards;
@@ -303,7 +304,7 @@
 .logo-row {
     display: flex;
     text-align: center;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .logo {
@@ -312,6 +313,9 @@
 }
 
 .button {
+    margin-left:5px;
+    white-space:nowrap;
+    padding:10px 10px;
     position: relative;
     font-weight: 700;
     z-index: 2;
@@ -328,6 +332,15 @@
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
     margin-top: 10px;
 }
+.line-row {
+    width: 100%;
+    height: 1px;
+    background-color: #ffffff6b;
+    margin-bottom: 50px;
+}
+.content-right {
+    border: solid white 1px;
+}
 
 .inventory-box {
     height: 400px;
@@ -339,12 +352,17 @@
     margin-top: -15px;
     border-radius: 15px;
 }
+.button.selected{
+    background-color:white !important;
+}
 .button-controls .button{
     width:30%; 
     max-width:30%;
+    height:fit-content;
 }
 .button-controls{
     display:flex;
+    margin-top:30px;
     justify-content:space-between;
 }
 .inventory-title {

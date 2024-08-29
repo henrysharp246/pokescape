@@ -6,12 +6,54 @@ var blockPercentageWidth = 100 / visibleGridSize;
 
 
 
-function toggleInventory() {
-    $("#inventoryBox").toggle();
+function showInventory() {
+    $(".button").removeClass('selected');
+    $(".inventoryButton").addClass('selected');
+    $("#itemInventory").show();
+    $("#scapemonsterInventory").hide();
+}
+function showScapeMonsters() {
+    $(".button").removeClass('selected');
+    $(".scapeMonstersButton").addClass('selected');
+    $("#scapemonsterInventory").show();
+    $("#itemInventory").hide();
 }
 
 function closeWelcomeMessage() {
     $("#welcomeMessage").hide();
+}
+function selectItem(itemId) {
+    showScapeMonsters();
+    const messageToSend = {
+        "MessageType": "ITEM_SELECTED",
+        "Data": itemId,
+        "SocketId": socketId
+    };
+
+    connection.send(JSON.stringify(messageToSend));
+}
+
+function populateInventory(inventoryList) {
+    var cards = '';
+    inventoryList.forEach(function (item) {
+     
+        var card = `
+            <div onclick="selectItem(${item.ItemId})" class="pokescape-item-card card-${item.Name}">
+                <div class="pokescape-item-name">
+                    ${item.Name}
+                </div>
+                <div class="item-count" style="">
+                   
+                </div>
+                <img class="pokescape-item-img" src="${item.Image}" />
+             
+            </div>
+        `;
+        cards += card;
+    });
+
+    // Inject the cards into the scapemonsterInventory container
+    $('#itemInventory').html(cards);
 }
 function populateMonsterCards(monsterList) {
     var cards = '';
@@ -74,6 +116,12 @@ connection.onmessage = (event) => {
         case 'grid':
             handleGrid(message.Data);
             break;
+        case 'battleDialog':
+            showBattleDialog(message.Data);
+            break;
+        case 'hideBattle':
+            hideBattle();
+            break;
         case 'user':
             handleUser(message.Data);
             break;
@@ -94,6 +142,15 @@ connection.onmessage = (event) => {
             console.warn('Unhandled message type:', message.MessageType);
     }
 };
+function hideBattle() {
+    $('#battle-screen-2').hide();
+    $('#move-controls').hide();
+}
+function showBattleDialog(dialogToShow) {
+    $('.defendant-options').hide();
+    $('.defendant-options').html(dialogToShow);
+    $('.defendant-options').show();
+}
 
 connection.onerror = (error) => {
     console.error('WebSocket error:', error);
@@ -112,49 +169,8 @@ function selectScapemonster(scapeMonsterId) {
     console.log('Sending message:', messageToSend);
     connection.send(JSON.stringify(messageToSend));
 }
-function handleBattle(battle) {
-    var convertedBattle = JSON.parse(battle);
-    console.log(convertedBattle);
-    var monster = convertedBattle.UserScapeMonster;
-    var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
-    var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
-    var opponentString = `
 
-    <div class="pokescape-monster-name">
-       ${monster.ScapeMonsterName}
-    </div>
-    <div class="type-badge" style="background-color: #603082;">
-        Mystical
-    </div>
-    <div class="pokescape-monster-hp-container">
-        <div class="row cont-1-row">
-            <div class="card-label">HP:</div>
-            <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
-        </div>
-        <div class="pokescape-monster-hp-bar">
-          <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
-        </div>
-    </div>
-    <div class="pokescape-monster-attack-container">
-        <div class="row cont-1-row">
-            <div class="card-label">Attack:</div>
-            <div class="card-label-2">${monster.BaseDamage}/1000</div>
-        </div>
-        <div class="pokescape-monster-attack-bar">
-          <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
-        </div>
-  
-</div>
-`; $('#defendant-info').html(opponentString);
-    $('#defendant-image').attr("src", monster.TamedImage);
-    $('.defendant-options').hide();
-    $('.defendant-row').show();
-
-}
-function handleNewBattle(battle) {
-    var convertedBattle = JSON.parse(battle);
-    console.log(convertedBattle);
-    var monster = convertedBattle.OpponentScapeMonster;
+function updateOpponent(monster) {
     var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
     var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
     var opponentString = `
@@ -185,6 +201,98 @@ function handleNewBattle(battle) {
   
 </div>
 `; $('#opponent-info').html(opponentString);
+}
+function updateDefendant(monster) {
+    var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
+    var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
+    var opponentString = `
+
+    <div class="pokescape-monster-name">
+       ${monster.ScapeMonsterName}
+    </div>
+    <div class="type-badge" style="background-color: #603082;">
+        Mystical
+    </div>
+    <div class="pokescape-monster-hp-container">
+        <div class="row cont-1-row">
+            <div class="card-label">HP:</div>
+            <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
+        </div>
+        <div class="pokescape-monster-hp-bar">
+          <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
+        </div>
+    </div>
+    <div class="pokescape-monster-attack-container">
+        <div class="row cont-1-row">
+            <div class="card-label">Attack:</div>
+            <div class="card-label-2">${monster.BaseDamage}/1000</div>
+        </div>
+        <div class="pokescape-monster-attack-bar">
+          <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
+        </div>
+  
+</div>
+`; $('#defendant-info').html(opponentString);
+}
+function handleBattle(battle) {
+    var convertedBattle = JSON.parse(battle);
+    console.log(convertedBattle);
+    var monster = convertedBattle.UserScapeMonster;
+    updateDefendant(monster);
+    $('#defendant-image').attr("src", monster.TamedImage);
+    updateOpponent(convertedBattle.OpponentScapeMonster);
+    $('.defendant-row').show();
+    addMoves(monster.Moves);
+    $('.move-controls').show();
+
+
+
+}
+
+function addMoves(moves) {
+    let htmlString = `<h4>Moves/Attacks:</h4>`;
+
+    // Check if moves array is empty
+    if (moves.length === 0) {
+        htmlString += `<p>No moves available.</p>`;
+    } else {
+        // Generate rows of moves dynamically
+        for (let i = 0; i < moves.length; i += 2) {
+            htmlString += `<div class="move-row">`;
+
+            // First move button, always exists at index i
+            htmlString += `<a onclick="attack(${moves[i]?.Id})" class="move-button">${moves[i]?.MoveName || 'No Move'}</a>`;
+
+            // Second move button, exists at index i + 1 or is disabled
+            if (moves[i + 1]) {
+                htmlString += `<a class="move-button">${moves[i + 1].MoveName}</a>`;
+            } else {
+                htmlString += `<a class="move-button" disabled>No Move</a>`;
+            }
+
+            htmlString += `</div>`;
+        }
+    }
+
+    $('#move-controls').html(htmlString);
+
+  
+}
+function attack(moveId) {
+    const messageToSend = {
+        "MessageType": "ATTACK_MOVE",
+        "SocketId": socketId,
+        "Data": moveId
+    };
+    console.log('Sending message:', messageToSend);
+    connection.send(JSON.stringify(messageToSend));
+}
+function handleNewBattle(battle) {
+    var convertedBattle = JSON.parse(battle);
+    console.log(convertedBattle);
+    var monster = convertedBattle.OpponentScapeMonster;
+
+    updateOpponent(monster);
     $('#opponent-image').attr("src", monster.OpponentImage);
     $('#battle-screen-2').show();
 
@@ -198,6 +306,7 @@ function handleUser(eventMessage) {
     console.log(user.UserCoordinates);
     handleUserGridPosition(user.UserCoordinates);
     populateMonsterCards(user.ScapeMonsters);
+    populateInventory(user.Inventory);
 }
 
 function handleUserGridPosition(userCoordinates) {
@@ -345,7 +454,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-
+ 
 function handleMoveResponse(data) {
     console.log('Move response:', data);
 }

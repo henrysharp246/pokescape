@@ -23,7 +23,7 @@ public class Game
         Hard,
         Easy
     }
-    public int gridSize = GameConfig.VisibleGridWidth* GameConfig.VisibleGridWidth;
+    public int gridSize = GameConfig.VisibleGridWidth * GameConfig.VisibleGridWidth;
     public int gridWidth = GameConfig.VisibleGridWidth;
     private string GameId;
     private string gameState;
@@ -41,11 +41,11 @@ public class Game
     private Dictionary<(int x, int y), Block> currentGrid;
     private List<Dictionary<(int x, int y), Block>> grids;
     private WebSocket currentSocket;
-    private int currentGridCount = 1 ;
+    private int currentGridCount = 1;
 
 
     //WHEN THIS RUNS A NEW GAME HAS BEEN CREATED
-    public Game(WebSocket webSocket) 
+    public Game(WebSocket webSocket)
 
     {
         user = new User();
@@ -63,10 +63,10 @@ public class Game
         grids = new();
 
         int numberOfRooms = rand.Next(GameConfig.MinRooms, GameConfig.MaxRooms);
-        for(int i = 0; i < numberOfRooms; i++)
+        for (int i = 0; i < numberOfRooms; i++)
         {
             var newGrid = CreateGrid();
-           
+
             grids.Add(newGrid);
         }
         currentGrid = grids.First();
@@ -74,9 +74,9 @@ public class Game
 
 
 
-        await SendMessage("grid",currentGrid);
+        await SendMessage("grid", currentGrid);
         await SendMessage("user", user);
-    
+
 
 
 
@@ -85,7 +85,7 @@ public class Game
     //THE BELOW 3 METHODS ARE THE SAME, JUST ACCEPT DIFFERENT TYPES TO MAKE PROGRAMMING EASIER
     public async Task SendMessage(string messageType, object messageData)
     {
-        
+
         await SendMessage(messageType, JsonConvert.SerializeObject(messageData));
 
     }
@@ -95,9 +95,9 @@ public class Game
         message.MessageType = messageType;
         message.Data = messageData;
         await SendMessage(message);
-        
+
     }
-    public async Task SendMessage(Message message) 
+    public async Task SendMessage(Message message)
     {
         Console.WriteLine("SENDING TO WEB PAGE: " + JsonConvert.SerializeObject(message));
         await currentSocket.SendMessage(message);
@@ -112,11 +112,11 @@ public class Game
     {
         Console.WriteLine("RECEIVED FROM USER: " + JsonConvert.SerializeObject(message));
 
-    
+
         switch (message.MessageType.ToUpper())
         {
             case "MOVE_UP": //here based on the message type, we add messages to the messagesToSend list based on how we respond
-                if (user.InBattle == false){
+                if (user.InBattle == false) {
                     await MoveUp();
                 }
                 break;
@@ -145,37 +145,133 @@ public class Game
                 if (user.InBattle)
                 {
                     await MonsterSelectedForBattle(message.Data);
+                } else if (user.InBattle == false && user.ItemSelectedId != null)
+                {
+                    await ApplyItemToMonster(user.ItemSelectedId, message.Data);
                 }
                 break;
             case "ATTACK_MOVE":
+                if (user.InBattle && user.IsTurn)
+                {
+                    await UserAttack(message.Data);
+                }
+                break;
+            case "ITEM_SELECTED":
+                {
+                    await ItemSelected(message.Data);
+                }
                 break;
 
+
         }
+
+    }
+
+    public async Task ItemSelected(string itemId)
+    {
+        user.ItemSelectedId = itemId;
+    }
+    public async Task ApplyItemToMonster(string itemId, string monsterId)
+    {
+        Item item = user.Inventory.First(x => x.ItemId == itemId);
+        ScapeMonster scapemonster = user.ScapeMonsters.First(y => y.ScapeMonsterID == monsterId);
+        scapemonster = item.UseItem(scapemonster);
+        user.ScapeMonsters.RemoveAll(y => y.ScapeMonsterID == monsterId);
+        user.ScapeMonsters.Add(scapemonster);
+        user.Inventory.Remove(item);
+        await SendMessage("user", user);
+
+    }
+    public async Task BattleWon(Battle battle)
+    {
+        await SendMessage("battleDialog", $"You defeated {battle.OpponentScapeMonster.ScapeMonsterName}! They will be added to your collection.");
+        Thread.Sleep(2500);
+        user.ScapeMonsters.Add(battle.OpponentScapeMonster);
+        user.CurrentBattle = null;
+        user.InBattle = false;
+        await SendMessage("user", user);
+        await SendMessage("hideBattle", $"");
+    }
+    public async Task BattleLost(Battle battle)
+    {
+        await SendMessage("battleDialog", $"You lost vs {battle.OpponentScapeMonster.ScapeMonsterName}!");
+        Thread.Sleep(2500);
+        user.CurrentBattle = null;
+        user.InBattle = false;
+        await SendMessage("user", user);
+        await SendMessage("hideBattle", $"");
+    }
+    public async Task UserAttack(string moveId)
+    {
+        try
+        {
+            ScapeMonsterMove move = user.CurrentBattle.UserScapeMonster.GetMove(moveId);
+            var currentOponent = user.CurrentBattle.OpponentScapeMonster;
+            ScapeMonster opponent = move.PerformMove(currentOponent);
+
+            if (opponent.Health <= 0)
+            { opponent.Health = 0; }
+            user.CurrentBattle.OpponentScapeMonster = opponent;
+
+
+            await SendMessage("battleDialog", $"{user.CurrentBattle.UserScapeMonster.ScapeMonsterName} used move {move.MoveName}, and performed {move.MoveDamage} damage");
+            await SendMessage("battle", user.CurrentBattle);
+            Thread.Sleep(1500);
+
+            if (opponent.Health <= 0)
+            {
+                await BattleWon(user.CurrentBattle);
+                return;
+            }
+
+            ScapeMonster userMonster = user.CurrentBattle.UserScapeMonster;
+            var opponentMove = opponent.GetRandomMove();
+            ScapeMonster newUserMonster = opponentMove.PerformMove(userMonster);
+            if (newUserMonster.Health <= 0)
+            { newUserMonster.Health = 0; }
+            user.CurrentBattle.UserScapeMonster = newUserMonster;
+
+            await SendMessage("battleDialog", $"Opponent {user.CurrentBattle.OpponentScapeMonster.ScapeMonsterName} used move {opponentMove.MoveName}, and performed {opponentMove.MoveDamage} damage");
+            await SendMessage("battle", user.CurrentBattle);
+            if (newUserMonster.Health <= 0)
+            {
+                await BattleLost(user.CurrentBattle);
+                return;
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.ToString());
+
+        }
+
 
     }
     public async Task MonsterSelectedForBattle(string monsterId)
     {
         user.CurrentBattle.UserScapeMonster = user.ScapeMonsters.First(monster => monster.ScapeMonsterID == monsterId);
+        await SendMessage("battleDialog", user.CurrentBattle.UserScapeMonster.ScapeMonsterName + " chosen!");
         await SendMessage("battle", user.CurrentBattle);
     }
 
     public async Task ScapeMonsterEncounter()
     {
+        return;
         Random random = new Random();
         double num = random.NextDouble();
-        if(num < GameConfig.ProbabilityOfScapemonster)
+        if (num < GameConfig.ProbabilityOfScapemonster)
         {
-            Battle newBattle= new Battle();
+            Battle newBattle = new Battle();
             newBattle.OpponentScapeMonster = ScapeMonster.GetRandomScapeMonster();
             user.CurrentBattle = newBattle;
             user.InBattle = true;
-           
+            await SendMessage("battleDialog", "Choose Your Scapemonster...");
             await SendMessage("newBattle", newBattle);
+            user.IsTurn = true;
             // user.ScapeMonsters.Add(ScapeMonster.GetRandomScapeMonster());
         }
         return;
     }
-    
+
     public void SetUserCoordinatesBasedOnGrid(Dictionary<(int x, int y), Block> grid, Type entranceType = null)
     {
         for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
@@ -211,13 +307,268 @@ public class Game
 
     public Dictionary<(int x, int y), Block> CreateGrid()
     {
-        var room = GenerateRoom();
-        var finalGrid = RoomToGrid(room);
+        try
+        {
+            var room = GenerateRoom();
+            var finalGrid = RoomToGrid(room);
 
-      
-        return finalGrid;
+            return finalGrid;
 
+
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+        }
+
+        return null;
     }
+
+    public Dictionary<(int x, int y), Block> GenerateRoomCornerStrat()
+    {
+        try
+        {
+            Dictionary<(int x, int y), Block> room = GenerateBasicRoom();
+
+
+            int roomWidth = room.Keys.Max(k => k.x) + 1;
+            int roomHeight = room.Keys.Max(k => k.y) + 1;
+            Random rnd = new Random();
+
+            int minDecomposition = 3;
+
+            //bottom left corner processing
+            int randomX = rnd.Next(minDecomposition, roomWidth / 2 - 1);
+            int randomY = rnd.Next(minDecomposition, roomHeight / 2 - 1);
+            int randomMax = Math.Max(randomX, randomY);
+
+            for (int x = 0; x < randomX; x++)
+            {
+                for (int y = 0; y < randomY; y++)
+                {
+                    room[(x, y)] = new BlankBlock();
+                }
+            }
+
+            for (int x = 0; x < randomX; x++)
+            {
+                for (int y = 0; y < randomY; y++)
+                {
+                    if (room[(x + 1, y)] is FloorBlock || room[(x, y + 1)] is FloorBlock)
+                    {
+                        room[(x, y)] = new StoneWallBlock();
+                    }
+                }
+            }
+
+            //bottom right corner processing
+            randomX = rnd.Next(minDecomposition, roomWidth / 2 - 1);
+            randomY = rnd.Next(minDecomposition, roomHeight / 2 - 1);
+            randomMax = Math.Max(randomX, randomY);
+
+            for (int x = roomWidth - randomX; x < roomWidth - 1; x++)
+            {
+                for (int y = 0; y < randomY; y++)
+                {
+                    room[(x, y)] = new BlankBlock();
+                }
+            }
+
+            for (int x = roomWidth - randomX; x < roomWidth-1; x++)
+            {
+                for (int y = 0; y < randomY; y++)
+                {
+                    if (room[(x - 1, y)] is FloorBlock || room[(x, y + 1)] is FloorBlock)
+                    {
+                        room[(x, y)] = new StoneWallBlock();
+                    }
+                }
+            }
+
+            //top right corner processing
+            randomX = rnd.Next(minDecomposition, roomWidth / 2 - 1);
+            randomY = rnd.Next(minDecomposition, roomHeight / 2 - 1);
+            randomMax = Math.Max(randomX, randomY);
+
+            for (int x = roomWidth - randomX; x < roomWidth - 1; x++)
+            {
+                for (int y = roomHeight - 1; y > roomHeight-1 - randomY; y--)
+                {
+                    room[(x, y)] = new BlankBlock();
+                }
+            }
+
+
+
+            for (int x = roomWidth - randomX; x < roomWidth - 1; x++)
+            {
+                for (int y = roomHeight - 1; y > roomHeight-1 - randomY; y--)
+                {
+                    if (room[(x - 1, y)] is FloorBlock || room[(x, y - 1)] is FloorBlock)
+                    {
+                        room[(x, y)] = new StoneWallBlock();
+                    }
+                }
+            }
+
+            //top left corner processing
+            randomX = rnd.Next(minDecomposition, roomWidth / 2 - 1);
+            randomY = rnd.Next(minDecomposition, roomHeight / 2 - 1);
+            randomMax = Math.Max(randomX, randomY);
+
+            for (int x = 0; x < randomX; x++)
+            {
+                for (int y = roomHeight - randomY; y < roomHeight - 1; y++)
+                {
+                    room[(x, y)] = new BlankBlock();
+                }
+            }
+            
+
+
+            for (int x = 0; x < randomX; x++)
+            {
+                for (int y = roomHeight - randomY; y < roomHeight - 1; y++)
+                {
+                    if (room[(x + 1, y)] is FloorBlock || room[(x, y - 1)] is FloorBlock)
+                    {
+                        room[(x, y)] = new StoneWallBlock();
+                    }
+                }
+            }
+
+
+            //FINAL TOUCH
+            for(int x=0; x<roomWidth; x++)
+            {
+                for(int y=0; y<roomHeight; y++)
+                {
+                    try
+                    {
+                        Block blockToLeft = room.TryGetValue((x - 1, y), out var leftBlock) ? leftBlock : null;
+                        Block blockToRight = room.TryGetValue((x + 1, y), out var rightBlock) ? rightBlock : null;
+                        Block blockUp = room.TryGetValue((x, y + 1), out var upBlock) ? upBlock : null;
+                        Block blockDown = room.TryGetValue((x, y - 1), out var downBlock) ? downBlock : null;
+
+                        if ((blockUp == null || blockUp is BlankBlock) && (blockDown == null || blockDown is BlankBlock))
+                        {
+                            room[(x, y)] = new BlankBlock();
+                        }
+                        if ((blockToLeft == null || blockToLeft is BlankBlock) && (blockToRight == null || blockToRight is BlankBlock))
+                        {
+                            room[(x, y)] = new BlankBlock();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                  
+                }
+            }
+
+            return room;
+
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+        }
+        return null;
+     
+    }
+
+    public Dictionary<(int x, int y), Block> GenerateRoomUsingRandomWalk()
+    {
+        // Generate the basic room first
+        Dictionary<(int x, int y), Block> room = GenerateBasicRoom();
+
+        Random rnd = new Random();
+        int roomWidth = room.Keys.Max(k => k.x) + 1;
+        int roomHeight = room.Keys.Max(k => k.y) + 1;
+
+        // Determine the number of walls to generate
+        int wallCount = rnd.Next(1, 1);
+
+        // Choose a random starting position inside the room
+        int startX = rnd.Next(1, roomWidth - 1);
+        int startY = rnd.Next(1, roomHeight - 1);
+
+        // Define the directions: (dx, dy) tuples for (up, down, left, right)
+        List<(int dx, int dy)> directions = new List<(int dx, int dy)>
+    {
+        (0, -1), // up
+        (0, 1),  // down
+        (-1, 0), // left
+        (1, 0)   // right
+    };
+
+        int currentX = startX;
+        int currentY = startY;
+
+        while (wallCount > 0)
+        {
+            // Randomly select a direction
+            var direction = directions[rnd.Next(directions.Count)];
+            int newX = currentX + direction.dx;
+            int newY = currentY + direction.dy;
+
+            // Ensure the new position is within the room bounds and is not on the outer wall
+            if (newX > 0 && newX < roomWidth - 1 && newY > 0 && newY < roomHeight - 1)
+            {
+                var newPosition = (newX, newY);
+
+                // If the selected position is a floor, convert it to a wall
+                if (room[newPosition] is StoneFloorBlock)
+                {
+                    room[newPosition] = new StoneWallBlock();
+                    wallCount--;
+                }
+
+                // Move to the new position
+                currentX = newX;
+                currentY = newY;
+            }
+        }
+
+        return room;
+    }
+
+    public Dictionary<(int x, int y), Block> GenerateBasicRoom()
+    {
+        Random rnd = new Random();
+        int minRoomWidth = GameConfig.MinRoomWidth;
+        int maxRoomWidth = GameConfig.MaxRoomWidth;
+        int minRoomHeight = GameConfig.MinRoomWidth;
+        int maxRoomHeight = GameConfig.MaxRoomWidth;
+        int roomWidth = rnd.Next(minRoomWidth, maxRoomWidth);
+        int roomHeight = rnd.Next(minRoomHeight, maxRoomHeight);
+        Dictionary<(int x, int y), Block> room = new();
+        for (int x = 0; x < roomWidth; x++)
+        {
+            for (int y = 0; y < roomHeight; y++)
+            {
+                Block blockToAdd;
+                if (x == 0 || y == roomHeight - 1 || x == roomWidth - 1 || y == 0)
+                {
+                    blockToAdd = new StoneWallBlock();
+
+
+
+                }
+                else
+                {
+                    blockToAdd = new StoneFloorBlock();
+                }
+                room.Add((x, y), blockToAdd);
+
+
+            }
+        }
+        return room;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -226,42 +577,18 @@ public class Game
     /// <param name="minRoomHeight"></param>
     /// <param name="maxRoomHeight"></param>
     /// <returns></returns>
-    public Dictionary<(int x, int y), Block> GenerateRoom(int minRoomWidth = GameConfig.MinRoomWidth, int maxRoomWidth = GameConfig.MaxRoomWidth, int minRoomHeight = GameConfig.MinRoomWidth, int maxRoomHeight = GameConfig.MaxRoomWidth)
+    public Dictionary<(int x, int y), Block> GenerateRoom()
     {
         try
         {
-            Random rnd = new Random();
-
-            int roomWidth = rnd.Next(minRoomWidth, maxRoomWidth);
-            int roomHeight = rnd.Next(minRoomHeight, maxRoomHeight);
+          
 
             Random random = new Random();
 
             int numberofdoors = random.Next(GameConfig.MinDoorsInRoom, GameConfig.MaxDoorsInRoom);
 
-            Dictionary<(int x, int y), Block> room = new();
-            for (int x = 0; x < roomWidth; x++)
-            {
-                for (int y = 0; y < roomHeight; y++)
-                {
-                    Block blockToAdd;
-                    if (x == 0 || y == roomHeight - 1 || x == roomWidth - 1 || y == 0)
-                    {
-                        blockToAdd = new StoneWallBlock();
 
-
-
-                    }
-                    else
-                    {
-                        blockToAdd = new StoneFloorBlock();
-                    }
-                    room.Add((x, y), blockToAdd);
-
-
-                }
-            }
-
+            Dictionary<(int x, int y), Block> room = GenerateRoomCornerStrat();
 
 
             var wallBlocksAndCoordinates = room.Where(x => x.Value is StoneWallBlock).ToList();
@@ -352,7 +679,6 @@ public class Game
                 }
             }
 
-            Console.WriteLine($"Room Generated has a width of {roomWidth} and a height of {roomHeight}");
 
             //for each loop and we find all of the entrance we have created.
             //link up ids
@@ -569,10 +895,35 @@ public class Game
         }
         else { return null; }
     }
-
+    public Block GetBlockAbove(int x, int y)
+    {
+        if (y > 0 && currentGrid.ContainsKey((x, y + 1)))
+        {
+            return currentGrid[(x, y - 1)];
+        }
+        else { return null; }
+    }
     public Block GetBlockToTopLeft(int x, int y)
     {
         if (x > 0 && y < gridSize - 1 && currentGrid.ContainsKey((x - 1, y + 1)))
+        {
+            return currentGrid[(x - 1, y + 1)];
+        }
+        else { return null; }
+    }
+
+    public Block GetBlockToRight(int x, int y)
+    {
+        if (x < gridSize - 1 && y < gridSize - 1 && currentGrid.ContainsKey((x + 1, y)))
+        {
+            return currentGrid[(x + 1, y + 1)];
+        }
+        else { return null; }
+    }
+
+    public Block GetBlockToLeft(int x, int y)
+    {
+        if (x > 0 && y < gridSize - 1 && currentGrid.ContainsKey((x - 1, y )))
         {
             return currentGrid[(x - 1, y + 1)];
         }
@@ -693,8 +1044,27 @@ public class Game
     }
 
 
- 
 
+    public async Task<bool> CheckAndApplyItem()
+    {
+        var currentBlock = currentGrid[user.UserCoordinates];
+        if (currentBlock.ContainsItem)
+        {
+            user.Inventory.Add(currentBlock.item);
+            await SendMessage("battleDialog", $"You found an {currentBlock.item.Name}");
+            currentGrid[user.UserCoordinates].item = null;
+            currentGrid[user.UserCoordinates].ContainsItem = false;
+            currentGrid[user.UserCoordinates].Image = currentGrid[user.UserCoordinates].DefaultImage;
+
+            await SendMessage("grid", currentGrid);
+            await SendMessage("user", user);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public async Task MoveUp()
     {
         
@@ -729,7 +1099,11 @@ public class Game
             var fullPath = System.IO.Path.GetFullPath(directoryPath);
             var folderName = new System.IO.DirectoryInfo(fullPath).Name;
             Console.WriteLine(folderName);
-            await ScapeMonsterEncounter();
+            currentBlock = currentGrid[user.UserCoordinates];
+            if (await CheckAndApplyItem() == false)
+            {
+                await ScapeMonsterEncounter();
+            }
 
 
         }
@@ -761,12 +1135,22 @@ public class Game
             var coords = user.UserCoordinates;
             coords.y -= 1;
             user.UserCoordinates = coords;
-            await ScapeMonsterEncounter();
+           
+            currentBlock = currentGrid[user.UserCoordinates];
+            if (await CheckAndApplyItem() == false)
+            {
+                await ScapeMonsterEncounter();
+            }
+           
+
+          
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
         await SendMessage("user", user);
 
     }
+
+ 
     public async Task MoveLeft()
     {
         Block blockabove = currentGrid[(user.UserCoordinates.x-1, user.UserCoordinates.y )];
@@ -792,7 +1176,12 @@ public class Game
             var coords = user.UserCoordinates;
             coords.x -= 1;
             user.UserCoordinates = coords;
-            await ScapeMonsterEncounter();
+            currentBlock = currentGrid[user.UserCoordinates];
+            if (await CheckAndApplyItem() == false)
+            {
+                await ScapeMonsterEncounter();
+            }
+
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingleftblock.png";
         await SendMessage("user", user);
@@ -823,7 +1212,12 @@ public class Game
             var coords = user.UserCoordinates;
             coords.x += 1; user.UserCoordinates = coords;
             user.UserCoordinates = coords;
-            await ScapeMonsterEncounter();
+            currentBlock = currentGrid[user.UserCoordinates];
+            if (await CheckAndApplyItem() == false)
+            {
+                await ScapeMonsterEncounter();
+            }
+
         }
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
         await SendMessage("user", user);

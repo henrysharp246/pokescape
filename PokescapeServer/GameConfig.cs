@@ -15,7 +15,7 @@ namespace PokescapeServer
         public const int MaxRoomSize = VisibleGridSize; 
 
         public const int MaxRoomWidth = VisibleGridWidth;
-        public const int MinRoomWidth = 5;
+        public const int MinRoomWidth = 20;
         
         public const double MinWaterSizePcInRoom = 0;
         public const double MaxWaterSizePcInRoom = 0.4;
@@ -24,13 +24,13 @@ namespace PokescapeServer
         public const int MaxWaterBlocksInRoom = 20;
 
         public const int MinRooms = 5; //IN USE
-        public const int MaxRooms = 100;//IN USE
+        public const int MaxRooms = 10;//IN USE
 
         public const double ProbabilityOfScapemonster = 0.1;
         
 
         public const int MaxItemsInRoom = 2;
-        public const int MinItemsInRoom = 0;
+        public const int MinItemsInRoom = 10;
 
         public const int MaxDoorsInRoom = 2;
         public const int MinDoorsInRoom = 1;
