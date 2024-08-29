@@ -11,20 +11,26 @@ namespace PokescapeServer
         public const int VisibleGridWidth = 50; //length and width of the square map
         public const int VisibleGridSize = VisibleGridWidth*VisibleGridWidth; //length and width of the square map
 
-        public const int MinRoomSize = 11; //min number of blocks in a room 
-        public const int MaxRoomSize = VisibleGridSize; 
+       
+       
 
         public const int MaxRoomWidth = VisibleGridWidth;
-        public const int MinRoomWidth = 20;
-        
-        public const double MinWaterSizePcInRoom = 0;
-        public const double MaxWaterSizePcInRoom = 0.4;
-        
-        public const int MinWaterBlocksInRoom = 0;
-        public const int MaxWaterBlocksInRoom = 20;
+        public const int MinRoomWidth = 30;
 
-        public const int MinRooms = 5; //IN USE
-        public const int MaxRooms = 10;//IN USE
+        public const int MinPondWidth = 2; //min number of blocks in a room 
+        public const int MaxPondWidth = 15;
+
+       
+
+        public const int MinDecompositionOfCorners = 2; //THIS MUST BE LESS THAN HALF OF THE MINIMUM ROOM WIDTH
+
+        public const int MinDecompositionOfPondCorners = 0;
+
+        public const double ProbabilityOfWater =1;
+
+
+        public const int MinRooms = 2; //IN USE
+        public const int MaxRooms = 9;//IN USE
 
         public const double ProbabilityOfScapemonster = 0.1;
         
@@ -32,7 +38,7 @@ namespace PokescapeServer
         public const int MaxItemsInRoom = 2;
         public const int MinItemsInRoom = 10;
 
-        public const int MaxDoorsInRoom = 2;
+        public const int MaxDoorsInRoom = 1;
         public const int MinDoorsInRoom = 1;
 
 

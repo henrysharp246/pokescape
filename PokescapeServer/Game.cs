@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 
 
 
+
 //ALL THE MAIN LOGIC IS DONE INSIDE THE GAME CLASS
 //There is one game per user... i.e. if 10 users are connected there are 10 games
 
@@ -307,36 +308,191 @@ public class Game
 
     public Dictionary<(int x, int y), Block> CreateGrid()
     {
+        while (true) //NEED TO REMOVE
+        {
+
+        
+            try
+            {
+                var room = GenerateRoom();
+                var finalGrid = RoomToGrid(room);
+
+                return finalGrid;
+
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        return null;
+    }
+
+    public Dictionary<(int x, int y), Block> AddWaterToRoom(Dictionary<(int x, int y), Block> room)
+    {
         try
         {
-            var room = GenerateRoom();
-            var finalGrid = RoomToGrid(room);
+            bool isWaterInRoom = new Random().NextDouble() < GameConfig.ProbabilityOfWater;
+            if (!isWaterInRoom)
+            {
+                return room;
+            }
+            int roomWidth = room.Keys.Max(k => k.x) + 1;
+            int roomHeight = room.Keys.Max(k => k.y) + 1;
+            var pond = GenerateBasicPond(roomWidth, roomHeight);
 
-            return finalGrid;
+            bool pondPlaced = false;
+            int x = 0;
+            int y = 0;
+            while (!pondPlaced)
+            {
+                try
+                {
+                    x = new Random().Next(1, roomWidth - 1);
+                    y = new Random().Next(1, roomHeight - 1);
+                    pondPlaced = TryPlacePond(x, y, room, pond);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+               
 
-
+            }
+            return PlacePond(x, y, room, pond);
         }
         catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
         }
-
         return null;
+
     }
 
-    public Dictionary<(int x, int y), Block> GenerateRoomCornerStrat()
+    public bool TryPlacePond(int x, int y, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pond)
+    {
+        try
+        {
+            int numberOfOriginalWallBlocks = room.Count(block => block.Value is WallBlock);
+
+            Dictionary<(int x, int y), Block> newRoom = room;
+            foreach (var coordsAndBlock in pond) {
+              
+                newRoom[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] = pond[(coordsAndBlock.Key.x, coordsAndBlock.Key.y)]; 
+                if (room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] is BlankBlock || room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] == null)
+                {
+                    return false;
+                }
+            }
+            int numberOfWallBlocksNow = newRoom.Count(block => block.Value is WallBlock);
+            if(numberOfWallBlocksNow != numberOfOriginalWallBlocks )
+            {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception ex) { 
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            return false;
+        }
+    }
+    public Dictionary<(int x, int y), Block> PlacePond(int x1, int y1, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pondParam)
+    {
+        var pond = pondParam;
+        Dictionary<(int x, int y), Block> newRoom = room;
+       
+        int roomWidth = room.Keys.Max(k => k.x) + 1;
+        int roomHeight = room.Keys.Max(k => k.y) + 1;
+        int pondWidth = pond.Keys.Max(k => k.x) + 1;
+        int pondHeight = pond.Keys.Max(k => k.y) + 1;
+        Random rnd = new();
+        int randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1);
+        int randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1);
+        for (int x = 0; x < randomX; x++)
+        {
+            for (int y = 0; y < randomY; y++)
+            {
+                pond[(x, y)] = new StoneFloorBlock();
+            }
+        }
+
+     
+
+        //bottom right corner processing
+        randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1);
+        randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1);
+      
+
+        for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
+        {
+            for (int y = 0; y < randomY; y++)
+            {
+                pond[(x, y)] = new StoneFloorBlock();
+            }
+        }
+
+       
+
+        //top right corner processing
+        randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1);
+        randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1);
+      
+
+        for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
+        {
+            for (int y = pondHeight - 1; y > pondHeight - 1 - randomY; y--)
+            {
+                pond[(x, y)] = new StoneFloorBlock();
+            }
+        }
+
+
+
+
+        //top left corner processing
+        randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1);
+        randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1);
+     
+
+        for (int x = 0; x < randomX; x++)
+        {
+            for (int y = pondHeight - randomY; y < pondHeight - 1; y++)
+            {
+                pond[(x, y)] = new StoneFloorBlock();
+            }
+        }
+
+
+
+
+        foreach (var coordsAndBlock in pond)
+        {
+            newRoom[(coordsAndBlock.Key.x + x1, coordsAndBlock.Key.y + y1)] = pond[(coordsAndBlock.Key.x, coordsAndBlock.Key.y)];
+        }
+
+        return newRoom;
+    }
+
+        public Dictionary<(int x, int y), Block> GenerateRoomCornerStrat()
     {
         try
         {
             Dictionary<(int x, int y), Block> room = GenerateBasicRoom();
-
-
             int roomWidth = room.Keys.Max(k => k.x) + 1;
             int roomHeight = room.Keys.Max(k => k.y) + 1;
+               
+
+
+    
             Random rnd = new Random();
 
-            int minDecomposition = 3;
+            int minDecomposition = GameConfig.MinDecompositionOfCorners;
 
             //bottom left corner processing
             int randomX = rnd.Next(minDecomposition, roomWidth / 2 - 1);
@@ -437,10 +593,10 @@ public class Game
                     }
                 }
             }
-
+            room = AddWaterToRoom(room);
 
             //FINAL TOUCH
-            for(int x=0; x<roomWidth; x++)
+            for (int x=0; x<roomWidth; x++)
             {
                 for(int y=0; y<roomHeight; y++)
                 {
@@ -467,7 +623,7 @@ public class Game
                   
                 }
             }
-
+           
             return room;
 
         }
@@ -569,6 +725,29 @@ public class Game
         return room;
     }
 
+    public Dictionary<(int x, int y), Block> GenerateBasicPond(int roomWidth, int roomHeight)
+    {
+        Random rnd = new Random();
+        int minPondWidth = Math.Min(GameConfig.MinPondWidth, roomWidth/2);
+        int maxPondWidth = Math.Min(GameConfig.MaxPondWidth, roomWidth/2);
+        int minPondHeight = Math.Min(GameConfig.MinPondWidth, roomHeight/2);
+        int maxPondHeight = Math.Min(GameConfig.MaxPondWidth, roomHeight/2);
+        int pondWidth = rnd.Next(minPondWidth, maxPondWidth);
+        int pondHeight = rnd.Next(minPondHeight, maxPondHeight);
+        Dictionary<(int x, int y), Block> pond = new();
+        for (int x = 0; x < pondWidth; x++)
+        {
+            for (int y = 0; y < pondHeight; y++)
+            {
+              
+                pond.Add((x, y), new WaterBlock());
+
+
+            }
+        }
+        return pond;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -586,6 +765,7 @@ public class Game
             Random random = new Random();
 
             int numberofdoors = random.Next(GameConfig.MinDoorsInRoom, GameConfig.MaxDoorsInRoom);
+
 
 
             Dictionary<(int x, int y), Block> room = GenerateRoomCornerStrat();

@@ -158,9 +158,11 @@ public class StoneWallBlock : WallBlock
 
 public class WaterBlock : FloorBlock
 {
+    
     public WaterBlock()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
+        CanPass = false;
     }
 }
 
