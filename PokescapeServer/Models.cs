@@ -29,10 +29,10 @@ public abstract class Item
         switch (num)
         {
             case >118:
-                return new BlueBerryItem(); 
+                return new BlueTwistItem(); 
                 break;
             default:
-                return new BlueBerryItem();
+                return new BlueTwistItem();
 
 
         }
@@ -48,11 +48,171 @@ public abstract class Item
     public virtual ScapeMonster UseItem(ScapeMonster monster) { return null; }
 }
 
-public class BlueBerryItem : Item
+
+
+public class SpikeBerry : Item
 {
-    public BlueBerryItem() {
+    public SpikeBerry()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Spikeberryblock.png";
+        Name = "Mystic Orb";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 0.15*newMonster.MaximumHealth;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+
+}
+
+public class OrangeGrape : Item
+{
+    public OrangeGrape()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Orangegrapeblock.png";
+        Name = "Mystic Orb";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 0.3 * newMonster.MaximumHealth;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+public class GuavaBerry : Item
+{
+    public GuavaBerry()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Guavaberryblock.png";
+        Name = "Mystic Orb";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 0.45 * newMonster.MaximumHealth;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+public class BlueTwistItem : Item
+{
+    public BlueTwistItem() {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Bluetwistblock.png";
-        Name = "Blueberry";
+        Name = "Blue Twist";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 0.6*  newMonster.MaximumHealth;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+
+
+public class MysticOrb : Item
+{
+    public MysticOrb()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mysticorbcharmblock.png";
+        Name = "Mystic Orb";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 100;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+
+public class ResistanceCharm : Item
+{
+    public ResistanceCharm()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Resistancecharmblock.png";
+        Name = "Mystic Orb";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 100;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+
+public class UltraCharm : Item
+{
+    public UltraCharm()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Ultracharmblock.png";
+        Name = "Mystic Orb";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 100;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+public class HystericalPotion : Item
+{
+    public HystericalPotion()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Hystericalpotionblcok.png";
+        Name = "Hysterical Potion";
+    }
+    public override ScapeMonster UseItem(ScapeMonster monster)
+    {
+        var newMonster = monster;
+        newMonster.Health += 100;
+        if (newMonster.Health > newMonster.MaximumHealth)
+        {
+            newMonster.Health = newMonster.MaximumHealth;
+        }
+        return newMonster;
+    }
+}
+
+
+public class ForitficationCharm : Item
+{
+    public ForitficationCharm()
+    {
+        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Fortificationblock.png";
+        Name = "Fortification Charm ";
     }
     public override ScapeMonster UseItem(ScapeMonster monster)
     {
