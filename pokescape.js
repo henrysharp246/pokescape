@@ -122,6 +122,9 @@ connection.onmessage = (event) => {
         case 'hideBattle':
             hideBattle();
             break;
+        case 'save_game':
+            SaveString("PokescapeGame",message.Data);
+            break;
         case 'user':
             handleUser(message.Data);
             break;
@@ -168,6 +171,26 @@ function selectScapemonster(scapeMonsterId) {
     };
     console.log('Sending message:', messageToSend);
     connection.send(JSON.stringify(messageToSend));
+}
+function saveGame() {
+    const messageToSend = {
+        "MessageType": "SAVE_GAME",
+        "SocketId": socketId,
+       
+    };
+    connection.send(JSON.stringify(messageToSend));
+}
+function loadGame() {
+    UploadString(function (content) {
+        const messageToSend = {
+            "MessageType": "LOAD_GAME",
+            "SocketId": socketId,
+            "Data": content
+        };
+        connection.send(JSON.stringify(messageToSend));
+    });
+
+    
 }
 function SaveString(fileName, content) {
     // Create a Blob with the content

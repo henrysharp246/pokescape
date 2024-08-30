@@ -24,6 +24,18 @@ public class Game
         Hard,
         Easy
     }
+
+    public class SerialisedGame
+    {
+        public string GameId;
+        public string gameState;
+        public User user;
+        public Dictionary<(int x, int y), Block> currentGrid;
+        public List<Dictionary<(int x, int y), Block>> grids;
+    }
+
+    
+
     public int gridSize = GameConfig.VisibleGridWidth * GameConfig.VisibleGridWidth;
     public int gridWidth = GameConfig.VisibleGridWidth;
     private string GameId;
@@ -41,6 +53,7 @@ public class Game
     private User user;
     private Dictionary<(int x, int y), Block> currentGrid;
     private List<Dictionary<(int x, int y), Block>> grids;
+
     private WebSocket currentSocket;
     private int currentGridCount = 1;
 
@@ -175,7 +188,7 @@ public class Game
                 }
                 break;
             case "SAVE_GAME":
-                await SendMessage("save_game", this);
+                await SaveGameV1();
 
                 break;
             case "LOAD_GAME":
@@ -186,7 +199,53 @@ public class Game
         }
 
     }
+    public async Task SaveGameV1()
+    {
+        SerialisedGame gameToSave = new SerialisedGame();
+        gameToSave.grids = this.grids;
+        gameToSave.gameState = this.gameState;
+        gameToSave.currentGrid = this.currentGrid;
+        gameToSave.user = this.user;
+        gameToSave.GameId = this.GameId;
+        await SendMessage("save_game", JsonConvert.SerializeObject(gameToSave, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+    }
 
+    public async Task SaveGame()
+    {
+        SerialisedGame gameToSave = new SerialisedGame();
+        gameToSave.grids = new();
+        gameToSave.gameState = this.gameState;
+        gameToSave.currentGrid = new();
+        gameToSave.user = this.user;
+        gameToSave.GameId = this.GameId;
+
+        foreach (var grid in this.grids)
+        {
+            var newGrid = new Dictionary<(int x, int y), Block>();
+
+            foreach (var coordAndBlock in grid)
+            {
+                var newCoordAndBlock = coordAndBlock;
+                newCoordAndBlock.Value.Image = null;
+                newCoordAndBlock.Value.DefaultImage = null;
+
+                newGrid.Add(newCoordAndBlock.Key, newCoordAndBlock.Value);
+            }
+            gameToSave.grids.Add(newGrid);
+        }
+
+
+        foreach (var coordAndBlock in this.currentGrid)
+        {
+            var newCoordAndBlock = coordAndBlock;
+            newCoordAndBlock.Value.Image = null;
+            newCoordAndBlock.Value.DefaultImage = null;
+
+            gameToSave.currentGrid.Add(newCoordAndBlock.Key, newCoordAndBlock.Value);
+        }
+
+        await SendMessage("save_game", JsonConvert.SerializeObject(gameToSave, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+    }
     public async Task ItemSelected(string itemId)
     {
         user.ItemSelectedId = itemId;

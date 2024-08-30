@@ -59,15 +59,15 @@ namespace PokescapeServer
         }
         private static async Task HandleWebSocketConnection(WebSocket webSocket)
         {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1000];
 
             WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             while (result.MessageType != WebSocketMessageType.Close)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                
 
-              
+
+
                 Message requestFromFrontEnd = JsonConvert.DeserializeObject<Message>(message);
                 await HandleMessage(webSocket, requestFromFrontEnd);
 
