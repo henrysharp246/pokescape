@@ -91,6 +91,20 @@ namespace PokescapeServer
         }
     }
 
+    public class Sealy : ScapeMonster
+    {
+        public Sealy()
+        {
+            this.MaximumHealth = (new Random()).Next(800, 1000);
+            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyTamed.png";
+            this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyOpponent.png";
+            this.ScapeMonsterName = "Monke";
+            this.Health = this.MaximumHealth;
+            this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+        }
+    }
+
     public class Obsadite : ScapeMonster
     {
         public Obsadite()
@@ -115,6 +129,8 @@ namespace PokescapeServer
         public string Id { get; set; }
         public string MoveDescription { get; set; }
         public int MoveDamage { get; set; }
+        public int MoveDamagePerRound { get; set; }
+        public int MoveLife { get; set; }
         public string MoveName { get; set; }
         /// <summary>
         /// 
@@ -143,6 +159,26 @@ namespace PokescapeServer
          
         }
     }
+    public class Epicdrain : ScapeMonsterMove
+    {
+        public Epicdrain()
+        {
+            
+            this.MoveDamage = 0;
+            this.MoveName = "Epic drain";
+            this.MoveDescription = "Standard attack";
+            this.MoveLife = 100;
+            this.MoveDamagePerRound = 1;
+        }
+        public override ScapeMonster PerformMove(ScapeMonster opponent)
+        {
+
+            var newOpponentAfterDamage = opponent;
+            newOpponentAfterDamage.Health -= MoveDamage;
+            return newOpponentAfterDamage;
+
+        }
+    }
 
     public class RockSmash : ScapeMonsterMove
     {
@@ -169,23 +205,25 @@ namespace PokescapeServer
             int num = random.Next(0, 100);
 
             switch (num)
-            {
+            {/*
                 case < 25://uncommon
                     return new Fuzzy();
                   
-                case < 45://fairly common
-                    return new Golem();
-                   
-                case < 60://most common
-                    return new Inferna();
-                    
-                case < 75://uncommon
+                case < 42://fairly common
                     return new Monke();
+                   
+                case < 55:
+                    return new Inferna();
+
+                case < 65:
+                    return new Sealy();
+                case < 80:
+                    return new Golem();
                 case < 90:
-                    return new Emralux();
-                case < 100: 
-                    return new Kahuna();
-                default: return new Inferna();
+                    return new Obsadite();
+                case < 97: 
+                    return new Emralux(); */
+                default: return new Sealy();
             }
         }
 
