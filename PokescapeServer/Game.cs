@@ -83,6 +83,18 @@ public class Game
 
     }
 
+    public async Task LoadGame(string gameString)
+    {
+        Game newGame = JsonConvert.DeserializeObject<Game>(gameString);
+        this.user = newGame.user;
+        this.grids = newGame.grids;
+        this.currentGrid = newGame.currentGrid;
+        this.GameId = newGame.GameId;
+        this.gameState = newGame.gameState;
+        await SendMessage("grid", currentGrid);
+        await SendMessage("user", user);
+    }
+
     //THE BELOW 3 METHODS ARE THE SAME, JUST ACCEPT DIFFERENT TYPES TO MAKE PROGRAMMING EASIER
     public async Task SendMessage(string messageType, object messageData)
     {
@@ -162,7 +174,14 @@ public class Game
                     await ItemSelected(message.Data);
                 }
                 break;
+            case "SAVE_GAME":
+                await SendMessage("save_game", this);
 
+                break;
+            case "LOAD_GAME":
+                await LoadGame(message.Data);
+
+                break;
 
         }
 

@@ -169,7 +169,65 @@ function selectScapemonster(scapeMonsterId) {
     console.log('Sending message:', messageToSend);
     connection.send(JSON.stringify(messageToSend));
 }
+function SaveString(fileName, content) {
+    // Create a Blob with the content
+    var blob = new Blob([content], { type: 'text/plain' });
 
+    // Create a link element
+    var link = $('<a></a>');
+
+    // Set the download attribute with the desired file name
+    link.attr('download', fileName);
+
+    // Create an object URL for the Blob
+    var url = URL.createObjectURL(blob);
+
+    // Set the href to the Blob URL
+    link.attr('href', url);
+
+    // Append the link to the body (required for Firefox)
+    $('body').append(link);
+
+    // Programmatically click the link to trigger the download
+    link[0].click();
+
+    // Remove the link after download
+    link.remove();
+
+    // Revoke the object URL to free up memory
+    URL.revokeObjectURL(url);
+}
+function UploadString(callback) {
+    // Create an input element of type file
+    var input = $('<input type="file" accept=".txt" style="display: none;">');
+
+    // Append the input to the body
+    $('body').append(input);
+
+    // Set up an event listener to handle file selection
+    input.on('change', function (event) {
+        var file = event.target.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+
+            // When the file is read, call the callback with the result
+            reader.onload = function (e) {
+                var content = e.target.result;
+                callback(content);
+            };
+
+            // Read the file as a text string
+            reader.readAsText(file);
+        }
+
+        // Clean up by removing the input element after the file is selected
+        input.remove();
+    });
+
+    // Trigger the file input click event
+    input.click();
+}
 function updateOpponent(monster) {
     var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
     var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
