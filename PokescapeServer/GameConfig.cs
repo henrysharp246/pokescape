@@ -29,8 +29,8 @@ namespace PokescapeServer
         public const double ProbabilityOfWater =1;
 
 
-        public const int MinRooms = 2; //IN USE
-        public const int MaxRooms = 9;//IN USE
+        public const int MinRooms = 5; //IN USE
+        public const int MaxRooms = 25;//IN USE
 
         public const double ProbabilityOfScapemonster = 0.1;
         
@@ -38,7 +38,7 @@ namespace PokescapeServer
         public const int MaxItemsInRoom = 2;
         public const int MinItemsInRoom = 10;
 
-        public const int MaxDoorsInRoom = 1;
+        public const int MaxDoorsInRoom = 3;
         public const int MinDoorsInRoom = 1;
 
 

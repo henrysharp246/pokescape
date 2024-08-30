@@ -383,7 +383,7 @@ public class Game
             Dictionary<(int x, int y), Block> newRoom = room;
             foreach (var coordsAndBlock in pond) {
               
-                newRoom[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] = pond[(coordsAndBlock.Key.x, coordsAndBlock.Key.y)]; 
+         
                 if (room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] is BlankBlock || room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] == null)
                 {
                     return false;
