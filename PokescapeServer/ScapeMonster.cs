@@ -12,8 +12,10 @@ namespace PokescapeServer
     {
         public Emralux()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(1.1, 1.2);
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.BaseDamage = GenerateBaseDamage(1.1, 1.2);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\EmraluxTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\EmraluxOpponent.png";
             this.ScapeMonsterName = "Emralux";
@@ -26,8 +28,10 @@ namespace PokescapeServer
     {
         public Fuzzy()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(1, 1.1);
+            this.MaximumHealth = this.BaseDefence * Level; 
+            this.BaseDamage = GenerateBaseDamage(1, 1.1);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\FuzzyTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\FuzzyOpponent.png";
             this.ScapeMonsterName = "Fuzzy";
@@ -40,8 +44,10 @@ namespace PokescapeServer
     {
         public Golem()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(1.3, 1.4);
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.BaseDamage = GenerateBaseDamage(1, 1.1);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\GolemTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\GolemOpponent.png";
             this.ScapeMonsterName = "Golem";
@@ -53,8 +59,10 @@ namespace PokescapeServer
     {
         public Inferna()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(0.9, 1.1);
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.BaseDamage = GenerateBaseDamage(1.1, 1.3);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaOpponent.png";
             this.ScapeMonsterName = "Fuzzy";
@@ -67,8 +75,10 @@ namespace PokescapeServer
     {
         public Kahuna()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(1.4, 1.5);
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.BaseDamage = GenerateBaseDamage(1.4, 1.5);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\KahunaTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\KahunaOpponent.png";
             this.ScapeMonsterName = "Kahuna";
@@ -81,8 +91,10 @@ namespace PokescapeServer
     {
         public Monke()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(0.6, 0.8);
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.BaseDamage = GenerateBaseDamage(1.4, 1.6);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\MonkeTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\MonkeOpponent.png";
             this.ScapeMonsterName = "Monke";
@@ -95,8 +107,10 @@ namespace PokescapeServer
     {
         public Sealy()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseHealth = GenerateHealth(1, 1.1);
+            this.MaximumHealth = this.BaseHealth * Level;
+            this.BaseDamage = GenerateBaseDamage(1.1, 1.2);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyOpponent.png";
             this.ScapeMonsterName = "Monke";
@@ -109,8 +123,10 @@ namespace PokescapeServer
     {
         public Obsadite()
         {
-            this.MaximumHealth = (new Random()).Next(800, 1000);
-            this.BaseDamage = (new Random()).Next(800, 1000);
+            this.BaseDefence = GenerateHealth(1.3, 1.4);
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.BaseDamage = GenerateBaseDamage(1, 1.2);
+            this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\ObsaditeTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\ObsaditeOpponent.png";
             this.ScapeMonsterName = "Obsadite";
@@ -203,10 +219,17 @@ namespace PokescapeServer
         {
             Random random = new Random();
             int num = random.Next(0, 100);
+            User.GetUsersHighestLevelScapemonster(user);
 
             switch (num)
-            {/*
+            {
                 case < 25://uncommon
+                Fuzzy fuzzy = new Fuzzy()
+                { 
+
+
+                Level = random.next(GameConfig.UsersHighestLevelScapemonster-5, GameConfig.UsersHighestLevelScapemonster +3)
+                };
                     return new Fuzzy();
                   
                 case < 42://fairly common
@@ -222,7 +245,7 @@ namespace PokescapeServer
                 case < 90:
                     return new Obsadite();
                 case < 97: 
-                    return new Emralux(); */
+                    return new Emralux(); 
                 default: return new Sealy();
             }
         }
@@ -244,13 +267,41 @@ namespace PokescapeServer
             ScapeMonsterID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
       
+        public double GenerateHealth(double min, double max)
+        {
+            double randomDouble = rand.NextDouble();
 
+            Console.WriteLine(randomDouble);
+            // Scale it to the range [min, max]
+            decimal Health = (decimal)(min + randomDouble * (max - min));
+
+            // Round to 2 decimal places
+            Health = Math.Round(Health, 2);
+            return Health;
+        }
+
+        public double GenerateBaseDamage(double min, double max)
+        {
+            double randomDouble = rand.NextDouble();
+
+            Console.WriteLine(randomDouble);
+            // Scale it to the range [min, max]
+            decimal Attack = (decimal)(min + randomDouble * (max - min));
+
+            // Round to 2 decimal places
+            Attack = Math.Round(Attack, 2);
+            return Attack;
+        }
+
+        
         public string TamedImage { get; set; }
         public string OpponentImage { get; set; }
         public string ScapeMonsterID { get; set; }
         public (int xCord, int yCord) ScapemonsterCoordinates { get; set; }
         public string ScapeMonsterName { get; set; }
+        public double BaseDefence { get; set; }
         public double MaximumHealth { get; set; }
+        public double Damage {  get; set; }
         public bool IsBoss { get; set; }
         public double Health { get; set; }
         public double BaseDamage { get; set; }

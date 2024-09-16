@@ -11,8 +11,6 @@ namespace PokescapeServer
         public const int VisibleGridWidth = 50; //length and width of the square map
         public const int VisibleGridSize = VisibleGridWidth*VisibleGridWidth; //length and width of the square map
 
-       
-       
 
         public const int MaxRoomWidth = VisibleGridWidth;
         public const int MinRoomWidth = 30;

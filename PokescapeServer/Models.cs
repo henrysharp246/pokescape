@@ -11,8 +11,10 @@ public class Message
 }
 public class Battle
 {
+
     public ScapeMonster UserScapeMonster { get; set; } 
     public ScapeMonster OpponentScapeMonster { get; set; }
+    
 
 }
 
@@ -377,6 +379,36 @@ public class LeftEntrance : Entrance
     }
 }
 
+public class Chest : Item
+{
+    
+    int chestID { get; set; }
+    public Chest()
+    {
+        chestCount++;
+        chestID = chestCount;
+    }
+       
+}
+
+public class Key : Item
+{
+    
+
+    int KeyID { get; set; }
+    public Key()
+    {
+        if (KeyCount > game.chestCount)
+            return;
+        else
+        {
+            chestCount++;
+            chestID = chestCount;
+        }
+    }
+
+}
+
 public class User
 {
     public List<Item> Inventory { get; set; } = new List<Item>();
@@ -384,14 +416,39 @@ public class User
    
 
     public User(){
+        
+        Fuzzy fuzzy = new Fuzzy()
+        {
+            Level = 3,
+        };
+
         ScapeMonsters.Add(new Fuzzy());
     }
     public bool InBattle { get; set; }= false;
     public bool IsTurn { get; set; }= false;
 
     public string ItemSelectedId { get; set; }  
-public Battle CurrentBattle { get; set; }
+    public Battle CurrentBattle { get; set; }
     public string UserId { get; set; }
+
+    public int GetUsersHighestLevelScapemonster(User user)
+    {
+        int HighestLevel;
+        foreach (ScapeMonster ScapeMonster in user.ScapeMonsters)
+        {
+          
+            int CurrentLevel = ScapeMonster.Level;
+            if (CurrentLevel > HighestLevel || HighestLevel = null)
+            {
+                HighestLevel = CurrentLevel;
+
+            }
+
+        }
+        return HighestLevel;
+                
+    }
+        
     public string UserName { get; set; }
     public string Password { get; set; }
     public int UserGold { get; set; }

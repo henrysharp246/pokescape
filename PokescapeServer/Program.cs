@@ -9,10 +9,10 @@ using PokescapeServer;
     public class Pokescape
     {
 
-        public static readonly string ImageFolderPath = "C:\\Users\\edcha\\source\\repos\\pokescapeCorrect\\Image";
+        public static readonly string ImageFolderPath = "C:\\Users\\henry\\source\\repos\\pokescape\\Image";
     //REPLACE THIS WITH YOURS :
     //"C:\\Users\\henry\\source\\repos\\pokescape\\Image
-    //"C:\\Users\\edcha\\source\\repos\\pokescapeCorrect\\Image
+
     //STEP 1s
     //1. Find various images for the grid coordinate classes
     //2. Add more types of grid coordinate classes

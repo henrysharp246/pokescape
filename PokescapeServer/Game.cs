@@ -57,6 +57,8 @@ public class Game
     private WebSocket currentSocket;
     private int currentGridCount = 1;
 
+    static int chestCount = 0;
+    static int KeyCount = 0;
 
     //WHEN THIS RUNS A NEW GAME HAS BEEN CREATED
     public Game(WebSocket webSocket)
@@ -261,10 +263,23 @@ public class Game
         await SendMessage("user", user);
 
     }
+    static bool IsEven(int number)
+    {
+        return number % 2 == 0;
+    }
     public async Task BattleWon(Battle battle)
     {
+     
         await SendMessage("battleDialog", $"You defeated {battle.OpponentScapeMonster.ScapeMonsterName}! They will be added to your collection.");
+        Thread.Sleep(500);
+        if (IsEven(battlecount))
+        {
+            battle.UserScapeMonster.Level += 1;
+            await SendMessage("battleDialog", $"{battle.UserScapeMonster.ScapeMonsterName} levelled up to level {battle.UserScapeMonster.Level}!");
+        }
+     
         Thread.Sleep(2500);
+
         user.ScapeMonsters.Add(battle.OpponentScapeMonster);
         user.CurrentBattle = null;
         user.InBattle = false;
@@ -332,8 +347,10 @@ public class Game
         await SendMessage("battle", user.CurrentBattle);
     }
 
+    static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
+        battlecount++;
         return;
         Random random = new Random();
         double num = random.NextDouble();
