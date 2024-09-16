@@ -42,7 +42,6 @@ namespace PokescapeServer
             }
         }
         
-
         private static async Task OnClientConnected(WebSocket webSocket)
         {
             Console.WriteLine("New client connected");
