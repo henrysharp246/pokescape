@@ -30,8 +30,8 @@ public class Game
         public string GameId;
         public string gameState;
         public User user;
-        public Dictionary<(int x, int y), Block> currentGrid;
-        public List<Dictionary<(int x, int y), Block>> grids;
+        public Dictionary<Coordinate, Block> currentGrid;
+        public List<Dictionary<Coordinate, Block>> grids;
     }
 
     
@@ -102,8 +102,26 @@ public class Game
     {
         SerialisedGame newGame = JsonConvert.DeserializeObject<SerialisedGame>(gameString);
         this.user = newGame.user;
-        this.grids = newGame.grids;
-        this.currentGrid = newGame.currentGrid;
+        Dictionary<(int x, int y), Block> newCurrentGrid = new();
+        foreach (var coordsAndBlock in newGame.currentGrid)
+        {
+            (int x, int y) tuple = new(coordsAndBlock.Key.x, coordsAndBlock.Key.y);
+            newCurrentGrid[tuple] = coordsAndBlock.Value;
+        }
+        this.grids = new();
+        foreach(var grid in newGame.grids)
+        {
+            Dictionary<(int x, int y), Block> newGrid = new();
+            foreach (var coordsAndBlock in grid)
+            {
+                (int x, int y) tuple = new(coordsAndBlock.Key.x, coordsAndBlock.Key.y);
+                newGrid[tuple] = coordsAndBlock.Value;
+            }
+            this.grids.Add(newGrid);
+            
+        }
+        
+        this.currentGrid = newCurrentGrid;
         this.GameId = newGame.GameId;
         this.gameState = newGame.gameState;
         await SendMessage("grid", currentGrid);
@@ -190,7 +208,7 @@ public class Game
                 }
                 break;
             case "SAVE_GAME":
-                await SaveGameV1();
+                await SaveGame();
 
                 break;
             case "LOAD_GAME":
@@ -201,16 +219,7 @@ public class Game
         }
 
     }
-    public async Task SaveGameV1()
-    {
-        SerialisedGame gameToSave = new SerialisedGame();
-        gameToSave.grids = this.grids;
-        gameToSave.gameState = this.gameState;
-        gameToSave.currentGrid = this.currentGrid;
-        gameToSave.user = this.user;
-        gameToSave.GameId = this.GameId;
-        await SendMessage("save_game", JsonConvert.SerializeObject(gameToSave, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
-    }
+    
 
     public async Task SaveGame()
     {
@@ -223,15 +232,15 @@ public class Game
 
         foreach (var grid in this.grids)
         {
-            var newGrid = new Dictionary<(int x, int y), Block>();
+            var newGrid = new Dictionary<Coordinate, Block>();
 
             foreach (var coordAndBlock in grid)
             {
+                Coordinate coordinate = new();
+                coordinate.x = coordAndBlock.Key.x;
+                coordinate.y = coordAndBlock.Key.y;
                 var newCoordAndBlock = coordAndBlock;
-                newCoordAndBlock.Value.Image = null;
-                newCoordAndBlock.Value.DefaultImage = null;
-
-                newGrid.Add(newCoordAndBlock.Key, newCoordAndBlock.Value);
+                newGrid.Add(coordinate, newCoordAndBlock.Value);
             }
             gameToSave.grids.Add(newGrid);
         }
@@ -239,11 +248,12 @@ public class Game
 
         foreach (var coordAndBlock in this.currentGrid)
         {
+            Coordinate coordinate = new();
+            coordinate.x = coordAndBlock.Key.x;
+            coordinate.y = coordAndBlock.Key.y;
             var newCoordAndBlock = coordAndBlock;
-            newCoordAndBlock.Value.Image = null;
-            newCoordAndBlock.Value.DefaultImage = null;
 
-            gameToSave.currentGrid.Add(newCoordAndBlock.Key, newCoordAndBlock.Value);
+            gameToSave.currentGrid.Add(coordinate, newCoordAndBlock.Value);
         }
 
         await SendMessage("save_game", JsonConvert.SerializeObject(gameToSave, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
