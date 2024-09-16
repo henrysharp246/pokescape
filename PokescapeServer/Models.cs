@@ -3,6 +3,11 @@ using PokescapeServer;
 using System;
 using System.Collections.Generic;
 
+public class Coordinate
+{
+    public int x;
+    public int y;
+}
 public class Message
 {
     public string MessageType { get; set; } // move_left, move_right, move_up, move_down, battle, save, load, grid
@@ -381,12 +386,12 @@ public class LeftEntrance : Entrance
 
 public class Chest : Item
 {
-    
-    int chestID { get; set; }
-    public Chest()
+    //USE GAME FOR CHEST COUNT
+    int ChestID { get; set; }
+    public Chest(int id)
     {
-        chestCount++;
-        chestID = chestCount;
+        // chestCount++; USE GAME FOR CHEST COUNT
+        ChestID = id;
     }
        
 }
@@ -396,15 +401,17 @@ public class Key : Item
     
 
     int KeyID { get; set; }
-    public Key()
+    public Key(int id)
     {
-        if (KeyCount > game.chestCount)
+
+        KeyID = id;
+       /** if (KeyCount > game.chestCount)
             return;
         else
         {
             chestCount++;
             chestID = chestCount;
-        }
+        }**/
     }
 
 }
@@ -431,14 +438,15 @@ public class User
     public Battle CurrentBattle { get; set; }
     public string UserId { get; set; }
 
-    public int GetUsersHighestLevelScapemonster(User user)
+    public int GetUsersHighestLevelScapemonster()
     {
-        int HighestLevel;
-        foreach (ScapeMonster ScapeMonster in user.ScapeMonsters)
+      
+        int HighestLevel = 0;
+        foreach (ScapeMonster ScapeMonster in ScapeMonsters)
         {
           
             int CurrentLevel = ScapeMonster.Level;
-            if (CurrentLevel > HighestLevel || HighestLevel = null)
+            if (CurrentLevel > HighestLevel )
             {
                 HighestLevel = CurrentLevel;
 

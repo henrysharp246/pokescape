@@ -107,8 +107,8 @@ namespace PokescapeServer
     {
         public Sealy()
         {
-            this.BaseHealth = GenerateHealth(1, 1.1);
-            this.MaximumHealth = this.BaseHealth * Level;
+            this.BaseDefence = GenerateHealth(1, 1.1);
+            this.MaximumHealth = this.BaseDefence * Level;
             this.BaseDamage = GenerateBaseDamage(1.1, 1.2);
             this.Damage = this.BaseDamage * Level;
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyTamed.png";
@@ -219,17 +219,15 @@ namespace PokescapeServer
         {
             Random random = new Random();
             int num = random.Next(0, 100);
-            User.GetUsersHighestLevelScapemonster(user);
+          
+            
+            
+      
 
             switch (num)
             {
                 case < 25://uncommon
-                Fuzzy fuzzy = new Fuzzy()
-                { 
-
-
-                Level = random.next(GameConfig.UsersHighestLevelScapemonster-5, GameConfig.UsersHighestLevelScapemonster +3)
-                };
+                    
                     return new Fuzzy();
                   
                 case < 42://fairly common
@@ -269,11 +267,12 @@ namespace PokescapeServer
       
         public double GenerateHealth(double min, double max)
         {
+            var rand = new Random();
             double randomDouble = rand.NextDouble();
 
             Console.WriteLine(randomDouble);
             // Scale it to the range [min, max]
-            decimal Health = (decimal)(min + randomDouble * (max - min));
+            double Health = (double)(min + randomDouble * (max - min));
 
             // Round to 2 decimal places
             Health = Math.Round(Health, 2);
@@ -282,11 +281,12 @@ namespace PokescapeServer
 
         public double GenerateBaseDamage(double min, double max)
         {
+            var rand = new Random();
             double randomDouble = rand.NextDouble();
 
             Console.WriteLine(randomDouble);
             // Scale it to the range [min, max]
-            decimal Attack = (decimal)(min + randomDouble * (max - min));
+            double Attack = (double)(min + randomDouble * (max - min));
 
             // Round to 2 decimal places
             Attack = Math.Round(Attack, 2);

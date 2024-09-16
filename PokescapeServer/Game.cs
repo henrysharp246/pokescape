@@ -25,8 +25,8 @@ public class Game
         Easy
     }
 
-    public class SerialisedGame
-    {
+    public class SerialisedGame // we must have this as we cant seem to serialise private variables. the other reason is so we can send up a simpler version of the game, without unncessary details
+    {// thus this is abstraction!
         public string GameId;
         public string gameState;
         public User user;
@@ -100,7 +100,7 @@ public class Game
 
     public async Task LoadGame(string gameString)
     {
-        Game newGame = JsonConvert.DeserializeObject<Game>(gameString);
+        SerialisedGame newGame = JsonConvert.DeserializeObject<SerialisedGame>(gameString);
         this.user = newGame.user;
         this.grids = newGame.grids;
         this.currentGrid = newGame.currentGrid;
@@ -351,13 +351,20 @@ public class Game
     public async Task ScapeMonsterEncounter()
     {
         battlecount++;
-        return;
+
         Random random = new Random();
         double num = random.NextDouble();
         if (num < GameConfig.ProbabilityOfScapemonster)
         {
             Battle newBattle = new Battle();
+            int maxScapeMonsterLevel = user.GetUsersHighestLevelScapemonster();
             newBattle.OpponentScapeMonster = ScapeMonster.GetRandomScapeMonster();
+            newBattle.OpponentScapeMonster.Level = 5; 
+            ///TO DO SET SCAPEMONSTER LEVELL RANDOMLY
+            //maxScapeMonsterLevel - 5;
+
+            //
+
             user.CurrentBattle = newBattle;
             user.InBattle = true;
             await SendMessage("battleDialog", "Choose Your Scapemonster...");
@@ -1510,11 +1517,7 @@ public class Game
         return gameState;
     }
 
-    private Dictionary<(int x, int y), Block> LoadGameFromFile()
-    {
-        return null;
-    }
-
+   
     private Dictionary<(int x, int y), Block> GetGridFromFile()
     {
         return currentGrid;

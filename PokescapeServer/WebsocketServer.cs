@@ -58,25 +58,38 @@ namespace PokescapeServer
         }
         private static async Task HandleWebSocketConnection(WebSocket webSocket)
         {
-            byte[] buffer = new byte[1000];
+            byte[] buffer = new byte[4096]; // Adjust the buffer size as needed.
 
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            while (result.MessageType != WebSocketMessageType.Close)
+            while (webSocket.State == WebSocketState.Open)
             {
-                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                var receivedData = new List<byte>(); // Reset for each message.
+                WebSocketReceiveResult result;
 
+                // Loop to ensure we receive all fragments for a message
+                do
+                {
+                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    receivedData.AddRange(new ArraySegment<byte>(buffer, 0, result.Count));
+                } while (!result.EndOfMessage); // Continue until the full message is received.
 
+                // Decode and process the message.
+                string message = Encoding.UTF8.GetString(receivedData.ToArray());
 
-                Message requestFromFrontEnd = JsonConvert.DeserializeObject<Message>(message);
-                await HandleMessage(webSocket, requestFromFrontEnd);
-
-                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                if (result.MessageType == WebSocketMessageType.Text)
+                {
+                    // Deserialize the message and handle it
+                    Message requestFromFrontEnd = JsonConvert.DeserializeObject<Message>(message);
+                    await HandleMessage(webSocket, requestFromFrontEnd);
+                }
+                else if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    // Handle closing
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                    webSocket.Dispose();
+                    break; // Exit the loop if WebSocket is closing
+                }
             }
-
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
-            webSocket.Dispose();
         }
-
         public static async Task HandleMessage(WebSocket webSocket, Message message)
         {
             Game gameForUser = socketIdsToGames[message.SocketId];
