@@ -81,14 +81,14 @@ public class Game
         int numberOfRooms = rand.Next(GameConfig.MinRooms, GameConfig.MaxRooms);
         for (int i = 0; i < numberOfRooms; i++)
         {
-            var newGrid = CreateGrid();
+            var newGrid = CreateGrid(numberOfRooms, i+1);
 
             grids.Add(newGrid);
         }
         currentGrid = grids.First();
         SetUserCoordinatesBasedOnGrid(currentGrid);
 
-
+        await TestIfRoomsAreOk();
 
         await SendMessage("grid", currentGrid);
         await SendMessage("user", user);
@@ -97,21 +97,46 @@ public class Game
 
 
     }
+    public async Task TestIfRoomsAreOk()
+    {
+        Console.WriteLine($"Top Door Count {TopDoorCount}");
+        Console.WriteLine($"Right Door Count {RightDoorCount}");
+        Console.WriteLine($"Left Door Count {LeftDoorCount}");
+        Console.WriteLine($"Bottom Door Count {BottomDoorCount}");
+        Console.WriteLine($"Number Of Rooms {grids.Count}");
+    }
 
     public async Task LoadGame(string gameString)
     {
         SerialisedGame newGame = JsonConvert.DeserializeObject<SerialisedGame>(gameString);
         this.user = newGame.user;
-        this.grids = newGame.grids.Select(grid => grid.ToDictionary(
-        kvp => (int.Parse(kvp.Key.Split(',')[0]), int.Parse(kvp.Key.Split(',')[1])),
-        kvp => kvp.Value
-    )).ToList();
-        this.currentGrid = newGame.currentGrid.ToDictionary(
-        kvp => (int.Parse(kvp.Key.Split(',')[0]), int.Parse(kvp.Key.Split(',')[1])),
-        kvp => kvp.Value
-    );
+
+        this.grids = new List<Dictionary<(int, int), Block>>();
+
+        
+        foreach (var grid in newGame.grids)
+        {
+            Dictionary<(int, int), Block> gridDict = new Dictionary<(int, int), Block>();
+            foreach (var kvp in grid)
+            {
+                var keyParts = kvp.Key.Split(',');
+                var key = (int.Parse(keyParts[0]), int.Parse(keyParts[1]));
+                gridDict[key] = kvp.Value;
+            }
+            this.grids.Add(gridDict);
+        }
+
+        this.currentGrid = new Dictionary<(int, int), Block>();
+        foreach (var kvp in newGame.currentGrid)
+        {
+            var keyParts = kvp.Key.Split(',');
+            var key = (int.Parse(keyParts[0]), int.Parse(keyParts[1]));
+            this.currentGrid[key] = kvp.Value;
+        }
+
         this.GameId = newGame.GameId;
         this.gameState = newGame.gameState;
+
         await SendMessage("grid", currentGrid);
         await SendMessage("user", user);
     }
@@ -133,7 +158,7 @@ public class Game
     }
     public async Task SendMessage(Message message)
     {
-        Console.WriteLine("SENDING TO WEB PAGE: " + JsonConvert.SerializeObject(message));
+        //Console.WriteLine("SENDING TO WEB PAGE: " + JsonConvert.SerializeObject(message));
         await currentSocket.SendMessage(message);
     }
 
@@ -212,15 +237,29 @@ public class Game
     public async Task SaveGameV1()
     {
         SerialisedGame gameToSave = new SerialisedGame();
-        gameToSave.grids = this.grids.Select(grid => grid.ToDictionary(
-        kvp => $"{kvp.Key.x},{kvp.Key.y}", kvp => kvp.Value
-    )).ToList();
+        gameToSave.grids = new List<Dictionary<string, Block>>();
+
+        foreach (var grid in this.grids)
+        {
+            Dictionary<string, Block> gridDict = new Dictionary<string, Block>();
+            foreach (var kvp in grid)
+            {
+                gridDict[$"{kvp.Key.x},{kvp.Key.y}"] = kvp.Value;
+            }
+            gameToSave.grids.Add(gridDict);
+        }
+
         gameToSave.gameState = this.gameState;
-        gameToSave.currentGrid = this.currentGrid.ToDictionary(
-        kvp => $"{kvp.Key.x},{kvp.Key.y}", kvp => kvp.Value
-    );
+
+        gameToSave.currentGrid = new Dictionary<string, Block>();
+        foreach (var kvp in this.currentGrid)
+        {
+            gameToSave.currentGrid[$"{kvp.Key.x},{kvp.Key.y}"] = kvp.Value;
+        }
+
         gameToSave.user = this.user;
         gameToSave.GameId = this.GameId;
+
         await SendMessage("save_game", JsonConvert.SerializeObject(gameToSave, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
     }
 
@@ -364,7 +403,7 @@ public class Game
     public async Task ScapeMonsterEncounter()
     {
         battlecount++;
-
+        return; ///TO DO REMOVE
         Random random = new Random();
         double num = random.NextDouble();
         if (num < GameConfig.ProbabilityOfScapemonster)
@@ -388,40 +427,49 @@ public class Game
         return;
     }
 
-    public void SetUserCoordinatesBasedOnGrid(Dictionary<(int x, int y), Block> grid, Type entranceType = null)
+    public bool SetUserCoordinatesBasedOnGrid(Dictionary<(int x, int y), Block> grid, Type entranceType = null)
     {
-        for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
+        try
         {
-            for (int y = 0; y < GameConfig.VisibleGridWidth; y++)
+            for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
             {
-                var block = grid[(x, y)];
-
-                // Check if entranceType is provided and the block is of that exact type
-                if (entranceType != null)
+                for (int y = 0; y < GameConfig.VisibleGridWidth; y++)
                 {
-                    if (block.GetType() == entranceType)
+                    var block = grid[(x, y)];
+
+                    // Check if entranceType is provided and the block is of that exact type
+                    if (entranceType != null)
+                    {
+                        if (block.GetType() == entranceType)
+                        {
+                            block.HasUser = true;
+                            grid[(x, y)] = block;
+                            user.UserCoordinates = (x, y);
+                            return true;
+                        }
+                    }
+                    // If entranceType is not provided, place on any passable block
+                    else if (block.CanPass)
                     {
                         block.HasUser = true;
                         grid[(x, y)] = block;
                         user.UserCoordinates = (x, y);
-                        return;
+                        return true;
                     }
                 }
-                // If entranceType is not provided, place on any passable block
-                else if (block.CanPass)
-                {
-                    block.HasUser = true;
-                    grid[(x, y)] = block;
-                    user.UserCoordinates = (x, y);
-                    return;
-                }
             }
-        }
+            return false;
 
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+        
         Console.WriteLine("COULD NOT SET USER COORDINATES!!! NO CORRESPONDING ENTRANCE FOUND");
     }
 
-    public Dictionary<(int x, int y), Block> CreateGrid()
+    public Dictionary<(int x, int y), Block> CreateGrid(int totalNumberOfGrids, int currentGridCount)
     {
         while (true) //NEED TO REMOVE
         {
@@ -429,7 +477,7 @@ public class Game
 
             try
             {
-                var room = GenerateRoom();
+                var room = GenerateRoom(totalNumberOfGrids, currentGridCount);
                 var finalGrid = RoomToGrid(room);
 
                 return finalGrid;
@@ -874,15 +922,40 @@ public class Game
     /// <param name="minRoomHeight"></param>
     /// <param name="maxRoomHeight"></param>
     /// <returns></returns>
-    public Dictionary<(int x, int y), Block> GenerateRoom()
+    public Dictionary<(int x, int y), Block> GenerateRoom(int totalNumberOfRooms, int currentRoomCount)
     {
         try
         {
 
-
+            
             Random random = new Random();
+            
+            int maximumNumberOfPossibleDoors = totalNumberOfRooms*2 - DoorCount - 2;
+            int maxNumberOfDoorsInThisRoom = Math.Min(maximumNumberOfPossibleDoors, GameConfig.MaxDoorsInRoom);
+            int numberofdoorsinthisroom = 0;
+            if(currentRoomCount == totalNumberOfRooms || currentRoomCount == 1)
+            {
+                numberofdoorsinthisroom = 1;
+            }
+            else
+            {
 
-            int numberofdoors = random.Next(GameConfig.MinDoorsInRoom, GameConfig.MaxDoorsInRoom);
+                if (maxNumberOfDoorsInThisRoom < GameConfig.MinDoorsInRoom)
+                {
+                    numberofdoorsinthisroom = maxNumberOfDoorsInThisRoom;
+                }
+                else
+                {
+                    int minDoors = GameConfig.MinDoorsInRoom;
+                    if(currentRoomCount > 1)
+                    {
+                        minDoors =  Math.Max(2, GameConfig.MinDoorsInRoom);
+                    }
+                    
+                    numberofdoorsinthisroom = random.Next(minDoors, maxNumberOfDoorsInThisRoom);
+                }
+
+            }
 
 
 
@@ -891,7 +964,7 @@ public class Game
 
             var wallBlocksAndCoordinates = room.Where(x => x.Value is StoneWallBlock).ToList();
 
-            while (numberofdoors > 0)
+            while (numberofdoorsinthisroom > 0)
             {
                 int randomNum = random.Next(0, wallBlocksAndCoordinates.Count());
                 var selectedBlockAndCoords = wallBlocksAndCoordinates[randomNum];
@@ -922,7 +995,7 @@ public class Game
                     room.Remove((selectedCoords.x, selectedCoords.y));
                     room.Add((selectedCoords.x, selectedCoords.y), entrance);
                     TopDoorCount++;
-                    numberofdoors--;
+                    numberofdoorsinthisroom--;
                     DoorCount++;
                 }
                 else if (blockLeft is WallBlock && blockRight is WallBlock && blockBelow == null && BottomDoorCount <= TopDoorCount && LeftDoorCount == RightDoorCount) // door below
@@ -939,7 +1012,7 @@ public class Game
                     room.Remove((selectedCoords.x, selectedCoords.y));
                     room.Add((selectedCoords.x, selectedCoords.y), entrance);
                     BottomDoorCount++;
-                    numberofdoors--;
+                    numberofdoorsinthisroom--;
                     DoorCount++;
                 }
                 else if (blockAbove is WallBlock && blockBelow is WallBlock && blockRight == null && RightDoorCount <= LeftDoorCount && TopDoorCount == BottomDoorCount) // door to right 
@@ -954,7 +1027,7 @@ public class Game
                     entrance.EntranceId = RightDoorCount;
                     room.Remove((selectedCoords.x, selectedCoords.y));
                     room.Add((selectedCoords.x, selectedCoords.y), entrance);
-                    numberofdoors--;
+                    numberofdoorsinthisroom--;
                     RightDoorCount++;
                     DoorCount++;
                 }
@@ -971,7 +1044,7 @@ public class Game
                     }
                     room.Remove((selectedCoords.x, selectedCoords.y));
                     room.Add((selectedCoords.x, selectedCoords.y), entrance);
-                    numberofdoors--;
+                    numberofdoorsinthisroom--;
                     LeftDoorCount++;
                     DoorCount++;
                 }
@@ -1378,9 +1451,10 @@ public class Game
             {
                 entrance.CorrespondingRoomId = currentGridCount++;
             }
-            currentGrid = grids[entrance.CorrespondingRoomId];
+            
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
-            SetUserCoordinatesBasedOnGrid(currentGrid, typeof(BottomEntrance));
+            WalkThroughDoor(grids, typeof(BottomEntrance),entrance.CorrespondingRoomId);
+            //SetUserCoordinatesBasedOnGrid(currentGrid, typeof(BottomEntrance));
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
 
@@ -1422,8 +1496,9 @@ public class Game
             {
                 entrance.CorrespondingRoomId = currentGridCount++;
             }
-            currentGrid = grids[entrance.CorrespondingRoomId];
-            SetUserCoordinatesBasedOnGrid(currentGrid, typeof(TopEntrance));
+            
+            WalkThroughDoor(grids, typeof(TopEntrance), entrance.CorrespondingRoomId);
+            //SetUserCoordinatesBasedOnGrid(currentGrid, typeof(TopEntrance));
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
@@ -1450,10 +1525,10 @@ public class Game
 
     }
 
-
+    
     public async Task MoveLeft()
     {
-        Block blockabove = currentGrid[(user.UserCoordinates.x - 1, user.UserCoordinates.y)];
+        Block blockLeft = currentGrid[(user.UserCoordinates.x - 1, user.UserCoordinates.y)];
         Block currentBlock = currentGrid[user.UserCoordinates];
         if (currentBlock is LeftEntrance)
         {
@@ -1463,15 +1538,16 @@ public class Game
             {
                 entrance.CorrespondingRoomId = currentGridCount++;
             }
-            currentGrid = grids[entrance.CorrespondingRoomId];
+          
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingleftblock.png";
-            SetUserCoordinatesBasedOnGrid(currentGrid, typeof(RightEntrance));
+            WalkThroughDoor(grids, typeof(RightEntrance), entrance.CorrespondingRoomId);
+            //SetUserCoordinatesBasedOnGrid(currentGrid, typeof(RightEntrance));
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
             return;
 
         }
-        if (blockabove.CanPass == true)
+        if (blockLeft.CanPass == true)
         {
             var coords = user.UserCoordinates;
             coords.x -= 1;
@@ -1489,7 +1565,7 @@ public class Game
     }
     public async Task MoveRight()
     {
-        Block blockabove = currentGrid[(user.UserCoordinates.x + 1, user.UserCoordinates.y)];
+        Block blockRight = currentGrid[(user.UserCoordinates.x + 1, user.UserCoordinates.y)];
         Block currentBlock = currentGrid[user.UserCoordinates];
         if (currentBlock is RightEntrance)
         {
@@ -1499,15 +1575,16 @@ public class Game
             {
                 entrance.CorrespondingRoomId = currentGridCount++;
             }
-            currentGrid = grids[entrance.CorrespondingRoomId];
+           
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
-            SetUserCoordinatesBasedOnGrid(currentGrid, typeof(LeftEntrance));
+            //SetUserCoordinatesBasedOnGrid(currentGrid, typeof(LeftEntrance));
+            WalkThroughDoor(grids, typeof(LeftEntrance), entrance.CorrespondingRoomId);
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
             return;
 
         }
-        if (blockabove.CanPass == true)
+        if (blockRight.CanPass == true)
         {
             var coords = user.UserCoordinates;
             coords.x += 1; user.UserCoordinates = coords;
@@ -1522,6 +1599,27 @@ public class Game
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
         await SendMessage("user", user);
     }
+    public void WalkThroughDoor(List<Dictionary<(int x, int y), Block>> grids, Type entranceType, int correspondingRoomId)
+    {
+        
+        if(correspondingRoomId > grids.Count - 1)
+        {
+            correspondingRoomId = 0;
+        }
+        currentGrid = grids[correspondingRoomId];
+       
+        while (SetUserCoordinatesBasedOnGrid(currentGrid, entranceType) == false)
+        {
+            if (correspondingRoomId > grids.Count - 1)
+            {
+                correspondingRoomId = 0;
+            }
+            correspondingRoomId++;
+            currentGrid = grids[correspondingRoomId];
+        }
+
+    }
+
     public GameModeType GetGameMode() { return gameMode; }
     public void SetGameMode(GameModeType value) { gameMode = value; }
 
