@@ -106,7 +106,7 @@ public class Game
         Console.WriteLine($"Number Of Rooms {grids.Count}");
     }
 
-    public async Task LoadGame(string gameString)
+    public async Task LoadGame(String gameString)
     {
         SerialisedGame newGame = JsonConvert.DeserializeObject<SerialisedGame>(gameString);
         this.user = newGame.user;
