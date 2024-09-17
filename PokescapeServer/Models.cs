@@ -24,7 +24,7 @@ public class Battle
 }
 
 
-public abstract class Item
+public class Item
 {
     public Item(){
         this.ItemId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
