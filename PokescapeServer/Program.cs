@@ -9,7 +9,7 @@ using PokescapeServer;
     public class Pokescape
     {
 
-        public static readonly string ImageFolderPath = "./Image";
+        public static readonly string ImageFolderPath = "repos\\pokescape\\Image\\blockImages";
     //REPLACE THIS WITH YOURS :
     //"C:\\Users\\henry\\source\\repos\\pokescape\\Image
 
