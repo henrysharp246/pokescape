@@ -10,7 +10,7 @@ namespace PokescapeServer
 {
     public class Emralux : ScapeMonster
     {
-        public Emralux()
+        public Emralux(int level)
         {
             this.BaseDefence = GenerateHealth(1.1, 1.2);
             this.MaximumHealth = this.BaseDefence * Level;
@@ -21,12 +21,13 @@ namespace PokescapeServer
             this.ScapeMonsterName = "Emralux";
             this.Health = this.MaximumHealth;
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+            
         }
     }
 
     public class Fuzzy : ScapeMonster
     {
-        public Fuzzy()
+        public Fuzzy(int level)
         {
             this.BaseDefence = GenerateHealth(1, 1.1);
             this.MaximumHealth = this.BaseDefence * Level; 
@@ -42,7 +43,7 @@ namespace PokescapeServer
 
     public class Golem : ScapeMonster
     {
-        public Golem()
+        public Golem(int level)
         {
             this.BaseDefence = GenerateHealth(1.3, 1.4);
             this.MaximumHealth = this.BaseDefence * Level;
@@ -57,7 +58,7 @@ namespace PokescapeServer
     }
     public class Inferna : ScapeMonster
     {
-        public Inferna()
+        public Inferna(int level)
         {
             this.BaseDefence = GenerateHealth(0.9, 1.1);
             this.MaximumHealth = this.BaseDefence * Level;
@@ -73,7 +74,7 @@ namespace PokescapeServer
 
     public class Kahuna : ScapeMonster
     {
-        public Kahuna()
+        public Kahuna(int level)
         {
             this.BaseDefence = GenerateHealth(1.4, 1.5);
             this.MaximumHealth = this.BaseDefence * Level;
@@ -89,7 +90,7 @@ namespace PokescapeServer
 
     public class Monke : ScapeMonster
     {
-        public Monke()
+        public Monke(int level)
         {
             this.BaseDefence = GenerateHealth(0.6, 0.8);
             this.MaximumHealth = this.BaseDefence * Level;
@@ -105,7 +106,7 @@ namespace PokescapeServer
 
     public class Sealy : ScapeMonster
     {
-        public Sealy()
+        public Sealy(int level)
         {
             this.BaseDefence = GenerateHealth(1, 1.1);
             this.MaximumHealth = this.BaseDefence * Level;
@@ -121,7 +122,7 @@ namespace PokescapeServer
 
     public class Obsadite : ScapeMonster
     {
-        public Obsadite()
+        public Obsadite(int level)
         {
             this.BaseDefence = GenerateHealth(1.3, 1.4);
             this.MaximumHealth = this.BaseDefence * Level;

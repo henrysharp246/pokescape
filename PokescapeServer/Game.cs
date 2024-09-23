@@ -1,13 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PokescapeServer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
-using PokescapeServer;
-using System.Net.Http.Headers;
 
 
 
@@ -403,7 +396,7 @@ public class Game
     public async Task ScapeMonsterEncounter()
     {
         battlecount++;
-        return; ///TO DO REMOVE
+      
         Random random = new Random();
         double num = random.NextDouble();
         if (num < GameConfig.ProbabilityOfScapemonster)

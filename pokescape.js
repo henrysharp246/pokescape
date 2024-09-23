@@ -58,8 +58,10 @@ function populateInventory(inventoryList) {
 function populateMonsterCards(monsterList) {
     var cards = '';
     monsterList.forEach(function (monster) {
+
+        console.log(monster);
         var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
-        var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
+        var attackPercentage = (monster.BaseDamage*monster.level / monster.level*50) * 100;  // assuming max attack is 1300
 
         var card = `
             <div onclick="selectScapemonster(${monster.ScapeMonsterID})" class="pokescape-monster-card card-${monster.ScapeMonsterName}">
@@ -253,7 +255,10 @@ function UploadString(callback) {
 }
 function updateOpponent(monster) {
     var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
+    var health = monster.Health;
     var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
+
+    console.log("health", health, "max", monster.MaximumHealth);
     var opponentString = `
 
     <div class="pokescape-monster-name">
@@ -265,7 +270,7 @@ function updateOpponent(monster) {
     <div class="pokescape-monster-hp-container">
         <div class="row cont-1-row">
             <div class="card-label">HP:</div>
-            <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
+            <div class="card-label-2">${health}%</div>
         </div>
         <div class="pokescape-monster-hp-bar">
           <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
@@ -274,7 +279,7 @@ function updateOpponent(monster) {
     <div class="pokescape-monster-attack-container">
         <div class="row cont-1-row">
             <div class="card-label">Attack:</div>
-            <div class="card-label-2">${monster.BaseDamage}/1000</div>
+            <div class="card-label-2">${monster.Damage/monster.BaseDamage*50}</div>
         </div>
         <div class="pokescape-monster-attack-bar">
           <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">
@@ -285,7 +290,7 @@ function updateOpponent(monster) {
 }
 function updateDefendant(monster) {
     var hpPercentage = (monster.Health / monster.MaximumHealth) * 100;
-    var attackPercentage = (monster.BaseDamage / 1000) * 100;  // assuming max attack is 1300
+    var attackPercentage = (monster.Damage / monster.BaseDamage*50) * 100;  // assuming max attack is 1300
     var opponentString = `
 
     <div class="pokescape-monster-name">
@@ -297,7 +302,7 @@ function updateDefendant(monster) {
     <div class="pokescape-monster-hp-container">
         <div class="row cont-1-row">
             <div class="card-label">HP:</div>
-            <div class="card-label-2">${hpPercentage.toFixed(0)}%</div>
+            <div class="card-label-2">${monster.Health}%</div>
         </div>
         <div class="pokescape-monster-hp-bar">
           <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
@@ -306,7 +311,7 @@ function updateDefendant(monster) {
     <div class="pokescape-monster-attack-container">
         <div class="row cont-1-row">
             <div class="card-label">Attack:</div>
-            <div class="card-label-2">${monster.BaseDamage}/1000</div>
+            <div class="card-label-2">${monster.Damage}/1000</div>
         </div>
         <div class="pokescape-monster-attack-bar">
           <div class="pokescape-monster-attack-bar-filled" style="width:${attackPercentage}%;">

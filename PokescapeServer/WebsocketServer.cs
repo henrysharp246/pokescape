@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
+﻿using Newtonsoft.Json;
 using System.Net;
+using System.Net.WebSockets;
 using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace PokescapeServer
 {
-   
-  
+
+
     static class WebsocketServer
     {
         static Dictionary<string, Game> socketIdsToGames = new();
