@@ -403,7 +403,8 @@ public class Game
         {
             Battle newBattle = new Battle();
             int maxScapeMonsterLevel = user.GetUsersHighestLevelScapemonster();
-            newBattle.OpponentScapeMonster = ScapeMonster.GetRandomScapeMonster();
+
+            newBattle.OpponentScapeMonster = ScapeMonster.GetRandomScapeMonster(maxScapeMonsterLevel);
             newBattle.OpponentScapeMonster.Level = 5;
             ///TO DO SET SCAPEMONSTER LEVELL RANDOMLY
             //maxScapeMonsterLevel - 5;

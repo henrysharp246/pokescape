@@ -91,6 +91,9 @@
     margin-bottom: 2px;
     text-align: left;
 }
+.Monke {
+    background-color: #a51515 !important;
+}
 .pokescape-monster-name, .pokescape-item-name {
     font-weight: 600;
     font-size: 18px;

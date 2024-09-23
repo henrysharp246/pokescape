@@ -10,129 +10,156 @@ namespace PokescapeServer
 {
     public class Emralux : ScapeMonster
     {
-        public Emralux(int level)
+        public Emralux(int level) : base(level)
         {
             this.BaseDefence = GenerateHealth(1.1, 1.2);
-            this.MaximumHealth = this.BaseDefence * Level;
+           
             this.BaseDamage = GenerateBaseDamage(1.1, 1.2);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\EmraluxTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\EmraluxOpponent.png";
             this.ScapeMonsterName = "Emralux";
             this.Health = this.MaximumHealth;
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
-            
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.Health = this.MaximumHealth;
+            Level = level;
+
         }
     }
 
     public class Fuzzy : ScapeMonster
     {
-        public Fuzzy(int level)
+        public Fuzzy(int level) : base(level)
         {
             this.BaseDefence = GenerateHealth(1, 1.1);
-            this.MaximumHealth = this.BaseDefence * Level; 
+      
             this.BaseDamage = GenerateBaseDamage(1, 1.1);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\FuzzyTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\FuzzyOpponent.png";
             this.ScapeMonsterName = "Fuzzy";
-            this.Health = this.MaximumHealth;
+         
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.Health = this.MaximumHealth;
+            Level = level;
         }
     }
 
     public class Golem : ScapeMonster
     {
-        public Golem(int level)
+        public Golem(int level) : base(level)
         {
             this.BaseDefence = GenerateHealth(1.3, 1.4);
-            this.MaximumHealth = this.BaseDefence * Level;
+            
             this.BaseDamage = GenerateBaseDamage(1, 1.1);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\GolemTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\GolemOpponent.png";
             this.ScapeMonsterName = "Golem";
-            this.Health = this.MaximumHealth;
+         
             this.Moves = new List<ScapeMonsterMove>() { new RockSmash() };
         }
     }
     public class Inferna : ScapeMonster
     {
-        public Inferna(int level)
+        public Inferna(int level) : base(level)
         {
             this.BaseDefence = GenerateHealth(0.9, 1.1);
-            this.MaximumHealth = this.BaseDefence * Level;
+            
             this.BaseDamage = GenerateBaseDamage(1.1, 1.3);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaOpponent.png";
             this.ScapeMonsterName = "Fuzzy";
-            this.Health = this.MaximumHealth;
+   
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.Health = this.MaximumHealth;
+            Level = level;
         }
     }
 
     public class Kahuna : ScapeMonster
     {
-        public Kahuna(int level)
+        public Kahuna(int level) : base(level)
         {
             this.BaseDefence = GenerateHealth(1.4, 1.5);
-            this.MaximumHealth = this.BaseDefence * Level;
+     
             this.BaseDamage = GenerateBaseDamage(1.4, 1.5);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\KahunaTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\KahunaOpponent.png";
             this.ScapeMonsterName = "Kahuna";
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
             this.Health = this.MaximumHealth;
+            Level = level;
+
         }
     }
 
     public class Monke : ScapeMonster
     {
-        public Monke(int level)
+        public Monke(int level):base(level)
         {
             this.BaseDefence = GenerateHealth(0.6, 0.8);
-            this.MaximumHealth = this.BaseDefence * Level;
+        
             this.BaseDamage = GenerateBaseDamage(1.4, 1.6);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\MonkeTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\MonkeOpponent.png";
             this.ScapeMonsterName = "Monke";
-            this.Health = this.MaximumHealth;
+          
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.Health = this.MaximumHealth;
+            Level = level;
+
         }
     }
 
     public class Sealy : ScapeMonster
     {
-        public Sealy(int level)
+        public Sealy(int level) : base(level)
         {
             this.BaseDefence = GenerateHealth(1, 1.1);
-            this.MaximumHealth = this.BaseDefence * Level;
             this.BaseDamage = GenerateBaseDamage(1.1, 1.2);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyOpponent.png";
             this.ScapeMonsterName = "Monke";
-            this.Health = this.MaximumHealth;
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.Health = this.MaximumHealth;
+            Level = level;
         }
     }
 
     public class Obsadite : ScapeMonster
     {
-        public Obsadite(int level)
+        public Obsadite(int level):base(level)
         {
             this.BaseDefence = GenerateHealth(1.3, 1.4);
-            this.MaximumHealth = this.BaseDefence * Level;
+          
             this.BaseDamage = GenerateBaseDamage(1, 1.2);
-            this.Damage = this.BaseDamage * Level;
+          
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\ObsaditeTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\ObsaditeOpponent.png";
             this.ScapeMonsterName = "Obsadite";
-            this.Health = this.MaximumHealth;
+      
             this.Moves = new List<ScapeMonsterMove>() {new QuickAttack()};
+            this.Damage = this.BaseDamage * Level;
+            this.MaximumHealth = this.BaseDefence * Level;
+            this.Health = this.MaximumHealth;
+            Level = level;
         }
     }
 
@@ -216,7 +243,7 @@ namespace PokescapeServer
     }
     public class ScapeMonster
     {
-        public static ScapeMonster GetRandomScapeMonster()
+        public static ScapeMonster GetRandomScapeMonster(int level)
         {
             Random random = new Random();
             int num = random.Next(0, 100);
@@ -229,23 +256,23 @@ namespace PokescapeServer
             {
                 case < 25://uncommon
                     
-                    return new Fuzzy();
+                    return new Fuzzy( level);
                   
                 case < 42://fairly common
-                    return new Monke();
+                    return new Monke( level);
                    
                 case < 55:
-                    return new Inferna();
+                    return new Inferna(level);
 
                 case < 65:
-                    return new Sealy();
+                    return new Sealy(level);
                 case < 80:
-                    return new Golem();
+                    return new Golem(level);
                 case < 90:
-                    return new Obsadite();
+                    return new Obsadite(level);
                 case < 97: 
-                    return new Emralux(); 
-                default: return new Sealy();
+                    return new Emralux(level); 
+                default: return new Sealy(level);
             }
         }
 
@@ -262,7 +289,9 @@ namespace PokescapeServer
            
         }
 
-        public ScapeMonster() {
+        public ScapeMonster(int level) {
+
+            Level = level;
             ScapeMonsterID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         }
       

@@ -264,13 +264,13 @@ function updateOpponent(monster) {
     <div class="pokescape-monster-name">
        ${monster.ScapeMonsterName}
     </div>
-    <div class="type-badge" style="background-color: #603082;">
-        Mystical
+    <div class="type-badge ${monster.ScapeMonsterName}" style="background-color: #603082;">
+        lv${monster.Level}
     </div>
     <div class="pokescape-monster-hp-container">
         <div class="row cont-1-row">
             <div class="card-label">HP:</div>
-            <div class="card-label-2">${health}%</div>
+            <div class="card-label-2">${health.toFixed()}/${monster.MaximumHealth.toFixed()}</div>
         </div>
         <div class="pokescape-monster-hp-bar">
           <div class="pokescape-monster-hp-bar-filled" style="width:${hpPercentage}%;">
@@ -296,8 +296,8 @@ function updateDefendant(monster) {
     <div class="pokescape-monster-name">
        ${monster.ScapeMonsterName}
     </div>
-    <div class="type-badge" style="background-color: #603082;">
-        Mystical
+    <div class="type-badge ${monster.ScapeMonsterName}" style="background-color: #603082;">
+                lv${monster.Level}
     </div>
     <div class="pokescape-monster-hp-container">
         <div class="row cont-1-row">

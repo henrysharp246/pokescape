@@ -423,13 +423,11 @@ public class User
    
 
     public User(){
-        
-        Fuzzy fuzzy = new Fuzzy()
-        {
-            Level = 3,
-        };
 
-        ScapeMonsters.Add(new Fuzzy());
+        Fuzzy fuzzy = new Fuzzy(3);
+       
+
+        ScapeMonsters.Add(new Fuzzy(3));
     }
     public bool InBattle { get; set; }= false;
     public bool IsTurn { get; set; }= false;
