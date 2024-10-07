@@ -395,7 +395,7 @@ public class Game
     static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
-        return;
+        
         battlecount++;
       
         Random random = new Random();
