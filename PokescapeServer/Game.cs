@@ -1596,22 +1596,32 @@ public class Game
     }
     public void WalkThroughDoor(List<Dictionary<(int x, int y), Block>> grids, Type entranceType, int correspondingRoomId)
     {
-        
-        if(correspondingRoomId > grids.Count - 1)
-        {
-            correspondingRoomId = 0;
-        }
-        currentGrid = grids[correspondingRoomId];
-       
-        while (SetUserCoordinatesBasedOnGrid(currentGrid, entranceType) == false)
+        try
         {
             if (correspondingRoomId > grids.Count - 1)
             {
                 correspondingRoomId = 0;
             }
-            correspondingRoomId++;
             currentGrid = grids[correspondingRoomId];
+
+            while (SetUserCoordinatesBasedOnGrid(currentGrid, entranceType) == false)
+            {
+                if (correspondingRoomId > grids.Count - 1)
+                {
+                    correspondingRoomId = 0;
+                }
+                correspondingRoomId++;
+                currentGrid = grids[correspondingRoomId];
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);   
+            
+        }
+        
+      
 
     }
 
