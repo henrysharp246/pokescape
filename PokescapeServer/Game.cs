@@ -8,7 +8,7 @@ using System.Net.WebSockets;
 //ALL THE MAIN LOGIC IS DONE INSIDE THE GAME CLASS
 //There is one game per user... i.e. if 10 users are connected there are 10 games
 
-//When we send the user, it updates the grid shown in the game based on where the user is
+
 public class Game
 {
 
@@ -18,12 +18,12 @@ public class Game
         Easy
     }
 
-    public class SerialisedGame // we must have this as we cant seem to serialise private variables. the other reason is so we can send up a simpler version of the game, without unncessary details
+    public class SerialisedGame // we must have this as we cant serialise private variables. the other reason is so we can send up a simpler version of the game, without unncessary details
     {// thus this is abstraction!
         public string GameId;
         public string gameState;
         public User user;
-        public Dictionary<string, Block> currentGrid; //deserialisation doesnt work if not a string, it threw an error
+        public Dictionary<string, Block> currentGrid; 
         public List<Dictionary<string, Block>> grids;
     }
 
@@ -395,6 +395,7 @@ public class Game
     static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
+        return;
         battlecount++;
       
         Random random = new Random();
