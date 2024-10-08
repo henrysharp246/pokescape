@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <title>Pokescape</title>
     <link rel="stylesheet" href="PokescapeStyle.css">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+
 </head>
 <body class="body-background">
     <div id="welcomeMessage" class="welcome-message">
@@ -18,7 +21,7 @@
                 <div class="pokescape-monster-name">
                     Fuzzy
                 </div>
-                <div class="type-badge" style="background-color: #603082;">
+                <div class="type-badge" style="background-color: #000000;">
                     Mystical
                 </div>
                 <img class="pokescape-monster-img" src="C:\Users\henry\source\repos\pokescape\Image\FuzzyOpponent.png" />
@@ -57,32 +60,35 @@
                 <div class="row full-height">
                     <div class="col content-left">
                         <div class="grid-container content-left-span">
+                            <div id="flashing-screen"></div>
                             <div id="battle-screen-1" style="display:none;">
 
                             </div>
                             <div id="battle-screen-2" style="display:none;">
                                 <div id="opponent-row">
-                                    <div  id="opponent-info" class="opponent-info">
-                                        </div>
-                                        <div class="opponent-img-container">
-                                            <img id="opponent-rock" src="Image/OpponentRock.png" />
-                                            <img id="opponent-image" src="" />
-                                        </div>
-
+                                    <div id="opponent-info" class="opponent-info">
                                     </div>
+                                    <div class="opponent-img-container">
+                                        <img id="opponent-rock" src="Image/OpponentRock.png" />
+                                        <img id="opponent-image" src="" />
+                                    </div>
+
+                                </div>
                                 <div class="defendant-options">
                                     Choose Your Scapemonster...
                                 </div>
-                               <div class="defendant-row" style="display:none;">
-                                   <div id="defendant-info" class="defendant-info">
-                                       
-                                   </div>
-                                   <div class="defendant-img-container">
-                                       <img id="defendant-rock" src="Image/OpponentRock.png" />
-                                       <img id="defendant-image" src="C:\Users\edcha\Downloads\Telegram Desktop\FuzzyTamed.png"/>
-                                   </div>
-                                   
-                               </div>
+                                <div class="defendant-row" style="display:none;">
+                                    <div id="defendant-info" class="defendant-info">
+
+                                    </div>
+                                    <div class="defendant-img-container">
+                                        <img id="defendant-rock" src="Image/OpponentRock.png" />
+                                        <img id="defendant-image" src="C:\Users\edcha\Downloads\Telegram Desktop\FuzzyTamed.png" />
+                                    </div>
+                                    <div class="explosion" >
+                                        <img id="explosion" src="Image/Explosion.png" />
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="" id="grid"></div><img id="character-one" class="character-one" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\Characterfacingdownblock.png" />

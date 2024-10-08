@@ -341,6 +341,7 @@ function handleBattle(battle) {
 
 
 
+
 }
 
 function addMoves(moves) {
@@ -373,6 +374,15 @@ function addMoves(moves) {
   
 }
 function attack(moveId) {
+    $('#explosion').show();
+    $('.defendant-options').hide();
+
+    // Hide the explosion element after a short duration (e.g., 300ms)
+    setTimeout(function () {
+        $('#explosion').hide();
+        $('.defendant-options').show();
+    }, 40);  // Display explosion for 300 milliseconds (adjust as needed)
+
     const messageToSend = {
         "MessageType": "ATTACK_MOVE",
         "SocketId": socketId,
@@ -380,6 +390,8 @@ function attack(moveId) {
     };
     console.log('Sending message:', messageToSend);
     connection.send(JSON.stringify(messageToSend));
+
+    
 }
 function handleNewBattle(battle) {
     var convertedBattle = JSON.parse(battle);
@@ -387,10 +399,18 @@ function handleNewBattle(battle) {
     var monster = convertedBattle.OpponentScapeMonster;
 
     updateOpponent(monster);
+
+    // Set opponent image
     $('#opponent-image').attr("src", monster.OpponentImage);
-    $('#battle-screen-2').show();
 
+    // Show flashing animation
+    $('#flashing-screen').show();
 
+    // Hide the flashing screen after 2 seconds and show the battle screen
+    setTimeout(function () {
+        $('#flashing-screen').hide(); // Hide flashing screen
+        $('#battle-screen-2').show();  // Show battle screen
+    }, 500);  // 2 seconds delay
 }
 function handleUser(eventMessage) {
     var user = JSON.parse(eventMessage);

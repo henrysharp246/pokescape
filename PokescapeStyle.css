@@ -1,19 +1,30 @@
 ﻿.body-background {
-    background-color: lightslategrey;
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(45deg, black, #f5fcf600);
+    background-image: linear-gradient(270deg, #539196, black);
 }
+
+body {
+    font-family: 'Pixelify Sans', sans-serif;
+}
+
+
+
+
 
 .welcome-message {
     height: auto;
     padding-bottom: 30px;
     border-radius: 30px;
-    z-index: 5;
+    z-index: 50;
     transform: translate(-50%, -50%);
     left: 50%;
     box-shadow: #000000a1 0px 4px 2px 0px;
     width: 600px;
     position: absolute;
     text-align: center;
-    background: lightslategrey;
+    background-image: linear-gradient(270deg, #1e2f4d, #bfbdb1);
     top: 50%;
     border: solid 3px white;
 }
@@ -25,12 +36,13 @@
 .pokescape-monster-card, .pokescape-item-card {
     width: 150px;
     margin-left: 10px;
-    margin-bottom:10px;
-    background-color: #475564;
+    margin-bottom: 10px;
+    background-image: radial-gradient(#d0e5f4, #4c8cab);
     padding: 20px;
     position: relative;
     border-radius: 1rem;
     box-shadow: #000000a1 0px 4px 2px 0px;
+    border: solid 1px white;
 }
 .pokescape-monster-img {
     width: 140px;
@@ -91,9 +103,7 @@
     margin-bottom: 2px;
     text-align: left;
 }
-.Monke {
-    background-color: #a51515 !important;
-}
+
 .pokescape-monster-name, .pokescape-item-name {
     font-weight: 600;
     font-size: 18px;
@@ -186,6 +196,40 @@
     opacity: 0;
     animation: fadeIn 4s forwards;
 }
+#explosion {
+    position: absolute;
+    width: 600px;
+    max-width: 450px;
+    top: 190px;
+    left: 130px;
+    display: none;
+}
+
+@keyframes flash {
+    0% {
+        background: black;
+    }
+
+    50% {
+        background: white;
+    }
+
+    100% {
+        background: black;
+    }
+}
+
+/* Styling for the flashing screen */
+#flashing-screen {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999; /* Ensure it appears above other elements */
+    animation: flash 0.2s linear infinite;
+}
 
 @keyframes fadeIn {
     to {
@@ -200,23 +244,24 @@
     max-width: 250px;
     min-width: 250px;
     position: absolute;
-    background-color: #ffffff87;
+    background-image: linear-gradient(45deg, #666c98db, #1c3c5e);
     border-radius: 15px;
+    border: solid 3px darkslateblue;
     padding: 10px;
-    z-index:3;
+    z-index: 3;
 }
 #opponent-rock {
     position: absolute;
-    top: 330px;
-    width: 500px;
-    transform: translateY(-100%) ;
-    right: -25px;
+    top: 370px;
+    width: 700px;
+    transform: translateY(-100%);
+    right: -120px;
 }
 #defendant-rock {
     position: absolute;
-    bottom: 20px;
-    width: 700px;
-        left: -180px;
+    bottom: -5px;
+    width: 800px;
+    left: -220px;
 }
 #opponent-image {
     position: absolute;
@@ -297,7 +342,6 @@
     flex-grow: 1;
     padding: 0 20px;
     background-color: #ffffff5e;
-    /*background-image: url(./Image/BattleBackground.png);*/
     background-size: 100% 100%;
     border-radius: 1rem;
     margin-left: 20px;
@@ -317,12 +361,13 @@
     margin-bottom: 10px;
     margin-right: 10px;
     margin-left: 10px;
+    filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.6));
 }
 
 .button {
-    margin-left:5px;
-    white-space:nowrap;
-    padding:10px 10px;
+    margin-left: 5px;
+    white-space: nowrap;
+    padding: 10px 10px;
     position: relative;
     font-weight: 700;
     z-index: 2;
@@ -331,11 +376,11 @@
     text-align: center;
     font-size: 20px;
     padding-top: 4px;
-    padding-bottom:4px;
+    padding-bottom: 4px;
     width: calc(100% - 55px) !important;
     display: block;
     height: auto;
-    background-color: cadetblue;
+    background-color: #c1e5e6;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
     margin-top: 10px;
 }

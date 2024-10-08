@@ -395,11 +395,11 @@ public class Game
     static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
-        return;
+    
         battlecount++;
       
         Random random = new Random();
-        double num = random.NextDouble();
+        int num = random.Next(1, 17);
         if (num < GameConfig.ProbabilityOfScapemonster)
         {
             Battle newBattle = new Battle();
@@ -543,7 +543,7 @@ public class Game
             {
 
 
-                if (room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] is BlankBlock || room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] == null)
+                if (room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] is BlankBlock || room[(coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y)] == null )
                 {
                     return false;
                 }

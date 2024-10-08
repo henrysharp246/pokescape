@@ -270,18 +270,18 @@ public class StoneFloorBlock : FloorBlock
         Name = "stonefloorblock";
         CanPass = true;
         Random random = new Random();
-        int num = random.Next(1,150);
+        int num = random.Next(1,50);
         switch (num) 
         {
 
-            case <15: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
+            case <5: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
                 break;
-            case < 149:
+            case <50:
                 Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
                 break;
             default:
                 var item = Item.GetRandomItem();
-               this.item = item;
+                this.item = item;
                 this.Image = item.Image;
                 this.ContainsItem = true;
                 break;
@@ -328,8 +328,36 @@ public class WaterBlock : FloorBlock
     
     public WaterBlock()
     {
-        Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
+ 
+        DefaultImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
+        Name = "waterblock";
         CanPass = false;
+        Random random = new Random();
+        int num = random.Next(1, 150);
+        switch (num)
+        {
+
+            case < 25:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
+                break;
+            case < 50:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock1.png";
+                break;
+            case < 75:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock2.png";
+                break;
+            case < 100:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock3.png";
+                break;
+
+            case < 125:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock4.png";
+                break;
+            case < 150:
+                Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock5.png";
+                break;
+                
+        }
     }
 }
 

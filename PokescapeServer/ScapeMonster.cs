@@ -74,7 +74,7 @@ namespace PokescapeServer
           
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\InfernaOpponent.png";
-            this.ScapeMonsterName = "Fuzzy";
+            this.ScapeMonsterName = "Inferna";
    
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
             this.Damage = this.BaseDamage * Level;
@@ -134,7 +134,7 @@ namespace PokescapeServer
           
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyOpponent.png";
-            this.ScapeMonsterName = "Monke";
+            this.ScapeMonsterName = "Seal";
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
             this.Damage = this.BaseDamage * Level;
             this.MaximumHealth = this.BaseDefence * Level;
