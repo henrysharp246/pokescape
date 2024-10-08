@@ -134,7 +134,7 @@ namespace PokescapeServer
           
             this.TamedImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyTamed.png";
             this.OpponentImage = $"{Pokescape.ImageFolderPath}\\scapeMonsters\\SealyOpponent.png";
-            this.ScapeMonsterName = "Seal";
+            this.ScapeMonsterName = "Sealy";
             this.Moves = new List<ScapeMonsterMove>() { new QuickAttack() };
             this.Damage = this.BaseDamage * Level;
             this.MaximumHealth = this.BaseDefence * Level;
@@ -247,8 +247,8 @@ namespace PokescapeServer
         {
             Random random = new Random();
             int num = random.Next(0, 100);
-          
-            
+
+            //return new Sealy(level);
             
       
 

@@ -1476,6 +1476,41 @@ public class Game
 
 
         }
+
+        if (blockabove.CanPass == false)
+        {
+            if (blockabove is WaterBlock)
+            {
+                foreach (ScapeMonster scapeMonster in user.ScapeMonsters)
+                {
+
+                    if (scapeMonster is Sealy)
+                    {
+                        var coords = user.UserCoordinates;
+                        coords.y += 1;
+                        user.UserCoordinates = coords;
+
+                        //log what is in folder with ./ file path here
+
+                        var directoryPath = "./";
+                        var fullPath = System.IO.Path.GetFullPath(directoryPath);
+                        var folderName = new System.IO.DirectoryInfo(fullPath).Name;
+                        Console.WriteLine(folderName);
+                        currentBlock = currentGrid[user.UserCoordinates];
+                       
+                    }
+                    return;
+                }
+                return;
+            }
+
+
+           
+            
+        }
+
+
+        
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
         await SendMessage("user", user);
     }
