@@ -276,7 +276,7 @@ public class StoneFloorBlock : FloorBlock
 
             case <5: Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Mossyfloorblock.png";
                 break;
-            case <50:
+            case <49:
                 Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
                 break;
             default:

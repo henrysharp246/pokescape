@@ -214,10 +214,11 @@ body {
     border-radius: 3px;
     bottom: 185px;
     border: solid;
-    border-color: #ffffff;
-    left: 200px;
+    border-color: darkslateblue;
+    left: 240px;
     transform: translateX(-50%);
-    opacity: 1;
+    opacity: 0;
+    animation: fadeIn 4s forwards;
 }
 #explosion {
     position: absolute;
