@@ -45,6 +45,7 @@ function populateInventory(inventoryList) {
                 <div class="item-count" style="">
                    
                 </div>
+               
                 <img class="pokescape-item-img" src="${item.Image}" />
              
             </div>
@@ -72,7 +73,7 @@ function populateMonsterCards(monsterList) {
                     ${monster.ScapeMonsterName}
                 </div>
                 <div class="type-badge" style="background-color: ${monster.IsBoss ? '#FF0000' : '#603082'};">
-                    ${monster.IsBoss ? 'Boss' : 'Mystical'}
+                   lv. ${monster.Level}
                 </div>
                 <img class="pokescape-monster-img" src="${monster.OpponentImage}" />
                 <div class="pokescape-monster-hp-container">
@@ -141,6 +142,12 @@ connection.onmessage = (event) => {
             handleMoveResponse(message.Data);
             break;
         case 'newBattle':
+            // Directly call playAudio() instead of using window.onload
+            playAudio();
+            setTimeout(function () {
+                console.log("Waited for 1 seconds");
+            }, 1000);
+            // Handle the new battle logic as before
             handleNewBattle(message.Data);
             break;
         case 'battle':
@@ -151,10 +158,13 @@ connection.onmessage = (event) => {
     }
 };
 function hideBattle() {
+  
+
     $('#battle-screen-2').hide();
     $('#defendant-info').html("");
     $('.defendant-row').hide();
     $('#move-controls').hide(); $('.defendant-options').hide();
+    stopAudio();
 
 }
 function showBattleDialog(dialogToShow) {
@@ -344,6 +354,26 @@ function handleBattle(battle) {
 
 }
 
+var x = document.getElementById("myAudio");
+
+// Function to play audio from the beginning
+function playAudio() {
+    x.currentTime = 0; // Reset audio to the start
+    x.play().then(() => {
+        console.log("Audio started playing from the beginning.");
+    }).catch(error => {
+        console.error("Failed to play audio:", error);
+    });
+}
+
+// Function to pause and stop the audio
+function stopAudio() {
+    x.pause(); // Pause the audio
+    x.currentTime = 0; // Reset the audio playback position to the start
+    console.log("Audio stopped and reset to the beginning.");
+}
+
+
 function addMoves(moves) {
     let htmlString = `<h4>Moves/Attacks:</h4>`;
 
@@ -410,7 +440,7 @@ function handleNewBattle(battle) {
     setTimeout(function () {
         $('#flashing-screen').hide(); // Hide flashing screen
         $('#battle-screen-2').show();  // Show battle screen
-    }, 500);  // 2 seconds delay
+    }, 1500);  // 2 seconds delay
 }
 function handleUser(eventMessage) {
     var user = JSON.parse(eventMessage);

@@ -9,7 +9,30 @@ body {
     font-family: 'Pixelify Sans', sans-serif;
 }
 
+#audio {
+    display: none;
+}
+.playmusic {
+    position: fixed;
+    left: 1830px;
+    top: 5px;
+    border: solid 2px white;
+    border-radius: 13px;
+    text-align: center;
+    background-color: #c1e5e6;
+    z-index: 10;
+}
 
+.mutemusic {
+    position: fixed;
+    left: 1780px;
+    top: 5px;
+    border: solid 2px white;
+    border-radius: 13px;
+    text-align: center;
+    background-color: #c1e5e6;
+    z-index: 10;
+}
 
 
 
@@ -21,7 +44,7 @@ body {
     transform: translate(-50%, -50%);
     left: 50%;
     box-shadow: #000000a1 0px 4px 2px 0px;
-    width: 600px;
+    width: 650px;
     position: absolute;
     text-align: center;
     background-image: linear-gradient(270deg, #1e2f4d, #bfbdb1);
@@ -177,24 +200,24 @@ body {
 }
 
 .defendant-options {
+    display: block;
     position: absolute;
-    bottom: 50%;
+    bottom: 500px;
     font-size: 24px;
     color: white;
-  
+    z-index: 100;
     padding: 10px;
-  
-    width:fit-content;
+    width: fit-content;
     text-shadow: 1px black 1px black 1px black 1px black;
-    background-color: cadetblue;
-    border-radius: 13px;
+    background-color: #000000;
     font-weight: 600;
+    border-radius: 3px;
+    bottom: 185px;
     border: solid;
-    border-color: darkslateblue;
-    left: 240px;
+    border-color: #ffffff;
+    left: 200px;
     transform: translateX(-50%);
-    opacity: 0;
-    animation: fadeIn 4s forwards;
+    opacity: 1;
 }
 #explosion {
     position: absolute;
@@ -411,6 +434,7 @@ body {
     width:30%; 
     max-width:30%;
     height:fit-content;
+    top: -10px;
 }
 .button-controls{
     display:flex;

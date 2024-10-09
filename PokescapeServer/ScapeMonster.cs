@@ -190,7 +190,7 @@ namespace PokescapeServer
     {
         public QuickAttack()
         {
-            this.MoveDamage = 100;
+            this.MoveDamage = 1;
             this.MoveName = "Quick Attack";
             this.MoveDescription = "Standard attack";
         }

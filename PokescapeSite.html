@@ -5,6 +5,64 @@
     <title>Pokescape</title>
     <link rel="stylesheet" href="PokescapeStyle.css">
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Create an audio element (controls attribute removed to hide the player) -->
+    <audio id="myAudio">
+        <!-- Reference the audio file using a relative path or URL -->
+        <source src="C:/Users/henry/OneDrive/Documents/Visual Studio 2022/pokescape/Sound/Battlesong.mp3" type="audio/mpeg">
+    </audio>
+
+    <br>
+
+
+
+    <script>
+        // Get the audio element by its ID
+        var x = document.getElementById("myAudio");
+
+        // Play audio function
+        function playAudio() {
+            x.play();
+        }
+
+        // Pause audio function
+        function pauseAudio() {
+            x.pause();
+        }
+
+        // Example: Automatically play the audio when the page loads
+        window.onload = function () {
+            playAudio(); // Start playing the audio as soon as the page loads
+        };
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </head>
@@ -20,11 +78,10 @@
             <div class="pokescape-monster-card">
                 <div class="pokescape-monster-name">
                     Fuzzy
+             
+          
                 </div>
-                <div class="type-badge" style="background-color: #000000;">
-                    Mystical
-                </div>
-                <img class="pokescape-monster-img" src="C:\Users\henry\source\repos\pokescape\Image\FuzzyOpponent.png" />
+                <img class="pokescape-monster-img" src="Image\scapeMonsters\FuzzyOpponent.png" />
                 <div class="pokescape-monster-hp-container">
 
                     <div class="row cont-1-row">
@@ -49,91 +106,94 @@
 
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
         </div>
     </div>
-                        <img class="green-dragon" src="Image/scapeMonsters/Greendragon.png">
-                    
-            <div class="main-content">
+    <img class="green-dragon" src="Image/scapeMonsters/Greendragon.png">
 
-                <div class="row full-height">
-                    <div class="col content-left">
-                        <div class="grid-container content-left-span">
-                            <div id="flashing-screen"></div>
-                            <div id="battle-screen-1" style="display:none;">
+    <div class="main-content">
 
-                            </div>
-                            <div id="battle-screen-2" style="display:none;">
-                                <div id="opponent-row">
-                                    <div id="opponent-info" class="opponent-info">
-                                    </div>
-                                    <div class="opponent-img-container">
-                                        <img id="opponent-rock" src="Image/OpponentRock.png" />
-                                        <img id="opponent-image" src="" />
-                                    </div>
-
-                                </div>
-                                <div class="defendant-options">
-                                    Choose Your Scapemonster...
-                                </div>
-                                <div class="defendant-row" style="display:none;">
-                                    <div id="defendant-info" class="defendant-info">
-
-                                    </div>
-                                    <div class="defendant-img-container">
-                                        <img id="defendant-rock" src="Image/OpponentRock.png" />
-                                        <img id="defendant-image" src="C:\Users\edcha\Downloads\Telegram Desktop\FuzzyTamed.png" />
-                                    </div>
-                                    <div class="explosion" >
-                                        <img id="explosion" src="Image/Explosion.png" />
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="" id="grid"></div><img id="character-one" class="character-one" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\Characterfacingdownblock.png" />
-                        </div>
-
-                       
-                        <div id="move-controls" class="move-controls" style="display:none;">
-                           
-                        </div>
-
+        <div class="row full-height">
+            <div class="col content-left">
+                <div class="grid-container content-left-span">
+                    <div id="flashing-screen"></div>
+                    <div id="battle-screen-1" style="display:none;">
 
                     </div>
-                    <div class="col content-right">
-                        <div class="row logo-row">
-                            <img class="logo" src="C:\Users\henry\source\repos\pokescapeZ\Image\blockimages\pokescape.gif">
-                            <div class="button-controls">
-                                <a onclick="showScapeMonsters()" class="button selected scapeMonstersButton">Scapemonsters</a>
-                                <a onclick="showInventory()" class="button inventoryButton">Inventory</a>
-
-                                <a class="button saveButton" onclick="saveGame()">Save game</a>
-                                <a class="button loadButton" onclick="loadGame()">Load game</a>
+                    <div id="battle-screen-2" style="display:none;">
+                        <div id="opponent-row">
+                            <div id="opponent-info" class="opponent-info">
+                            </div>
+                            <div class="opponent-img-container">
+                                <img id="opponent-rock" src="Image/OpponentRock.png" />
+                                <img id="opponent-image" src="" />
                             </div>
 
                         </div>
-                        <div class="line-row"></div>
-                        <div class="row">
 
-                            <div id="scapemonsterInventory">
+                        <div class="defendant-row" style="display:none;">
+                            <div id="defendant-info" class="defendant-info">
 
                             </div>
-                            <div id="itemInventory" style="display:none;">
-
+                            <div class="defendant-img-container">
+                                <img id="defendant-rock" src="Image/OpponentRock.png" />
+                                <img id="defendant-image" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\FuzzyTamed.png" />
+                            </div>
+                            <div class="explosion">
+                                <img id="explosion" src="Image/Explosion.png" />
                             </div>
                         </div>
-                    
+
+                    </div>
+                    <div class="" id="grid"></div><img id="character-one" class="character-one" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\Characterfacingdownblock.png" />
+                </div>
+
+                <div class="defendant-options">
+                    Choose Your Scapemonster...
+                </div>
+                <div id="move-controls" class="move-controls" style="display:none;">
+
+                </div>
 
 
+            </div>
+            <div class="col content-right">
+                <div class="row logo-row">
+                    <img class="logo" src="C:\Users\henry\source\repos\pokescapeZ\Image\blockimages\pokescape.gif">
+                    <div class="button-controls">
+                        <a onclick="showScapeMonsters()" class="button selected scapeMonstersButton">Scapemonsters</a>
+                        <a onclick="showInventory()" class="button inventoryButton">Inventory</a>
+
+                        <a class="button saveButton" onclick="saveGame()">Save game</a>
+                        <a class="button loadButton" onclick="loadGame()">Load game</a>
+                    </div>
+
+                </div>
+                <div class="line-row"></div>
+                <div class="row">
+
+                    <div id="scapemonsterInventory">
+
+                    </div>
+                    <div id="itemInventory" style="display:none;">
 
                     </div>
                 </div>
-            </div>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-            <script src="./pokescape.js"></script>
-            <script>
+              
+                <button class="playmusic" onclick="playAudio()">Unmute</button>
+                <button class="mutemusic" onclick="stopAudio()">Mute</button>
 
-            </script>
+
+
+
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./pokescape.js"></script>
+    <script>
+
+    </script>
 </body>
 </html>
