@@ -6,9 +6,18 @@
 }
 
 body {
-    font-family: 'Pixelify Sans', sans-serif;
+    font-family: 'Pixelify Sans';
 }
-
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
 #audio {
     display: none;
 }
@@ -23,6 +32,20 @@ body {
     z-index: 10;
 }
 
+.discardscapemonster{
+    display: none;
+}
+
+.input-text {
+    background-color: black;
+    color: white;
+    border: solid 1px white;
+    left: 5px;
+    position: RELATIVE;
+    display: none;
+}
+
+
 .mutemusic {
     position: fixed;
     left: 1780px;
@@ -34,22 +57,50 @@ body {
     z-index: 10;
 }
 
+.exitbattle {
+    display: none ;
+}
 
 
 .welcome-message {
     height: auto;
-    padding-bottom: 30px;
+    padding: 20px 30px;
     border-radius: 30px;
-    z-index: 50;
+    z-index: 9999999;
     transform: translate(-50%, -50%);
     left: 50%;
-    box-shadow: #000000a1 0px 4px 2px 0px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
     width: 650px;
     position: absolute;
     text-align: center;
-    background-image: linear-gradient(270deg, #1e2f4d, #bfbdb1);
+    background: radial-gradient(circle, #bfddd9, #03523f);
     top: 50%;
-    border: solid 3px white;
+    border: solid 3px rgba(255, 255, 255, 0.8);
+    font-size: 20px;
+    line-height: 1.5;
+    animation: fade-in 0.6s ease-out;
+    background-size: 200% 200%;
+    background-position: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+
+    .welcome-message:hover {
+        transform: translate(-50%, -50%) scale(1.05);
+      
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 6px 15px rgba(0, 0, 0, 0.5);
+    }
+
+@keyframes fade-in {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
 }
 .pokescape-monster-card-container{
     width:100%; 
@@ -81,7 +132,7 @@ body {
     border-radius:5px;
 }
 .pokescape-monster-attack-bar-filled {
-    background-color: green;
+    background-image: radial-gradient(#fb0000, #810303);
     height: 100%;
 }
 .type-badge {
@@ -107,7 +158,7 @@ body {
 
 
 .pokescape-monster-hp-bar-filled {
-    background-color: orange;
+    background-image: radial-gradient(#00df11, #006904);
     height: 100%;
 }
 .cont-1-row {
@@ -202,23 +253,22 @@ body {
 .defendant-options {
     display: block;
     position: absolute;
-    bottom: 500px;
     font-size: 24px;
     color: white;
-    z-index: 100;
+    z-index: 99;
     padding: 10px;
     width: fit-content;
     text-shadow: 1px black 1px black 1px black 1px black;
     background-color: #000000;
     font-weight: 600;
     border-radius: 3px;
-    bottom: 185px;
+    bottom: 480px;
     border: solid;
-    border-color: darkslateblue;
-    left: 240px;
+    border-color: white;
+    left: 610px;
     transform: translateX(-50%);
     opacity: 0;
-    animation: fadeIn 4s forwards;
+    animation: fadeIn 0.4s forwards;
 }
 #explosion {
     position: absolute;
@@ -228,7 +278,10 @@ body {
     left: 130px;
     display: none;
 }
-
+.moves-h {
+    color: white;
+    margin: 0px 0px 10px 0px;
+}
 @keyframes flash {
     0% {
         background: black;
@@ -252,7 +305,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 9999; /* Ensure it appears above other elements */
-    animation: flash 0.2s linear infinite;
+    animation: flash 0.1s linear infinite;
 }
 
 @keyframes fadeIn {
@@ -260,7 +313,7 @@ body {
         opacity: 1;
     }
 }
-#battle-screen-1{
+battle-screen-1{
     position:absolute;
     z-index:2;
 }
@@ -268,9 +321,9 @@ body {
     max-width: 250px;
     min-width: 250px;
     position: absolute;
-    background-image: linear-gradient(45deg, #666c98db, #1c3c5e);
-    border-radius: 15px;
-    border: solid 3px darkslateblue;
+    background-image: radial-gradient(#2d5d6f, #14366b);
+    border-radius: 5px;
+    border: solid 1px #000000;
     padding: 10px;
     z-index: 3;
 }
@@ -279,23 +332,41 @@ body {
     top: 370px;
     width: 700px;
     transform: translateY(-100%);
-    right: -120px;
+    right: 760px;
 }
-#defendant-rock {
-    position: absolute;
-    bottom: -5px;
-    width: 800px;
-    left: -220px;
-}
+
 #opponent-image {
     position: absolute;
     top: 330px;
+    /*right: 40px;*/
+    right:-270px;
     width: 340px;
-    right: 40px;
-    height:auto;
+    height: auto;
     transform: translateY(-100%);
+    
+}
+.battle-dialog-container {
+    display: flex;
+    flex-direction: column-reverse; /* Reverses the order of child elements */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 20px;
+    height: calc(100% - 40px);
 }
 
+#battle-dialog {
+    background-color: black;
+    width: 100%;
+    height: 85px;
+    border-radius: 5px;
+    border: solid 2px white;
+    margin-top: 20px;
+    bottom: 12px;
+    position: relative;
+    overflow-y: hidden;
+}
+#battle-text {
+    color: white;
+}
 .opponent-info {
     top: 50px;
     left: 50px;
@@ -306,9 +377,16 @@ body {
 }
 #defendant-image {
     position: absolute;
-    bottom: 50px;
-    left: 0px;
-    width: 340px;height:auto;
+    bottom: -200px;
+    left: -250px;
+    width: 340px;
+    height:auto;
+}
+#defendant-rock {
+    position: absolute;
+    bottom: -5px;
+    width: 800px;
+    left: -690px;
 }
 #battle-screen-2 {
     padding: 30px 25px;
@@ -337,10 +415,21 @@ body {
     left: 50%;
     z-index: 10;
     transform: translate(-50%, -50%);
+    transition: transform 0.5s ease-in-out;
 }
 .content-right{
     max-width:50%;
 }
+
+.music-buttons {
+    position: relative;
+    display:flex;
+    margin-bottom: 50px;
+    justify-content: space-between;
+}
+
+
+
 .content-left-span {
 }
 .content-left-span .col{
@@ -408,6 +497,31 @@ body {
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
     margin-top: 10px;
 }
+
+
+
+.batbutton {
+    padding: 5px 5px;
+    position: relative;
+    z-index: 2;
+    border: solid 2px white;
+    border-radius: 7px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 15px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    display: block;
+    height: auto;
+    background-color: #6252a3;
+    /* text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white; */
+    margin-top: 10px;
+}
+
+.movebut{
+    display: none;
+}
+
 .line-row {
     width: 100%;
     height: 1px;

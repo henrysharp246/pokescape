@@ -2,14 +2,13 @@
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace PokescapeServer
 {
-
-
     static class WebsocketServer
     {
-        static Dictionary<string, Game> socketIdsToGames = new();
+        static ConcurrentDictionary<string, Game> socketIdsToGames = new();  // using concurrent version of the dictionary allows multiple clients to connect to same server
 
         public static async Task Listen()
         {
@@ -46,7 +45,7 @@ namespace PokescapeServer
             loginMessage.Data = socketId;
             await SendMessage(webSocket, loginMessage);
             var game = new Game(webSocket);
-            socketIdsToGames.Add(socketId, game);
+            socketIdsToGames[socketId] = game;
             await game.StartGame();
             // Handle the WebSocket connection
             await HandleWebSocketConnection(webSocket);
@@ -63,7 +62,7 @@ namespace PokescapeServer
                 // Loop to ensure we receive all fragments for a message
                 do
                 {
-                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                      result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     receivedData.AddRange(new ArraySegment<byte>(buffer, 0, result.Count));
                 } while (!result.EndOfMessage); // Continue until the full message is received.
 

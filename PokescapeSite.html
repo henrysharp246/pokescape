@@ -86,7 +86,7 @@
 
                     <div class="row cont-1-row">
                         <div class="card-label">HP:</div>
-                        <div class="card-label-2">90%</div>
+                        <div class="card-label-2"></div>
                     </div>
                     <div class="pokescape-monster-hp-bar">
 
@@ -98,7 +98,7 @@
                 <div class="pokescape-monster-attack-container">
                     <div class="row cont-1-row">
                         <div class="card-label">Attack:</div>
-                        <div class="card-label-2">1200/1300</div>
+                        <div class="card-label-2"></div>
                     </div>
 
                     <div class="pokescape-monster-attack-bar">
@@ -125,9 +125,9 @@
                         <div id="opponent-row">
                             <div id="opponent-info" class="opponent-info">
                             </div>
-                            <div class="opponent-img-container">
-                                <img id="opponent-rock" src="Image/OpponentRock.png" />
-                                <img id="opponent-image" src="" />
+                            <div id="opponent-scapemonster-1"  class="opponent-img-container">
+                                <img id="opponent-rock"  src="Image/OpponentRock.png" />
+                                <img id="opponent-image" onclick="FeedOpponent()" src="" />
                             </div>
 
                         </div>
@@ -148,25 +148,38 @@
                     </div>
                     <div class="" id="grid"></div><img id="character-one" class="character-one" src="C:\Users\henry\OneDrive\Desktop\pokescape\Image\blockImages\Characterfacingdownblock.png" />
                 </div>
-
-                <div class="defendant-options">
-                    Choose Your Scapemonster...
+                <div id="battle-dialog" class="console-box">
+                    <div class="battle-dialog-container">
+                        <div id="battle-text"></div>
+                    </div>
                 </div>
+             
                 <div id="move-controls" class="move-controls" style="display:none;">
 
                 </div>
-
-
+                <div>
+                    <button class="batbutton exitbattle " style="display:none;" onclick="exitBattle()">Escape Battle</button>
+                    <button class="batbutton movebut hide-moves " onclick="hideMoves()">Hide moves</button>
+                    <button class="batbutton movebut discard-move " onclick="discardMove()">Discard move</button>
+                    <button class="batbutton movebut rename-scapemonster " onclick="renameScapeMonster()">Rename ScapeMonster</button>
+                    <button onclick="discardScapeMonster(), hideMoves()" class="batbutton movebut discardscapemonster">Free Scapemonster</button>
+                    <input class="input-text " type="text" id="scapemonsterNameInput" />
+                </div>
             </div>
             <div class="col content-right">
                 <div class="row logo-row">
                     <img class="logo" src="C:\Users\henry\source\repos\pokescapeZ\Image\blockimages\pokescape.gif">
+                
+                    
                     <div class="button-controls">
+                        
                         <a onclick="showScapeMonsters()" class="button selected scapeMonstersButton">Scapemonsters</a>
                         <a onclick="showInventory()" class="button inventoryButton">Inventory</a>
 
                         <a class="button saveButton" onclick="saveGame()">Save game</a>
                         <a class="button loadButton" onclick="loadGame()">Load game</a>
+                        <a onclick="stopAudio()" class=" button ">Mute</a>
+                        <a onclick="resumeAudio()" class=" button " style="">Unmute</a>
                     </div>
 
                 </div>
@@ -181,8 +194,7 @@
                     </div>
                 </div>
               
-                <button class="playmusic" onclick="playAudio()">Unmute</button>
-                <button class="mutemusic" onclick="stopAudio()">Mute</button>
+               
 
 
 

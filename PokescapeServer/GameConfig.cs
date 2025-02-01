@@ -12,6 +12,7 @@ namespace PokescapeServer
         public const int VisibleGridSize = VisibleGridWidth*VisibleGridWidth; //length and width of the square map
 
 
+
         public const int MaxRoomWidth = VisibleGridWidth;
         public const int MinRoomWidth = 5;
 
@@ -27,8 +28,8 @@ namespace PokescapeServer
         public const double ProbabilityOfWater =1;
 
 
-        public const int MinRooms = 4; //IN USE MUST BE GREATER THAN 1
-        public const int MaxRooms = 6;//IN USE
+        public const int MinRooms = 40; //IN USE MUST BE GREATER THAN 1
+        public const int MaxRooms = 50;//IN USE
 
         public const int ProbabilityOfScapemonster = 2;
         
