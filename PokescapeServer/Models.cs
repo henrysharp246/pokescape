@@ -664,8 +664,9 @@ public class User
        
 
         ScapeMonsters.Add(new Fuzzy(3));
+   
 
-        ScapeMonsters.Add(new Golem(3));
+
     }
 
     public void AddItemToInventory(Item item)
