@@ -579,9 +579,7 @@ public class LeftEntrance : Entrance
 
 public class User
 {
-    public Dictionary<string, Item> Inventory = new(); // backing value, will get serialized via JSON 
-
-//    public List<Item> Inventory => _Inventory.Values.ToList(); // readonly version
+    public Dictionary<string, Item> Inventory = new(); // uniqueId of item vs Item
 
     public List<ScapeMonster> ScapeMonsters = new List<ScapeMonster>();
     public bool CanExit = true;
@@ -601,8 +599,8 @@ public class User
 
     public User()
     {
-        ScapeMonsters.Add(new Fuzzy(3));
-        ScapeMonsters.Add(new Sealy(3));
+        
+        
 
 
     }

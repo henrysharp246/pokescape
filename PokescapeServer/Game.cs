@@ -67,7 +67,7 @@ public class Game
         }
         currentGrid = grids.First();
         SetUserCoordinatesBasedOnGrid(currentGrid);
-
+        user.ScapeMonsters.Add(new Fuzzy(3));
         await SendMessage("grid", currentGrid);
         await SendMessage("user", user);
 
@@ -76,6 +76,7 @@ public class Game
 
     public async Task LoadGame(String gameString)
     {
+        user.ScapeMonsters.Clear();
         var newGame = JsonConvert.DeserializeObject<PokescapeServer.SerializedGame>(gameString, SerializedGame.gameSerializerSettings);
         this.user = newGame.user;
 
@@ -309,6 +310,7 @@ public class Game
                 }
                 break;
             case "LOAD_GAME":
+                
                 await LoadGame(message.Data);
 
                 break;
