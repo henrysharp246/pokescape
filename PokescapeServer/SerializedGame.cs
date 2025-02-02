@@ -69,25 +69,61 @@ namespace PokescapeServer
                 serializer.Populate(jsonObject.CreateReader(), instance);
                 return instance;
             }
-
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
             {
-                JObject jsonObject = JObject.FromObject(value);
+                var seenObjects = new HashSet<object>(ReferenceEqualityComparer.Instance);
+                WriteJsonRecursive(writer, value, serializer, seenObjects);
+            }
 
-                jsonObject.AddFirst(new JProperty("Type", value.GetType().Name));
-
-                
-                // Handle `Block.item` serialization explicitly
-                if (value is Block block && block.item != null)
+            private void WriteJsonRecursive(JsonWriter writer, object value, JsonSerializer serializer, HashSet<object> seenObjects)
+            {
+                if (value == null)
                 {
-                    jsonObject["item"] = JToken.FromObject(block.item, JsonSerializer.Create(new JsonSerializerSettings
-                    {
-                        Converters = new List<JsonConverter> { new GameObjectConverter() }
-                    }));
+                    writer.WriteNull();
+                    return;
                 }
 
-                jsonObject.WriteTo(writer);
+                Type type = value.GetType();
+
+                // Prevent infinite recursion
+                if (!seenObjects.Add(value))
+                {
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("$ref");
+                    writer.WriteValue(type.Name);
+                    writer.WriteEndObject();
+                    return;
+                }
+
+                writer.WriteStartObject();
+
+                // Add type information
+                writer.WritePropertyName("Type");
+                writer.WriteValue(type.FullName);  // Full type name for clarity
+
+                // Serialize properties
+                foreach (var prop in type.GetProperties())
+                {
+                    if (!prop.CanRead) continue;  // Skip write-only properties
+
+                    object propValue = prop.GetValue(value);
+                    writer.WritePropertyName(prop.Name);
+
+                    if (propValue != null && !propValue.GetType().IsPrimitive && propValue is not string)
+                    {
+                        // Recursively serialise complex objects
+                        WriteJsonRecursive(writer, propValue, serializer, seenObjects);
+                    }
+                    else
+                    {
+                        serializer.Serialize(writer, propValue); // Use default serialisation for simple values
+                    }
+                }
+
+                writer.WriteEndObject();
             }
+
+
         }
     }
 }

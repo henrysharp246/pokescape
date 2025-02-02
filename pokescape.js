@@ -78,7 +78,31 @@ function FeedOpponent() {
 
 }
 
-function populateInventory(inventoryList) {
+function populateInventory(inventoryDict) {
+    var cards = '';
+    for (var key in inventoryDict) {
+        if (inventoryDict.hasOwnProperty(key)) {
+            var item = inventoryDict[key];
+            var card = `
+                <div onclick="selectItem('${item.ItemId}')" class="pokescape-item-card card-${item.Name}">
+                    <div class="pokescape-item-name">
+                        ${item.Name}
+                    </div>
+                    <div class="item-count">
+                        <!-- You can display the count or other item details here -->
+                    </div>
+                    <img class="pokescape-item-img" src="${item.Image}" />
+                </div>
+            `;
+            cards += card;
+        }
+    }
+    // Inject the cards into the itemInventory container
+    $('#itemInventory').html(cards);
+}
+
+
+function populateInventoryList(inventoryList) {
     var cards = '';
     inventoryList.forEach(function (item) {
      

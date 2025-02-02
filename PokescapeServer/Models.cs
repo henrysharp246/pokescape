@@ -579,8 +579,10 @@ public class LeftEntrance : Entrance
 
 public class User
 {
-    Dictionary<string, Item> _Inventory = new(); // backing value
-    public List<Item> Inventory => _Inventory.Values.ToList(); // readonly version
+    public Dictionary<string, Item> Inventory = new(); // backing value, will get serialized via JSON 
+
+//    public List<Item> Inventory => _Inventory.Values.ToList(); // readonly version
+
     public List<ScapeMonster> ScapeMonsters = new List<ScapeMonster>();
     public bool CanExit = true;
     public bool ExitAttempt = false;
@@ -607,17 +609,17 @@ public class User
 
     public void AddItemToInventory(Item item)
     {
-        _Inventory.Add(item.ItemId, item);
+        Inventory.Add(item.ItemId, item);
     }
 
     public void RemoveItemFromInventory(string itemId) 
     { 
-        _Inventory.Remove(itemId);
+        Inventory.Remove(itemId);
     }
 
     public bool TryGetValueFromInventory(string itemId, out Item item)
     {
-        return _Inventory.TryGetValue(itemId, out item);
+        return Inventory.TryGetValue(itemId, out item);
     }
 
     public void DiscardScapeMonster()

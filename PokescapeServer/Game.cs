@@ -124,6 +124,7 @@ public class Game
             {
                 Console.WriteLine($"Cannot find corresponding entrance {entrance.CorrespondingEntranceId ?? "NULL"}");
                 entrance.CorrespondingEntrance = entrances.Values.FirstOrDefault(); // Fallback
+                entrance.CorrespondingEntranceId = entrance.CorrespondingEntrance.EntranceId; // Fallback
             }
         }
 
@@ -1397,6 +1398,7 @@ public class Game
                 Entrance entrance = new TopEntrance() 
                 { 
                     CorrespondingEntrance = correspondingEntrance,
+                    CorrespondingEntranceId = correspondingEntrance?.EntranceId,
                     Coordinates = selectedCoords,
                 };
                 room[selectedCoords] = entrance;
@@ -1407,6 +1409,7 @@ public class Game
                 Entrance entrance = new BottomEntrance()
                 {
                     CorrespondingEntrance = correspondingEntrance,
+                    CorrespondingEntranceId = correspondingEntrance?.EntranceId,
                     Coordinates = selectedCoords,
                 };
                 room[selectedCoords] = entrance;
@@ -1417,6 +1420,7 @@ public class Game
                 Entrance entrance = new RightEntrance()
                 {
                     CorrespondingEntrance = correspondingEntrance,
+                    CorrespondingEntranceId = correspondingEntrance?.EntranceId,
                     Coordinates = selectedCoords,
                 };
                 room[selectedCoords] = entrance;
@@ -1427,6 +1431,7 @@ public class Game
                 Entrance entrance = new LeftEntrance()
                 {
                     CorrespondingEntrance = correspondingEntrance,
+                    CorrespondingEntranceId = correspondingEntrance?.EntranceId,
                     Coordinates = selectedCoords,
                 };
                 room[selectedCoords] = entrance;
@@ -1466,6 +1471,7 @@ public class Game
                 {
                     new_entrance_in_previous_room.RoomId = randomNum;
                     first_entrance_in_this_room.CorrespondingEntrance = new_entrance_in_previous_room;
+                    first_entrance_in_this_room.CorrespondingEntranceId = new_entrance_in_previous_room.EntranceId;
                     return room;                
                 }
             }
@@ -2018,9 +2024,9 @@ public class Game
     }
     public async Task CheckChest(Block block, int x, int y)
     {
-        foreach (var item1 in user.Inventory)
+        foreach (var kvp in user.Inventory)
         {
-            if (item1 is Key key)
+            if (kvp.Value is Key key)
             {
                 StringBuilder sb = new StringBuilder();
                 sb.Append(key.index);
@@ -2029,7 +2035,7 @@ public class Game
                 {
                     Item item = Item.GetItemFromChest();
                     user.AddItemToInventory(item);
-                    user.Inventory.Remove(key);
+                    user.Inventory.Remove(kvp.Key);
                     currentGrid[(x, y)].item = null;
                     currentGrid[(x, y)].ContainsItem = false;
                     currentGrid[(x, y)].Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
@@ -2037,7 +2043,7 @@ public class Game
                     await SendMessage("grid", currentGrid);
                     await SendMessage("user", user);
 
-                    if (StartsWithVowel(item1.Name))
+                    if (StartsWithVowel(kvp.Value.Name))
                     {
                         await SendMessage("battleDialog", $"You found an {item.Name} in the chest!");
                     }
