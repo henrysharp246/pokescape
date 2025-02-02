@@ -83,7 +83,7 @@ public abstract class Item
     public static Item GetRandomItem()
     {
         Random random = new Random();
-        int num = random.Next(1, 100);
+        int num = random.Next(1, 110);
 
         if (num < 95)
         {
@@ -600,7 +600,9 @@ public class User
     public User()
     {
         ScapeMonsters.Add(new Fuzzy(3));
-        ScapeMonsters.Add(new Golem(3));
+        ScapeMonsters.Add(new Sealy(3));
+
+
     }
 
     public void AddItemToInventory(Item item)
@@ -640,9 +642,11 @@ public class User
         {
             foreach (ScapeMonsterMove move in scapeMonster.Moves)
             {
-                if (move.Id == moveID)
+                
+                if (move.Id == moveID && scapeMonster.Moves.Count > 1)
                 {
-
+                    
+                       
                     scapeMonster.Moves.Remove(move);
                     return;
                 }

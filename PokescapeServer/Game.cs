@@ -44,6 +44,7 @@ public class Game
 
     {
         user = new User();
+        
         currentSocket = webSocket;
         //When there is a new game we want to send them a new grid
         currentGrid = new Dictionary<(int x, int y), Block>();
@@ -215,6 +216,7 @@ public class Game
                 {
                    if (user.CurrentBattle.UserScapeMonster.Health<=0)
                     {
+
                         await SendMessage("battleDialog", $"{user.CurrentBattle.UserScapeMonster.ScapeMonsterName} can't fight! Choose another ScapeMonster.");
                     }
                     else
@@ -233,6 +235,7 @@ public class Game
             case "DISCARD_MOVE":
 
                     user.ItemSelectedId = null;
+                
                     user.RemoveMove(message.Data);
                     await SendMessage("user", user);
 
@@ -757,7 +760,7 @@ public class Game
     static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
-        
+        return;
         battlecount++;
       
         Random random = new Random();
@@ -2026,6 +2029,7 @@ public class Game
                 {
                     Item item = Item.GetItemFromChest();
                     user.AddItemToInventory(item);
+                    user.Inventory.Remove(key);
                     currentGrid[(x, y)].item = null;
                     currentGrid[(x, y)].ContainsItem = false;
                     currentGrid[(x, y)].Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";

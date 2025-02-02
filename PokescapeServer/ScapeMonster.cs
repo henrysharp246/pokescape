@@ -345,18 +345,25 @@ namespace PokescapeServer
                 moveResult.description = $"{attacker.ScapeMonsterName} used move {move.MoveName}!";
             }
 
-            
+
 
             // still todo: apply move results from previous results, including shields etc 
 
             //apply damage to attacker first
-            foreach (ScapeMonsterMove repeatedDamageMove in ActiveOpponentMoves)
+            foreach (ScapeMonsterMove repeatedDamageMove in ActiveOpponentMoves.ToList()) // use ToList() to avoid modification issues
             {
-                if (repeatedDamageMove.MoveDamagePerRound != 0 &&  repeatedDamageMove.repeatedDamageMoveLife != 0  )
+                if (repeatedDamageMove.MoveDamagePerRound != 0 && repeatedDamageMove.repeatedDamageMoveLife > 0)
                 {
-                    moveResult.extradamage = repeatedDamageMove.MoveDamagePerRound * attacker.Level;
-                    moveResult.description2 += $"{opponent.ScapeMonsterName}'s {repeatedDamageMove.MoveName} dealt {moveResult.extradamage} damage!";
+                    double extraDamage = repeatedDamageMove.MoveDamagePerRound * attacker.Level;
+                    moveResult.extradamage += extraDamage;
+                    moveResult.description2 += $"{opponent.ScapeMonsterName}'s {repeatedDamageMove.MoveName} dealt {extraDamage} damage! ";
                     repeatedDamageMove.repeatedDamageMoveLife--;
+
+                    // Optionally, remove the move if its repeated effect has expired
+                    if (repeatedDamageMove.repeatedDamageMoveLife <= 0)
+                    {
+                        ActiveOpponentMoves.Remove(repeatedDamageMove);
+                    }
                 }
             }
 
