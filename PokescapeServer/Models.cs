@@ -1,52 +1,41 @@
 ﻿using Newtonsoft.Json;
 using PokescapeServer;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization.Formatters;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 
 public class Coordinate
 {
     public int x;
     public int y;
 }
+
 public class Message
 {
     public string MessageType { get; set; } // move_left, move_right, move_up, move_down, battle, save, load, grid
     public string Data { get; set; }
     public string SocketId { get; set; }
 }
+
 public class Battle
 {
-
-
     public Dictionary<ScapeMonsterMove, int> UserCooldowns;
     public Dictionary<ScapeMonsterMove, int> OpponentCooldowns;
     public ScapeMonster UserScapeMonster { get; set; } 
     public ScapeMonster OpponentScapeMonster { get; set; }
-
     public List<ScapeMonsterMove> ActiveUserMoves = new List<ScapeMonsterMove>();
-
     public List<ScapeMonsterMove> ActiveOpponentMoves = new List<ScapeMonsterMove>();
 }
 
-
 public abstract class Item
 {
+    public string ItemId { get; set; } = Guid.NewGuid().ToString(); // this gets assigned only here or via JSON deserialization
     public int index;
-
-    private static long _uniqueItemId = 0; 
+    public Item ContainedItem { get; set; }
+    public string Name { get; set; }
+    public bool IsPortable { get; set; }
+    public string Image { get; set; }
 
     public Item()
     {
-        this.ItemId = $"ITEM_{++_uniqueItemId}"; // 
     }
-
-    public Item ContainedItem { get; set; }
-
 
     public static Item GetItemFromChest()
     {
@@ -80,7 +69,6 @@ public abstract class Item
             {
                 index = Game.ChestIndex
             };
-
         }
         else
         {
@@ -90,12 +78,10 @@ public abstract class Item
             {
                 index = Game.KeyIndex
             };
-
         }
     }
     public static Item GetRandomItem()
     {
-      
         Random random = new Random();
         int num = random.Next(1, 100);
 
@@ -132,35 +118,17 @@ public abstract class Item
         }
         else // Chest or key 
         {
-
             Item item = ChestOrKey();
             return item;
         }
-
-       
-        
-        
     }
 
-
-
-    public string Name { get; set; }
-    public string ItemId { get; set; }
-    public bool IsPortable { get; set; }
-
-    public string Image { get; set; }   
-   
     public virtual ScapeMonster UseItem(ScapeMonster monster) { return null; }
 }
 
 public abstract class BerryItem : Item
 { 
-    
-
-
-
 }
-
 
 public class SpikeBerry : BerryItem
 {
@@ -239,7 +207,8 @@ public class GuavaBerry : BerryItem
 
 public class BlueTwistItem : BerryItem
 {
-    public BlueTwistItem() {
+    public BlueTwistItem() 
+    {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Bluetwistblock.png";
         Name = "Blue Twist";
     }
@@ -310,7 +279,6 @@ public class ResistanceCharm : Item
         return newMonster;
     }
 }
-
 
 public class UltraCharm : Item
 {
@@ -392,11 +360,10 @@ public class FortificationCharm : Item
     }
 }
 
-
-
-
 public class ChestClosed : Item
 {
+    public Item ContainedItem;
+
     public ChestClosed()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Chestblock.png";
@@ -429,12 +396,7 @@ public class ChestClosed : Item
         }
 
     }
-    public Item ContainedItem;
-
-
 }
-
-
 
 public class Key : Item
 {
@@ -467,7 +429,6 @@ public abstract class Block
 
 public class FloorBlock : Block
 {
-   
     public FloorBlock()
     {
         CanPass = true;
@@ -476,21 +437,13 @@ public class FloorBlock : Block
 
 public class StoneFloorBlock : FloorBlock
 {
-
-
     public StoneFloorBlock()
     {
-
-        
-
-
         DefaultImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Stonefloorblock.png";
         Name = "stonefloorblock";
         CanPass = true;
         Random random = new Random();
         int num = random.Next(1, 50);
-
-        
         
         switch (num)
         {
@@ -512,9 +465,7 @@ public class StoneFloorBlock : FloorBlock
                 }
                 break;
         }
-        
     }
-     
 }
 
 public class BlankBlock : Block
@@ -547,10 +498,8 @@ public class StoneWallBlock : WallBlock
 
 public class WaterBlock : FloorBlock
 {
-    
     public WaterBlock()
     {
- 
         DefaultImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
         Name = "waterblock";
         CanPass = false;
@@ -558,7 +507,6 @@ public class WaterBlock : FloorBlock
         int num = random.Next(1, 150);
         switch (num)
         {
-
             case < 25:
                 Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock.png";
                 break;
@@ -571,25 +519,24 @@ public class WaterBlock : FloorBlock
             case < 100:
                 Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock3.png";
                 break;
-
             case < 125:
                 Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock4.png";
                 break;
             case < 150:
                 Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Waterblock5.png";
                 break;
-                
         }
     }
 }
 
 public class Entrance : WallBlock
 {
-    //public int EntranceId { get; set; }
-    [JsonIgnore]   // This decoration is necessary to prevent JSON serialization problems due to recursive references (objects containing references to each other would cause infinite loop when serializing)
-    public Entrance CorrespondingEntrance = null;
-    public int RoomId { get; set; } = -1;
+    public string EntranceId { get; set; } = Guid.NewGuid().ToString(); // this gets assigned only here or via JSON deserialization
 
+    [JsonIgnore]
+    public Entrance CorrespondingEntrance { get; set; } = null;
+    public string CorrespondingEntranceId { get; set; }  
+    public int RoomId { get; set; } = -1;
     public (int x, int y) Coordinates;
 
     public Entrance()
@@ -600,20 +547,14 @@ public class Entrance : WallBlock
 
 public class TopEntrance : Entrance
 {
-  
-  
     public TopEntrance()
     {
-      
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Topentrance.png";
-
     }
 }
 
 public class BottomEntrance : Entrance
 {
-   
-
     public BottomEntrance()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Bottomentrance.png";
@@ -622,8 +563,6 @@ public class BottomEntrance : Entrance
 
 public class RightEntrance : Entrance
 {
-  
-
     public RightEntrance()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Rightentrance.png";
@@ -632,41 +571,36 @@ public class RightEntrance : Entrance
 
 public class LeftEntrance : Entrance
 {
-    
-
     public LeftEntrance()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Leftentrance.png";
     }
 }
 
-
-
 public class User
 {
-    Dictionary<string, Item> _Inventory = new();
-    public List<Item> Inventory
-    {
-        get
-        {
-            return _Inventory.Values.ToList();
-        }
-    }
-
+    Dictionary<string, Item> _Inventory = new(); // backing value
+    public List<Item> Inventory => _Inventory.Values.ToList(); // readonly version
     public List<ScapeMonster> ScapeMonsters = new List<ScapeMonster>();
     public bool CanExit = true;
     public bool ExitAttempt = false;
-    
-    
-    public User(){
+    public bool InBattle { get; set; } = false;
+    public bool IsTurn { get; set; } = false;
+    public string ItemSelectedId { get; set; }
+    public string MonsterSelectedId { get; set; }
+    public Battle CurrentBattle { get; set; }
+    public string UserId { get; set; }
+    public int BattleCount { get; set; } = 0;
+    public string UserName { get; set; }
+    public string Password { get; set; }
+    public int UserGold { get; set; }
+    public (int x, int y) UserCoordinates { get; set; }
+    public string UserImage { get; set; } = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
 
-        
-       
-
+    public User()
+    {
         ScapeMonsters.Add(new Fuzzy(3));
-   
-
-
+        ScapeMonsters.Add(new Golem(3));
     }
 
     public void AddItemToInventory(Item item)
@@ -699,7 +633,6 @@ public class User
             }
         }
     }
-        
 
     public void RemoveMove( string moveID)
     {
@@ -715,9 +648,8 @@ public class User
                 }
             }
         }
-
-        
     }
+
     public void RenameScapeMonster(string ScapeMonsterId, string newName)
     {
         foreach (ScapeMonster monster in ScapeMonsters) 
@@ -730,7 +662,6 @@ public class User
         
         }
     }
-
 
     public bool CanPassWater()
     {
@@ -746,37 +677,16 @@ public class User
         return false;
     }
 
-    public bool InBattle { get; set; }= false;
-    public bool IsTurn { get; set; }= false;
-
-    public string ItemSelectedId { get; set; }
-    public string MonsterSelectedId { get; set; }
-    public Battle CurrentBattle { get; set; }
-    public string UserId { get; set; }
-    public int BattleCount { get; set; } = 0;
     public int GetUsersHighestLevelScapemonster()
     {
-      
         int HighestLevel = 0;
         foreach (ScapeMonster ScapeMonster in ScapeMonsters)
         {
-          
-            int CurrentLevel = ScapeMonster.Level;
-            if (CurrentLevel > HighestLevel )
-            {
-                HighestLevel = CurrentLevel;
-
-            }
-
+            if (ScapeMonster.Level > HighestLevel )
+                HighestLevel = ScapeMonster.Level;
         }
         return HighestLevel;
-                
     }
         
-    public string UserName { get; set; }
-    public string Password { get; set; }
-    public int UserGold { get; set; }
-    public (int x, int y) UserCoordinates { get; set; } 
-    public string UserImage { get; set; } = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
 }
 

@@ -80,6 +80,8 @@ public class Game
 
         this.grids = new List<Dictionary<(int, int), Block>>();
 
+        // create a lookup so we can connect up the entrances
+        Dictionary<string, Entrance> entrances = new Dictionary<string, Entrance>();
         
         foreach (var grid in newGame.grids)
         {
@@ -89,6 +91,10 @@ public class Game
                 var keyParts = kvp.Key.Split(',');
                 var key = (int.Parse(keyParts[0]), int.Parse(keyParts[1]));
                 gridDict[key] = kvp.Value;
+
+                if (kvp.Value is Entrance entrance)  // pattern recogn
+                    entrances.Add(entrance.EntranceId, entrance);
+
             }
             this.grids.Add(gridDict);
         }
@@ -103,6 +109,23 @@ public class Game
 
         this.GameId = newGame.GameId;
         this.gameState = newGame.gameState;
+
+        // now connect up the entrances
+        // Now connect up the entrances
+        foreach (var entrance in entrances.Values)
+        {
+            if (!string.IsNullOrEmpty(entrance.CorrespondingEntranceId) &&
+                entrances.TryGetValue(entrance.CorrespondingEntranceId, out var correspondingEntrance))
+            {
+                entrance.CorrespondingEntrance = correspondingEntrance;
+            }
+            else
+            {
+                Console.WriteLine($"Cannot find corresponding entrance {entrance.CorrespondingEntranceId ?? "NULL"}");
+                entrance.CorrespondingEntrance = entrances.Values.FirstOrDefault(); // Fallback
+            }
+        }
+
 
         await SendMessage("grid", currentGrid);
         await SendMessage("user", user);
