@@ -9,17 +9,13 @@ using System.Text;
 //ALL THE MAIN LOGIC IS DONE INSIDE THE GAME CLASS
 //There is one game per user... i.e. if 10 users are connected there are 10 games
 
-
 public class Game
 {
-
     public enum GameModeType
     {
         Hard,
         Easy
     }
-
-   
 
     public int gridSize = GameConfig.VisibleGridWidth * GameConfig.VisibleGridWidth;
     public int gridWidth = GameConfig.VisibleGridWidth;
@@ -54,7 +50,6 @@ public class Game
     //we can wait for it to complete before moving to the next line, by using await StartGame
     public async Task StartGame()
     {
-
         var rand = new Random();
         grids = new();
 
@@ -156,14 +151,14 @@ public class Game
     }
 
     /// <summary>
-    /// This Is called when the user has sent us something
+    /// This is called when the user has performed an action in the Game. The browser converts this 
+    /// action to a message of a given type, that is handled here via the large switch statement.
     /// </summary>
     /// <param name="message"></param>
     /// <returns>MESSAGES TO SEND</returns>
     public async Task HandleMessage(Message message)
     {
         Console.WriteLine("RECEIVED FROM USER: " + JsonConvert.SerializeObject(message));
-
 
         switch (message.MessageType.ToUpper())
         {
@@ -198,8 +193,6 @@ public class Game
                 user.MonsterSelectedId = message.Data;
                 if (user.InBattle)
                 {
-                    
-                    
                     await MonsterSelectedForBattle(message.Data);
                 }
                 else 
@@ -372,8 +365,6 @@ public class Game
     }
     public async Task FeedOpponent(string itemId, User user)
     {
-        
-
         if (user.TryGetValueFromInventory(itemId, out Item item))
         {
             if (item is BerryItem)
@@ -434,7 +425,6 @@ public class Game
     }
     public async Task BattleWon(Battle battle)
     {
-
         await SendMessage("battleDialog", $"You defeated {battle.OpponentScapeMonster.ScapeMonsterName}!");
         Thread.Sleep(500);
         if (IsEven(battlecount))
@@ -475,12 +465,8 @@ public class Game
                 scapemonster.Health = scapemonster.MaximumHealth;
             }
         }
-        
-
         await SendMessage("user", user);
         await SendMessage("hideBattle", $"");
-
-
     }
     public async Task BattleLost(Battle battle)
     {
@@ -496,11 +482,8 @@ public class Game
                 scapemonster.Health = scapemonster.MaximumHealth;
             }
         }
-
-
         await SendMessage("user", user);
         await SendMessage("hideBattle", $"");
-
     }
     public async Task TameSuccess(Battle battle)
     {
@@ -523,12 +506,10 @@ public class Game
 
     public async Task ExitBattle(Battle battle)
     {
-        
         Random random = new Random();
         int number = random.Next(1, 4);
         if (number != 1)
         {
-
             await SendMessage("battleDialog", $"You escaped!");
             Thread.Sleep(1000);
             user.CurrentBattle = null;
@@ -543,28 +524,20 @@ public class Game
             await SendMessage("battleDialog", $"You can't escape!");
             return;
         }
-       
     }
 
     public async Task Attack(string moveId)
     {
-        
         Battle battle = user.CurrentBattle;
         try
         {
-
             if (user.CurrentBattle.UserCooldowns == null)
             {
                 user.CurrentBattle.UserCooldowns = new Dictionary<ScapeMonsterMove, int>();
             }
-
-
-
-            
             ScapeMonsterMove move = ScapeMonsterMove.GetMoveById(moveId);
 
             //ScapeMonsterMove activeCooldownMove = move; 
-
 
             //activeCooldownMove.activeCooldown = true;
 
@@ -661,16 +634,14 @@ public class Game
            
             userScapeMonster.Health += -opponentMoveResult.damage;
             if (opponentMoveResult.hpChange != 0)
-            {  currentOpponent.Health += moveResult.hpChange;
+            {  
+                currentOpponent.Health += moveResult.hpChange;
             }
 
-
-
-
             if (userScapeMonster.Health <= 0)
-            { userScapeMonster.Health = 0; }
-
-
+            { 
+                userScapeMonster.Health = 0; 
+            }
             await SendMessage("battleDialog", opponentMoveResult.description);
             await Task.Delay(300);
             if (opponentMoveResult.description2 != "")
@@ -722,21 +693,13 @@ public class Game
                     return;
                 }
             }
-
-
-
             user.CanExit = true;
             user.ExitAttempt = false;
-
-
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
-
         }
-
-
     }
     public async Task MonsterSelectedForBattle(string monsterId)
     {
@@ -763,7 +726,7 @@ public class Game
     static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
-        return;
+
         battlecount++;
       
         Random random = new Random();
@@ -884,7 +847,6 @@ public class Game
             Console.WriteLine(ex.StackTrace);
         }
         return null;
-
     }
 
     public bool TryPlacePond(int x, int y, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pond)
@@ -911,7 +873,6 @@ public class Game
     {
         var pond = pondParam;
         Dictionary<(int x, int y), Block> newRoom = room;
-        
 
         int roomWidth = room.Keys.Max(k => k.x) + 1;
         int roomHeight = room.Keys.Max(k => k.y) + 1;
@@ -928,8 +889,6 @@ public class Game
             }
         }
 
-
-
         //bottom right corner processing
         randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
         randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
@@ -942,13 +901,9 @@ public class Game
                 pond[(x, y)] = new StoneFloorBlock();
             }
         }
-
-
-
         //top right corner processing
         randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
         randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
-
 
         for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
         {
@@ -958,13 +913,9 @@ public class Game
             }
         }
 
-
-
-
         //top left corner processing
         randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
         randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
-
 
         for (int x = 0; x < randomX; x++)
         {
@@ -974,14 +925,10 @@ public class Game
             }
         }
 
-
-
-
         foreach (var coordsAndBlock in pond)
         {
             newRoom[(coordsAndBlock.Key.x + x1, coordsAndBlock.Key.y + y1)] = pond[(coordsAndBlock.Key.x, coordsAndBlock.Key.y)];
         }
-
         return newRoom;
     }
 
@@ -992,9 +939,6 @@ public class Game
             Dictionary<(int x, int y), Block> room = GenerateBasicRoom();
             int roomWidth = room.Keys.Max(k => k.x) + 1;
             int roomHeight = room.Keys.Max(k => k.y) + 1;
-
-
-
 
             Random rnd = new Random();
 
@@ -1073,7 +1017,6 @@ public class Game
                     }
                 }
             }
-
             //top left corner processing
             randomX = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomWidth / 2 - 1));
             randomY = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomHeight / 2 - 1));
@@ -1087,8 +1030,6 @@ public class Game
                 }
             }
 
-
-
             for (int x = 0; x < randomX; x++)
             {
                 for (int y = roomHeight - randomY; y < roomHeight - 1; y++)
@@ -1100,156 +1041,7 @@ public class Game
                 }
             }
             room = AddWaterToRoom(room);
-
-            /*
-            for (int x = 0; x < 50; x++)
-            {
-                for (int y = 0; y < 50; y++)
-                {
-                    try
-                    {
-                        Block currentBlock = room.TryGetValue((x, y), out var thisBlock) ? thisBlock : null;
-                        Block blockToLeft = room.TryGetValue((x - 1, y), out var leftBlock) ? leftBlock : null;
-                        Block blockToRight = room.TryGetValue((x + 1, y), out var rightBlock) ? rightBlock : null;
-                        Block blockUp = room.TryGetValue((x, y + 1), out var upBlock) ? upBlock : null;
-                        Block blockDown = room.TryGetValue((x, y - 1), out var downBlock) ? downBlock : null;
-
-                        if (currentBlock == null)
-                        {
-                            room[(x,y)] = new BlankBlock();
-                        }
-                       
-
-                        
-                       
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
-                }
-            }
-            for (int x = 0; x < 50; x++)
-            {
-                for (int y = 0; y < 50; y++)
-                {
-                    try
-                    {
-                        Block currentBlock = room.TryGetValue((x, y), out var thisBlock) ? thisBlock : null;
-                        Block blockToLeft = room.TryGetValue((x - 1, y), out var leftBlock) ? leftBlock : null;
-                        Block blockToRight = room.TryGetValue((x + 1, y), out var rightBlock) ? rightBlock : null;
-                        Block blockUp = room.TryGetValue((x, y + 1), out var upBlock) ? upBlock : null;
-                        Block blockDown = room.TryGetValue((x, y - 1), out var downBlock) ? downBlock : null;
-
-                        
-                      
-                        if (currentBlock != null && currentBlock is not BlankBlock && currentBlock is not WallBlock)
-                        {
-
-                            if (blockToLeft is BlankBlock)
-                            {
-                                room[(x-1,y)] = new WallBlock();
-                            }
-
-                            if (blockToRight is BlankBlock)
-                            {
-                                room[(x+1,y)] = new WallBlock();
-                            }
-
-                            if (blockUp is BlankBlock)
-                            {
-                                room[(x, y+1)] = new WallBlock();
-                            }
-                            if (blockToRight is BlankBlock)
-                            {
-                                room[(x, y-1)] = new WallBlock();
-                            }
-                        }
-
-
-
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
-                }
-            }
-           
-            
-            foreach (KeyValuePair<(int x, int y), Block> kvp in room)
-            {
-                int x = kvp.Key.x;
-                int y = kvp.Key.y;
-                Console.WriteLine($"Coordinates: ({x}, {y})");
-                Console.WriteLine($"Current Block: {kvp.Value}");
-                if (kvp.Value == null)
-                {
-                    room[(x, y)] = new BlankBlock();
-                }
-            }
-
-            foreach (KeyValuePair<(int x, int y), Block> kvp in room)
-            {
-                // Extract x and y from the Key tuple
-                int x = kvp.Key.x;
-                int y = kvp.Key.y;
-
-                // Print key and value
-                Console.WriteLine($"new Coordinates: ({x}, {y})");
-                Console.WriteLine($"new Current Block: {kvp.Value}");
-
-               
-                Block currentBlock = kvp.Value;
-
-                try
-                {
-                    
-                    Block blockToLeft = room.TryGetValue((x - 1, y), out var leftBlock) ? leftBlock : null;
-                    Block blockToRight = room.TryGetValue((x + 1, y), out var rightBlock) ? rightBlock : null;
-                    Block blockUp = room.TryGetValue((x, y + 1), out var upBlock) ? upBlock : null;
-                    Block blockDown = room.TryGetValue((x, y - 1), out var downBlock) ? downBlock : null;
-
-
-
-                    if (currentBlock != null && currentBlock is not BlankBlock && currentBlock is not WallBlock)
-                    {
-
-                        if (blockToLeft is BlankBlock)
-                        {
-                            room[(x - 1, y)] = new WallBlock();
-                        }
-
-                        if (blockToRight is BlankBlock)
-                        {
-                            room[(x + 1, y)] = new WallBlock();
-                        }
-
-                        if (blockUp is BlankBlock)
-                        {
-                            room[(x, y + 1)] = new WallBlock();
-                        }
-                        if (blockToRight is BlankBlock)
-                        {
-                            room[(x, y - 1)] = new WallBlock();
-                        }
-                    }
-
-
-
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-
-            }
-             */
-
             return room;
-
         }
         catch (Exception ex)
         {
@@ -1257,7 +1049,6 @@ public class Game
             Console.WriteLine(ex.StackTrace);
         }
         return null;
-
     }
 
     public Dictionary<(int x, int y), Block> GenerateRoomUsingRandomWalk()
@@ -1278,12 +1069,12 @@ public class Game
 
         // Define the directions: (dx, dy) tuples for (up, down, left, right)
         List<(int dx, int dy)> directions = new List<(int dx, int dy)>
-    {
-        (0, -1), // up
-        (0, 1),  // down
-        (-1, 0), // left
-        (1, 0)   // right
-    };
+        {
+            (0, -1), // up
+            (0, 1),  // down
+            (-1, 0), // left
+            (1, 0)   // right
+        };
 
         int currentX = startX;
         int currentY = startY;
@@ -1334,17 +1125,12 @@ public class Game
                 if (x == 0 || y == roomHeight - 1 || x == roomWidth - 1 || y == 0)
                 {
                     blockToAdd = new StoneWallBlock();
-
-
-
                 }
                 else
                 {
                     blockToAdd = new StoneFloorBlock();
                 }
                 room.Add((x, y), blockToAdd);
-
-
             }
         }
         return room;
@@ -1370,6 +1156,12 @@ public class Game
         return pond;
     }
 
+/// <summary>
+/// Attempts to replace a StoneWallBlock with an EntranceBlock subject to accessibility and other constraints.
+/// </summary>
+/// <param name="room"></param>
+/// <param name="correspondingEntrance"></param>
+/// <returns></returns>
     public Entrance TryAddDoorToRoom(Dictionary<(int x, int y), Block> room, Entrance correspondingEntrance) // return null if not possible
     {
         var num_doors = room.Where(x => x.Value is Entrance).Count();
@@ -1444,7 +1236,11 @@ public class Game
         return null;
     }
 
-
+    /// <summary>
+    /// Generates a new room and attempts to connect it to one of the existing (already generated) rooms
+    /// </summary>
+    /// <param name="rooms"></param>
+    /// <returns></returns>
     public Dictionary<(int x, int y), Block> GenerateRoom(List<Dictionary<(int x, int y), Block>> rooms)
     {
         try
@@ -1488,161 +1284,7 @@ public class Game
         return null;
     }
 
-    /*
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="minRoomWidth"></param>
-    /// <param name="maxRoomWidth"></param>
-    /// <param name="minRoomHeight"></param>
-    /// <param name="maxRoomHeight"></param>
-    /// <returns></returns>
-    public Dictionary<(int x, int y), Block> GenerateRoom(int totalNumberOfRooms, int currentRoomCount)
-    {
-        try
-        {
-            Random random = new Random();
-            
-            int maximumNumberOfPossibleDoors = totalNumberOfRooms*2 - DoorCount - 2;
-            int maxNumberOfDoorsInThisRoom = Math.Min(maximumNumberOfPossibleDoors, GameConfig.MaxDoorsInRoom);
-            int numberofdoorsinthisroom = 0;
-            if(currentRoomCount == totalNumberOfRooms || currentRoomCount == 1)
-            {
-                numberofdoorsinthisroom = 1;
-            }
-            else
-            {
-
-                if (maxNumberOfDoorsInThisRoom < GameConfig.MinDoorsInRoom)
-                {
-                    numberofdoorsinthisroom = maxNumberOfDoorsInThisRoom;
-                }
-                else
-                {
-                    int minDoors = GameConfig.MinDoorsInRoom;
-                    if(currentRoomCount > 1)
-                    {
-                        minDoors =  Math.Max(2, GameConfig.MinDoorsInRoom);
-                    }
-                    numberofdoorsinthisroom = random.Next(minDoors, maxNumberOfDoorsInThisRoom);
-                }
-
-            }
-
-            Dictionary<(int x, int y), Block> room = GenerateRoomCornerStrat();
-
-
-            var wallBlocksAndCoordinates = room.Where(x => x.Value is StoneWallBlock).ToList();
-
-            int count = 0;
-            while (numberofdoorsinthisroom > 0 && count++<500)
-            {
-                int randomNum = random.Next(0, wallBlocksAndCoordinates.Count());
-                var selectedBlockAndCoords = wallBlocksAndCoordinates[randomNum];
-                var selectedBlock = selectedBlockAndCoords.Value;
-                var selectedCoords = selectedBlockAndCoords.Key;
-                Block blockAbove; Block blockBelow; Block blockLeft; Block blockRight;
-
-                blockLeft = room.GetValueOrDefault((selectedCoords.x - 1, selectedCoords.y), null);
-                blockRight = room.GetValueOrDefault((selectedCoords.x + 1, selectedCoords.y), null);
-                blockAbove = room.GetValueOrDefault((selectedCoords.x, selectedCoords.y + 1), null);
-                blockBelow = room.GetValueOrDefault((selectedCoords.x, selectedCoords.y - 1), null);
-
-                bool relax = count > 50;
-
-
-                // only add a top entrance when the number of top entrances >= number of the bottom entrances
-                if (blockLeft is WallBlock && blockRight is WallBlock && (blockAbove == null || blockAbove is BlankBlock) && (blockBelow is StoneFloorBlock) && TopDoorCount <= BottomDoorCount && (relax || LeftDoorCount == RightDoorCount)) // door upwards
-                {
-                    
-                    Entrance entrance = new TopEntrance();
-                    // create a corresponding entrance in a previous room
-
-                    entrance.EntranceId = TopDoorCount;
-                    entrance.CorrespondingRoomId = DoorCount + 1;
-                    if (TopDoorCount < BottomDoorCount)
-                    {
-                        entrance.CorrespondingRoomId = DoorCount - 1;
-                    }
-                    room.Remove((selectedCoords.x, selectedCoords.y));
-                    room.Add((selectedCoords.x, selectedCoords.y), entrance);
-                    TopDoorCount++;
-                    numberofdoorsinthisroom--;
-                    DoorCount++;
-                }
-                else if (blockLeft is WallBlock && blockRight is WallBlock && (blockBelow == null || blockBelow is BlankBlock) && (blockAbove is StoneFloorBlock) && BottomDoorCount <= TopDoorCount && (relax || LeftDoorCount == RightDoorCount))// door below
-                {
-
-                    Entrance entrance = new BottomEntrance();
-
-                    entrance.EntranceId = BottomDoorCount;
-                    entrance.RoomId = DoorCount + 1;
-                    if (TopDoorCount > BottomDoorCount)
-                    {
-                        entrance.RoomId = DoorCount - 1;
-                    }
-                    room.Remove((selectedCoords.x, selectedCoords.y));
-                    room.Add((selectedCoords.x, selectedCoords.y), entrance);
-                    BottomDoorCount++;
-                    numberofdoorsinthisroom--;
-                    DoorCount++;
-                }
-                else if (blockAbove is WallBlock && blockBelow is WallBlock && (blockRight == null || blockRight is BlankBlock) && (blockLeft is StoneFloorBlock) && RightDoorCount <= LeftDoorCount && (relax || TopDoorCount == BottomDoorCount)) // door to right 
-                {
-                    Entrance entrance = new RightEntrance();
-
-                    entrance.RoomId = DoorCount + 1;
-                    if (RightDoorCount < LeftDoorCount)
-                    {
-                        entrance.RoomId = DoorCount - 1;
-                    }
-                    entrance.EntranceId = RightDoorCount;
-                    room.Remove((selectedCoords.x, selectedCoords.y));
-                    room.Add((selectedCoords.x, selectedCoords.y), entrance);
-                    numberofdoorsinthisroom--;
-                    RightDoorCount++;
-                    DoorCount++;
-                }
-
-                else if (blockAbove is WallBlock && blockBelow is WallBlock && (blockLeft == null || blockLeft is BlankBlock) && (blockRight is StoneFloorBlock) && LeftDoorCount <= RightDoorCount && (relax || TopDoorCount == BottomDoorCount)) // door to left
-                {
-                    Entrance entrance = new LeftEntrance();
-
-                    entrance.RoomId = DoorCount + 1;
-                    entrance.EntranceId = LeftDoorCount;
-                    if (RightDoorCount > LeftDoorCount)
-                    {
-                        entrance.RoomId = DoorCount - 1;
-                    }
-                    room.Remove((selectedCoords.x, selectedCoords.y));
-                    room.Add((selectedCoords.x, selectedCoords.y), entrance);
-                    numberofdoorsinthisroom--;
-                    LeftDoorCount++;
-                    DoorCount++;
-                }
-            }
-
-            if (count >= 500)
-                Console.WriteLine($"We couldn't place a door on the correct side LeftDoorCount:{LeftDoorCount} RightDoorCount:{RightDoorCount} BottomDoorCount:{BottomDoorCount} TopDoorCount:{TopDoorCount}");
-
-            //for each loop and we find all of the entrance we have created.
-            //link up ids
-
-
-            return room;
-        }
-        catch (Exception ex)
-        { 
-            Console.WriteLine(ex.Message);
-            Console.Write(ex.StackTrace);
-        }
-        return null;
-    }
-    */
-   
-
-        public int GetRoomWidth(Dictionary<(int x, int y), Block> room)
+    public int GetRoomWidth(Dictionary<(int x, int y), Block> room)
     {
         // Find the maximum x coordinate to determine the width of the roomfbattle
         int maxX = room.Keys.Max(key => key.x);
@@ -1659,7 +1301,12 @@ public class Game
         return maxY + 1;
     }
 
-
+    /// <summary>
+    /// This converts the current room (0,0)->(width,height) by centering it in the visible grid.
+    /// Any overflow (if the room is bigger than the visible grid) will not be renderede by the browser/js client
+    /// </summary>
+    /// <param name="room"></param>
+    /// <returns></returns>
     public Dictionary<(int x, int y), Block> RoomToGrid(Dictionary<(int x, int y), Block> room)
     {
         Dictionary<(int x, int y), Block> gridGenerated = new Dictionary<(int x, int y), Block>();
@@ -1677,64 +1324,26 @@ public class Game
                 int new_x = (roomStartXPosition + coordAndBlock.Key.x);
                 int new_y = (roomStartYPosition + coordAndBlock.Key.y);
                 
-                if (coordAndBlock.Value is Entrance entrance) // update the coordinates of the entrances
+                if (coordAndBlock.Value is Entrance entrance) // update the coordinates of the entrances from room coordinates to grid coordinates
                 {
                     entrance.Coordinates = (new_x, new_y);
                 }
-
                 gridGenerated[(new_x, new_y)] = coordAndBlock.Value;
-
             }
 
-
-            //here we fill the rest of the grid with blank blocks
-
- 
-
+            // fill the rest of the grid with blank blocks
             for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
             {
                 for (int y = 0; y < GameConfig.VisibleGridWidth; y++)
                 {
-                    // Console.WriteLine($"x{x} y{y}");
                     if (!gridGenerated.ContainsKey((x, y)))
                     {
                         Block block = new BlankBlock();
-
                         gridGenerated.Add((x, y), block);
                     }
-
-                }
-            }
-
-            
-            for (int x = 0; x < 50; x++)
-            {
-                for (int y = 0; y < 50; y++)
-                {
-                    try
-                    {
-                        
-                        Block currentBlock = room.GetValueOrDefault((x, y));
-                        Block blockToLeft = room.GetValueOrDefault((x + 1, y));
-                        Block blockToRight = room.TryGetValue((x + 1, y), out var rightBlock) ? rightBlock : null;
-                        Block blockUp = room.TryGetValue((x, y + 1), out var upBlock) ? upBlock : null;
-                        Block blockDown = room.TryGetValue((x, y - 1), out var downBlock) ? downBlock : null;
-
-                        
-
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
                 }
             }
         }
-
-        
-
-
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
@@ -1774,40 +1383,18 @@ public class Game
                 else
                 {
                     // Replace isolated wall blocks with BlankBlock
-//                    room[(x, y)] = new BlankBlock();
                     gridGenerated[(x, y)] = new BlankBlock();
                 }
             }
         }
-
-
-        gridGenerated = SortDictionary(gridGenerated);
-
-
-
-
         return gridGenerated;
     }
-
-    public static Dictionary<(int x, int y), Block> SortDictionary(Dictionary<(int x, int y), Block> dictionary)
-    {
-        return dictionary
-            .OrderBy(kvp => kvp.Key.x)  // First sort by x
-            .ThenBy(kvp => kvp.Key.y)    // Then sort by y
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-    }
-
-  
-  
- 
-    
 
     public async Task<bool> PickUpItem() // When user picks up item
     {
         var currentBlock = currentGrid[user.UserCoordinates];
         if (currentBlock.ContainsItem)
         {
-
             if (StartsWithVowel(currentBlock.item.Name))
             {
                 await SendMessage("battleDialog", $"You found an {currentBlock.item.Name}!");
@@ -1836,7 +1423,7 @@ public class Game
         {
             TopEntrance entrance = (TopEntrance)currentBlock;
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
-            WalkThroughDoorNew(entrance);
+            WalkThroughDoor(entrance);
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
             return;
@@ -1861,11 +1448,7 @@ public class Game
             {
                 await ScapeMonsterEncounter();
             }
-
-
         }
-
-       
 
         if (blockabove.item is ChestClosed)
         {
@@ -1875,9 +1458,6 @@ public class Game
             currentBlock = blockabove;
             await CheckChest(currentBlock, x, y);
         }
-
-
-
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingupblock.png";
         await SendMessage("user", user);
     }
@@ -1888,7 +1468,7 @@ public class Game
         if (currentBlock is BottomEntrance)
         {
             BottomEntrance entrance = (BottomEntrance)currentBlock;
-            WalkThroughDoorNew(entrance);
+            WalkThroughDoor(entrance);
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
@@ -1910,9 +1490,6 @@ public class Game
             {
                 await ScapeMonsterEncounter();
             }
-
-
-
         }
         if (blockbelow.item is ChestClosed)
         {
@@ -1922,15 +1499,9 @@ public class Game
             currentBlock = blockbelow;
             await CheckChest(currentBlock, x, y);
         }
-
-
         user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingdownblock.png";
         await SendMessage("user", user);
-
     }
-
-    
-
     
     public async Task MoveLeft()
     {
@@ -1939,7 +1510,7 @@ public class Game
         if (currentBlock is LeftEntrance)
         {
             LeftEntrance entrance = (LeftEntrance)currentBlock;
-            WalkThroughDoorNew(entrance);
+            WalkThroughDoor(entrance);
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingleftblock.png";
             await SendMessage("grid", currentGrid);
             await SendMessage("user", user);
@@ -1959,7 +1530,6 @@ public class Game
             {
                 await ScapeMonsterEncounter();
             }
-
         }
         if (blockLeft.item is ChestClosed)
         {
@@ -1981,7 +1551,7 @@ public class Game
         if (currentBlock is RightEntrance)
         {
             RightEntrance entrance = (RightEntrance)currentBlock;
-            WalkThroughDoorNew(entrance);
+            WalkThroughDoor(entrance);
 
             user.UserImage = $"{Pokescape.ImageFolderPath}\\blockImages\\Characterfacingrightblock.png";
             //SetUserCoordinatesBasedOnGrid(currentGrid, typeof(LeftEntrance));
@@ -2004,7 +1574,6 @@ public class Game
             {
                 await ScapeMonsterEncounter();
             }
-
         }
 
         if (blockRight.item is ChestClosed)
@@ -2060,8 +1629,7 @@ public class Game
         await SendMessage("battleDialog", $"You don't have the right key!");
     }
 
-
-    public void WalkThroughDoorNew( Entrance entrance)
+    public void WalkThroughDoor( Entrance entrance)
     {
         Console.Write($"Room ID: {entrance.RoomId} ({user.UserCoordinates.x},{user.UserCoordinates.y})=>{entrance.CorrespondingEntrance.RoomId} ");
         try
@@ -2081,42 +1649,6 @@ public class Game
             Console.WriteLine(ex.StackTrace);
         }
     }
-
-
-
-
-    public void WalkThroughDoor(List<Dictionary<(int x, int y), Block>> grids, Type entranceType, int correspondingRoomId)
-    {
-        Console.WriteLine($"Room ID: {correspondingRoomId} ");
-        try
-        {
-            if (correspondingRoomId > grids.Count - 1)
-            {
-                correspondingRoomId = 0;
-            }
-            currentGrid = grids[correspondingRoomId];
-
-            while (SetUserCoordinatesBasedOnGrid(currentGrid, entranceType) == false)
-            {
-                if (correspondingRoomId > grids.Count - 1)
-                {
-                    correspondingRoomId = 0;
-                }
-                correspondingRoomId++;
-                currentGrid = grids[correspondingRoomId];
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            Console.WriteLine(ex.StackTrace);   
-            
-        }
-        
-      
-
-    }
-
     public GameModeType GetGameMode() { return gameMode; }
     public void SetGameMode(GameModeType value) { gameMode = value; }
 
@@ -2135,23 +1667,6 @@ public class Game
     {
         return currentGrid;
     }
-    /**     public Dictionary<(int x, int y), Block> GetVisibleGrid()
-        {
-           Dictionary<(int x, int y), Block> visibleGrid = new();
-            var coords = user.UserCoordinates;
-            int xCount = 0; int yCount = 0;
-            for (int x = coords.x - virtualGridSize / 2; x <= coords.x + virtualGridSize / 2; x++)
-            {
-                for (int y = coords.y - virtualGridSize / 2; y <= coords.y + virtualGridSize / 2; y++)
-                {
-                    visibleGrid[(xCount, yCount)] = grid[(x, y)];
-                    yCount++;
-                }
-                xCount++;
-            }
-            return visibleGrid;
-        }**/
-
     public Dictionary<(int x, int y), Block> GetGrid() { return currentGrid; }
     public void SetGrid(Dictionary<(int x, int y), Block> value) { currentGrid = value; }
 }

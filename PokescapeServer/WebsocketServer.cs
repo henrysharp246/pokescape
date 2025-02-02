@@ -8,7 +8,7 @@ namespace PokescapeServer
 {
     static class WebsocketServer
     {
-        static ConcurrentDictionary<string, Game> socketIdsToGames = new();  // using concurrent version of the dictionary allows multiple clients to connect to same server
+        static ConcurrentDictionary<string, Game> socketIdsToGames = new();  // using concurrent version of the dictionary allows multiple clients to connect to same server using seperate threads
 
         public static async Task Listen()
         {
