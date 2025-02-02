@@ -235,8 +235,15 @@ public class Game
                 break;
             case "FEED_OPPONENT": 
                 {
-                    
-                    await FeedOpponent(user.ItemSelectedId, user);
+                    if (user.ScapeMonsters.Count == 3)
+                    {
+                        await SendMessage("battleDialog", $"You can't tame the {user.CurrentBattle.OpponentScapeMonster.ScapeMonsterName}! You already have 3 ScapeMonsters.");
+
+                    }
+                    else
+                    {
+                        await FeedOpponent(user.ItemSelectedId, user);
+                    }
                 }
                 break;
             case "EXITBATTLE":
@@ -336,11 +343,7 @@ public class Game
     }
     public async Task FeedOpponent(string itemId, User user)
     {
-        if (user.ScapeMonsters.Count > 3)
-        {
-            await SendMessage("battleDialog", $"You can't tame the {user.CurrentBattle.OpponentScapeMonster.ScapeMonsterName}! You already have 3 ScapeMonsters.");
-            return;
-        }
+        
 
         if (user.TryGetValueFromInventory(itemId, out Item item))
         {
@@ -568,7 +571,8 @@ public class Game
             var userScapeMonster = user.CurrentBattle.UserScapeMonster;
             MoveResult moveResult = ScapeMonsterMove.PerformMove(move ,currentOpponent, userScapeMonster, user.CurrentBattle.ActiveUserMoves, user.CurrentBattle.ActiveOpponentMoves);
 
-            currentOpponent.Health += -moveResult.damage;  // apply damage
+            currentOpponent.Health -= moveResult.damage;  // apply damage
+            currentOpponent.Health -= moveResult.extradamage; // apply additional damage from special moves
             if (moveResult.hpChange != 0)
             {
                 userScapeMonster.Health += moveResult.hpChange;
@@ -730,7 +734,7 @@ public class Game
     static int battlecount = 1;
     public async Task ScapeMonsterEncounter()
     {
-       
+        
         battlecount++;
       
         Random random = new Random();

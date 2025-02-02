@@ -83,7 +83,7 @@ function populateInventory(inventoryList) {
     inventoryList.forEach(function (item) {
      
         var card = `
-            <div onclick="selectItem(${item.ItemId})" class="pokescape-item-card card-${item.Name}">
+            <div onclick="selectItem('${item.ItemId}')" class="pokescape-item-card card-${item.Name}">
                 <div class="pokescape-item-name">
                     ${item.Name}
                 </div>

@@ -261,6 +261,7 @@ namespace PokescapeServer
             
             double baseDamage = move.Damage;
             double damage = baseDamage * attacker.Level * 0.25;
+            
             foreach (ScapeMonsterMove resistantMove in ActiveOpponentMoves)
             {
                 
@@ -351,11 +352,10 @@ namespace PokescapeServer
             //apply damage to attacker first
             foreach (ScapeMonsterMove repeatedDamageMove in ActiveOpponentMoves)
             {
-                if (repeatedDamageMove.MoveDamagePerRound != 0 && repeatedDamageMove.MoveDamagePerRound != null && repeatedDamageMove.repeatedDamageMoveLife != 0 && repeatedDamageMove.repeatedDamageMoveLife != null)
+                if (repeatedDamageMove.MoveDamagePerRound != 0 &&  repeatedDamageMove.repeatedDamageMoveLife != 0  )
                 {
-                    double damage1 = repeatedDamageMove.MoveDamagePerRound * opponent.Damage;
-                    moveResult.damage += damage1;
-                    moveResult.description += Environment.NewLine + $"{opponent.ScapeMonsterName}'s {repeatedDamageMove.MoveName} dealt {damage1} damage!";
+                    moveResult.extradamage = repeatedDamageMove.MoveDamagePerRound * attacker.Level;
+                    moveResult.description2 += $"{opponent.ScapeMonsterName}'s {repeatedDamageMove.MoveName} dealt {moveResult.extradamage} damage!";
                     repeatedDamageMove.repeatedDamageMoveLife--;
                 }
             }
@@ -710,10 +710,11 @@ namespace PokescapeServer
     {
         public static ScapeMonster GetRandomScapeMonster(User user)
         {
+            
             int level = user.GetUsersHighestLevelScapemonster();
             Random random = new Random();
             int num = random.Next(0, 100);
-
+            
             //return new Sealy(level);
             if (level <= 24)
             {
