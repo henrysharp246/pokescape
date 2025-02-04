@@ -800,9 +800,7 @@ public class Game
         {
             bool isWaterInRoom = new Random().NextDouble() < GameConfig.ProbabilityOfWater;
             if (!isWaterInRoom)
-            {
                 return room;
-            }
             int roomWidth = room.Keys.Max(k => k.x) + 1;
             int roomHeight = room.Keys.Max(k => k.y) + 1;
             var pond = GenerateBasicPond(roomWidth, roomHeight);
@@ -810,7 +808,9 @@ public class Game
             bool pondPlaced = false;
             int x = 0;
             int y = 0;
-            while (!pondPlaced) // todo: prevent infinite loop
+            int attempts = 0;
+
+            while (!pondPlaced && attempts++<500) 
             {
                 try
                 {
@@ -823,8 +823,6 @@ public class Game
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                 }
-
-
             }
             return PlacePond(x, y, room, pond);
         }
@@ -833,7 +831,8 @@ public class Game
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
         }
-        return null;
+        Console.WriteLine("Could not place Pond");
+        return room;
     }
 
     public bool TryPlacePond(int x, int y, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pond)
