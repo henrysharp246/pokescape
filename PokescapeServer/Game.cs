@@ -816,7 +816,8 @@ public class Game
                 {
                     x = new Random().Next(1, roomWidth - 1);
                     y = new Random().Next(1, roomHeight - 1);
-                    pondPlaced = TryPlacePond(x, y, room, pond);
+                    if (CanPlacePond(x, y, room, pond))
+                        return PlacePond(x, y, room, pond);
                 }
                 catch (Exception ex)
                 {
@@ -824,7 +825,6 @@ public class Game
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            return PlacePond(x, y, room, pond);
         }
         catch (Exception ex)
         {
@@ -832,14 +832,14 @@ public class Game
             Console.WriteLine(ex.StackTrace);
         }
         Console.WriteLine("Could not place Pond");
-        return room;
+        return room; // return room without water
     }
 
-    public bool TryPlacePond(int x, int y, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pond)
+    public bool CanPlacePond(int x, int y, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pond)
     {
         try
         {
-
+            // check if the pond can fit in the room
             foreach (var coordsAndBlock in pond)
             {
                 if (!room.TryGetValue((coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y), out var blk)  || blk is BlankBlock || blk is WallBlock)
