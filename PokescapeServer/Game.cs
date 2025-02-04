@@ -782,7 +782,7 @@ public class Game
     {
         try
         {
-            var room = GenerateRoom(rooms);
+            var room = BuildAndLinkNewRoom(rooms);
             var finalGrid = RoomToGrid(room);
             return finalGrid;
         }
@@ -1166,19 +1166,19 @@ public class Game
     /// </summary>
     /// <param name="rooms"></param>
     /// <returns></returns>
-    public Dictionary<(int x, int y), Block> GenerateRoom(List<Dictionary<(int x, int y), Block>> rooms)
+    public Dictionary<(int x, int y), Block> BuildAndLinkNewRoom(List<Dictionary<(int x, int y), Block>> rooms)
     {
         try
         {
             Random random = new Random();
             int currentRoomCount = rooms.Count();
-            Dictionary<(int x, int y), Block> room = GenerateRoomCornerStrat();
+            Dictionary<(int x, int y), Block> result = GenerateRoomCornerStrat();
             if (currentRoomCount == 0) 
-                return room;
+                return result;
 
-            var wallBlocksAndCoordinates = room.Where(x => x.Value is StoneWallBlock).ToList();
+            var wallBlocksAndCoordinates = result.Where(x => x.Value is StoneWallBlock).ToList();
 
-            var first_entrance_in_this_room = TryAddDoorToRoom(room, null);
+            var first_entrance_in_this_room = TryAddDoorToRoom(result, null);
             first_entrance_in_this_room.RoomId = currentRoomCount;
 
             // todo: check if this fails (returns null)
@@ -1195,11 +1195,11 @@ public class Game
                     new_entrance_in_previous_room.RoomId = randomNum;
                     first_entrance_in_this_room.CorrespondingEntrance = new_entrance_in_previous_room;
                     first_entrance_in_this_room.CorrespondingEntranceId = new_entrance_in_previous_room.EntranceId;
-                    return room;                
+                    return result;                
                 }
             }
             Console.WriteLine("Failed to connect this room to any previous room");
-            return room;
+            return result;
         }
         catch (Exception ex)
         {
