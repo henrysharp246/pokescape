@@ -1261,14 +1261,16 @@ public class Game
             int roomHeight = GetRoomHeight(room);
             int roomWidth = GetRoomWidth(room);
 
-            int roomStartXPosition = (GameConfig.VisibleGridWidth / 2) - roomWidth / 2;
-            int roomStartYPosition = (GameConfig.VisibleGridWidth / 2) - roomHeight / 2;
+            int roomStartX = (GameConfig.VisibleGridWidth / 2) - roomWidth / 2;
+            int roomStartY = (GameConfig.VisibleGridWidth / 2) - roomHeight / 2;
             foreach (var coordAndBlock in room)
             {
                 //translates the room by half of the grid width and height (places the room in the middle of the grid)
-                int new_x = (roomStartXPosition + coordAndBlock.Key.x);
-                int new_y = (roomStartYPosition + coordAndBlock.Key.y);
-                if (coordAndBlock.Value is Entrance entrance) // update the coordinates of the entrances from room coordinates to grid coordinates
+                int new_x = (roomStartX + coordAndBlock.Key.x);
+                int new_y = (roomStartY + coordAndBlock.Key.y);
+
+                // update the coordinates of the entrances from room coordinates to grid coordinates
+                if (coordAndBlock.Value is Entrance entrance) 
                     entrance.Coordinates = (new_x, new_y);
                 result[(new_x, new_y)] = coordAndBlock.Value;
             }
@@ -1284,9 +1286,8 @@ public class Game
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
         }
-        var keys = result.Keys.ToList(); // Copy of the keys
 
-        foreach (var key in keys)
+        foreach (var key in result.Keys.ToList()) 
         {
             int x = key.x, y = key.y;
             Block currentBlock = result[(x, y)];
