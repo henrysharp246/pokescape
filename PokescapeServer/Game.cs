@@ -1263,74 +1263,51 @@ public class Game
 
             int roomStartXPosition = (GameConfig.VisibleGridWidth / 2) - roomWidth / 2;
             int roomStartYPosition = (GameConfig.VisibleGridWidth / 2) - roomHeight / 2;
-
             foreach (var coordAndBlock in room)
             {
                 //translates the room by half of the grid width and height (places the room in the middle of the grid)
                 int new_x = (roomStartXPosition + coordAndBlock.Key.x);
                 int new_y = (roomStartYPosition + coordAndBlock.Key.y);
-                
                 if (coordAndBlock.Value is Entrance entrance) // update the coordinates of the entrances from room coordinates to grid coordinates
-                {
                     entrance.Coordinates = (new_x, new_y);
-                }
                 result[(new_x, new_y)] = coordAndBlock.Value;
             }
 
             // fill the rest of the grid with blank blocks
             for (int x = 0; x < GameConfig.VisibleGridWidth; x++)
-            {
                 for (int y = 0; y < GameConfig.VisibleGridWidth; y++)
-                {
                     if (!result.ContainsKey((x, y)))
-                    {
-                        Block block = new BlankBlock();
-                        result.Add((x, y), block);
-                    }
-                }
-            }
+                        result.Add((x, y), new BlankBlock());
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
         }
-
-       
         var keys = result.Keys.ToList(); // Copy of the keys
 
         foreach (var key in keys)
         {
-            int x = key.x;
-            int y = key.y;
-
-            // Get the current block
+            int x = key.x, y = key.y;
             Block currentBlock = result[(x, y)];
 
             // Check only StoneWallBlocks
             if (currentBlock is StoneWallBlock)
             {
-                Console.WriteLine($"1 x {x} y {y} {currentBlock}");
-
                 // Fetch neighbor blocks
                 Block blockToLeft = result.ContainsKey((x - 1, y)) ? result[(x - 1, y)] : null;
                 Block blockToRight = result.ContainsKey((x + 1, y)) ? result[(x + 1, y)] : null;
                 Block blockUp = result.ContainsKey((x, y + 1)) ? result[(x, y + 1)] : null;
                 Block blockDown = result.ContainsKey((x, y - 1)) ? result[(x, y - 1)] : null;
 
-                // Check if the wall block touches a floor or water block
-                if ((blockUp is StoneFloorBlock || blockUp is WaterBlock) ||
-                    (blockDown is StoneFloorBlock || blockDown is WaterBlock) ||
-                    (blockToLeft is StoneFloorBlock || blockToLeft is WaterBlock) ||
-                    (blockToRight is StoneFloorBlock || blockToRight is WaterBlock))
-                {
-                    Console.WriteLine($"2 x {x} y {y} {currentBlock}");
-                }
-                else
-                {
-                    // Replace isolated wall blocks with BlankBlock
-                    result[(x, y)] = new BlankBlock();
-                }
+                bool touchesFloorOrWater = blockUp is StoneFloorBlock || blockUp is WaterBlock ||
+                           blockDown is StoneFloorBlock || blockDown is WaterBlock ||
+                           blockToLeft is StoneFloorBlock || blockToLeft is WaterBlock ||
+                           blockToRight is StoneFloorBlock || blockToRight is WaterBlock;
+
+                // Replace isolated wall blocks with BlankBlock if required
+                if (touchesFloorOrWater==false)
+                    result[(x, y)] = new BlankBlock();                    
             }
         }
         return result;
