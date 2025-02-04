@@ -845,7 +845,6 @@ public class Game
                 if (!room.TryGetValue((coordsAndBlock.Key.x + x, coordsAndBlock.Key.y + y), out var blk)  || blk is BlankBlock || blk is WallBlock)
                     return false;
             }
-    
             return true;
         }
         catch (Exception ex)
@@ -858,7 +857,7 @@ public class Game
     public Dictionary<(int x, int y), Block> PlacePond(int x1, int y1, Dictionary<(int x, int y), Block> room, Dictionary<(int x, int y), Block> pondParam)
     {
         var pond = pondParam;
-        Dictionary<(int x, int y), Block> newRoom = room;
+        Dictionary<(int x, int y), Block> result = room;
         int m = GameConfig.MinDecompositionOfCorners;
 
         int roomWidth = room.Keys.Max(k => k.x) + 1;
@@ -869,54 +868,34 @@ public class Game
         int randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
         int randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
         for (int x = 0; x < randomX; x++)
-        {
             for (int y = 0; y < randomY; y++)
-            {
                 pond[(x, y)] = new StoneFloorBlock();
-            }
-        }
 
         //bottom right corner processing
         randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
         randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
-
-
         for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
-        {
             for (int y = 0; y < randomY; y++)
-            {
                 pond[(x, y)] = new StoneFloorBlock();
-            }
-        }
+
         //top right corner processing
         randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
         randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
-
         for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
-        {
             for (int y = pondHeight - 1; y > pondHeight - 1 - randomY; y--)
-            {
                 pond[(x, y)] = new StoneFloorBlock();
-            }
-        }
 
         //top left corner processing
         randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
         randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
-
         for (int x = 0; x < randomX; x++)
-        {
             for (int y = pondHeight - randomY; y < pondHeight - 1; y++)
-            {
                 pond[(x, y)] = new StoneFloorBlock();
-            }
-        }
 
         foreach (var coordsAndBlock in pond)
-        {
-            newRoom[(coordsAndBlock.Key.x + x1, coordsAndBlock.Key.y + y1)] = pond[(coordsAndBlock.Key.x, coordsAndBlock.Key.y)];
-        }
-        return newRoom;
+            result[(coordsAndBlock.Key.x + x1, coordsAndBlock.Key.y + y1)] = pond[(coordsAndBlock.Key.x, coordsAndBlock.Key.y)];
+
+        return result;
     }
 
     public Dictionary<(int x, int y), Block> GenerateRoomCornerStrat()
