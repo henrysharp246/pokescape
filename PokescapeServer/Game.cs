@@ -860,14 +860,15 @@ public class Game
     {
         var pond = pondParam;
         Dictionary<(int x, int y), Block> newRoom = room;
+        int m = GameConfig.MinDecompositionOfCorners;
 
         int roomWidth = room.Keys.Max(k => k.x) + 1;
         int roomHeight = room.Keys.Max(k => k.y) + 1;
         int pondWidth = pond.Keys.Max(k => k.x) + 1;
         int pondHeight = pond.Keys.Max(k => k.y) + 1;
         Random rnd = new();
-        int randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
-        int randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
+        int randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
+        int randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
         for (int x = 0; x < randomX; x++)
         {
             for (int y = 0; y < randomY; y++)
@@ -877,8 +878,8 @@ public class Game
         }
 
         //bottom right corner processing
-        randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
-        randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
+        randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
+        randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
 
 
         for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
@@ -889,8 +890,8 @@ public class Game
             }
         }
         //top right corner processing
-        randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
-        randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
+        randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
+        randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
 
         for (int x = pondWidth - randomX; x < pondWidth - 1; x++)
         {
@@ -901,8 +902,8 @@ public class Game
         }
 
         //top left corner processing
-        randomX = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondWidth / 2 - 1));
-        randomY = rnd.Next(GameConfig.MinDecompositionOfPondCorners, Math.Max(GameConfig.MinDecompositionOfPondCorners, pondHeight / 2 - 1));
+        randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
+        randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
 
         for (int x = 0; x < randomX; x++)
         {
@@ -924,16 +925,15 @@ public class Game
         try
         {
             Dictionary<(int x, int y), Block> room = GenerateBasicRoom();
+            int m = GameConfig.MinDecompositionOfCorners;
             int roomWidth = room.Keys.Max(k => k.x) + 1;
             int roomHeight = room.Keys.Max(k => k.y) + 1;
 
             Random rnd = new Random();
 
-            int minDecomposition = GameConfig.MinDecompositionOfCorners;
-
             //bottom left corner processing
-            int randomX = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomWidth / 2 - 1));
-            int randomY = rnd.Next(minDecomposition, Math.Max(minDecomposition,roomHeight / 2 - 1));
+            int randomX = rnd.Next(m, Math.Max(m, roomWidth / 2 - 1));
+            int randomY = rnd.Next(m, Math.Max(m, roomHeight / 2 - 1));
             int randomMax = Math.Max(randomX, randomY);
 
             for (int x = 0; x < randomX; x++)
@@ -946,8 +946,8 @@ public class Game
                         room[(x, y)] = new StoneWallBlock();
 
             //bottom right corner processing
-            randomX = rnd.Next(minDecomposition, Math.Max(minDecomposition,roomWidth / 2 - 1));
-            randomY = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomHeight / 2 - 1));
+            randomX = rnd.Next(m, Math.Max(m,roomWidth / 2 - 1));
+            randomY = rnd.Next(m, Math.Max(m, roomHeight / 2 - 1));
             randomMax = Math.Max(randomX, randomY);
 
             for (int x = roomWidth - randomX; x < roomWidth - 1; x++)
@@ -960,8 +960,8 @@ public class Game
                         room[(x, y)] = new StoneWallBlock();
 
             //top right corner processing
-            randomX = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomWidth / 2 - 1));
-            randomY = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomHeight / 2 - 1));
+            randomX = rnd.Next(m, Math.Max(m, roomWidth / 2 - 1));
+            randomY = rnd.Next(m, Math.Max(m, roomHeight / 2 - 1));
             randomMax = Math.Max(randomX, randomY);
 
             for (int x = roomWidth - randomX; x < roomWidth - 1; x++)
@@ -974,8 +974,8 @@ public class Game
                         room[(x, y)] = new StoneWallBlock();
 
             //top left corner processing
-            randomX = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomWidth / 2 - 1));
-            randomY = rnd.Next(minDecomposition, Math.Max(minDecomposition, roomHeight / 2 - 1));
+            randomX = rnd.Next(m, Math.Max(m, roomWidth / 2 - 1));
+            randomY = rnd.Next(m, Math.Max(m, roomHeight / 2 - 1));
             randomMax = Math.Max(randomX, randomY);
 
             for (int x = 0; x < randomX; x++)

@@ -101,30 +101,6 @@ function populateInventory(inventoryDict) {
     $('#itemInventory').html(cards);
 }
 
-
-function populateInventoryList(inventoryList) {
-    var cards = '';
-    inventoryList.forEach(function (item) {
-     
-        var card = `
-            <div onclick="selectItem('${item.ItemId}')" class="pokescape-item-card card-${item.Name}">
-                <div class="pokescape-item-name">
-                    ${item.Name}
-                </div>
-                <div class="item-count" style="">
-                   
-                </div>
-               
-                <img class="pokescape-item-img" src="${item.Image}" />
-             
-            </div>
-        `;
-        cards += card;
-    });
-
-    // Inject the cards into the scapemonsterInventory container
-    $('#itemInventory').html(cards);
-}
 function populateMonsterCards(monsterList) {
     var cards = '';
     monsterList.forEach(function (monster) {
