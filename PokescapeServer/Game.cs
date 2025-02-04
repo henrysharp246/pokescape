@@ -865,6 +865,7 @@ public class Game
         int pondWidth = pond.Keys.Max(k => k.x) + 1;
         int pondHeight = pond.Keys.Max(k => k.y) + 1;
         Random rnd = new();
+        //bottom left corner processing
         int randomX = rnd.Next(m, Math.Max(m, pondWidth / 2 - 1));
         int randomY = rnd.Next(m, Math.Max(m, pondHeight / 2 - 1));
         for (int x = 0; x < randomX; x++)
