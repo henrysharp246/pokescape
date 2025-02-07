@@ -30,7 +30,7 @@ public abstract class Item
     public int index;
     public Item ContainedItem { get; set; }
     public string Name { get; set; }
-    public bool IsPortable { get; set; }
+   
     public string Image { get; set; }
 
     public Item()
@@ -65,7 +65,7 @@ public abstract class Item
         {
             // Generate a chest if counts are equal
             Game.ChestIndex++;
-            return new ChestClosed
+            return new Chest
             {
                 index = Game.ChestIndex
             };
@@ -128,7 +128,12 @@ public abstract class Item
 
 public abstract class BerryItem : Item
 { 
+
 }
+public abstract class Charm : Item
+{
+}
+
 
 public class SpikeBerry : BerryItem
 {
@@ -231,7 +236,7 @@ public class BlueTwistItem : BerryItem
 
 
 
-public class MysticOrb : Item
+public class MysticOrb : Charm
 {
     public MysticOrb()
     {
@@ -257,7 +262,7 @@ public class MysticOrb : Item
 }
 
 
-public class ResistanceCharm : Item
+public class ResistanceCharm : Charm
 {
     public ResistanceCharm()
     {
@@ -304,7 +309,7 @@ public class UltraCharm : Item
     }
 }
 
-public class HystericalPotion : Item
+public class HystericalPotion : Charm
 {
     public HystericalPotion()
     {
@@ -328,7 +333,7 @@ public class HystericalPotion : Item
     }
 }
 
-public class CombatCharm : Item
+public class CombatCharm : Charm
 {
     public CombatCharm()
     {
@@ -345,7 +350,7 @@ public class CombatCharm : Item
 
 
 
-public class FortificationCharm : Item
+public class FortificationCharm : Charm
 {
     public FortificationCharm()
     {
@@ -360,11 +365,11 @@ public class FortificationCharm : Item
     }
 }
 
-public class ChestClosed : Item
+public class Chest : Item
 {
     public Item ContainedItem;
 
-    public ChestClosed()
+    public Chest()
     {
         Image = $"{Pokescape.ImageFolderPath}\\blockImages\\Chestblock.png";
         Name = "A locked chest";
@@ -459,7 +464,7 @@ public class StoneFloorBlock : FloorBlock
                 this.item = item;
                 this.Image = item.Image;
                 this.ContainsItem = true;
-                if (this.item is ChestClosed)
+                if (this.item is Chest)
                 {
                     this.CanPass = false;
                 }

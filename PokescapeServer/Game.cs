@@ -196,7 +196,7 @@ public class Game
             case "ATTACK_MOVE":
                 
 
-                if (user.InBattle && user.IsTurn )
+                if (user.InBattle && user.IsTurn && user.CurrentBattle.UserScapeMonster != null)
                 {
                    if (user.CurrentBattle.UserScapeMonster.Health<=0)
                     {
@@ -1353,7 +1353,7 @@ public class Game
             }
         }
 
-        if (blockabove.item is ChestClosed)
+        if (blockabove.item is Chest)
         {
             int x = user.UserCoordinates.x;
             int y = user.UserCoordinates.y + 1;
@@ -1394,7 +1394,7 @@ public class Game
                 await ScapeMonsterEncounter();
             }
         }
-        if (blockbelow.item is ChestClosed)
+        if (blockbelow.item is Chest)
         {
             int x = user.UserCoordinates.x;
             int y = user.UserCoordinates.y-1;
@@ -1434,7 +1434,7 @@ public class Game
                 await ScapeMonsterEncounter();
             }
         }
-        if (blockLeft.item is ChestClosed)
+        if (blockLeft.item is Chest)
         {
             int x = user.UserCoordinates.x - 1;
             int y = user.UserCoordinates.y;
@@ -1480,7 +1480,7 @@ public class Game
 
         }
 
-        if (blockRight.item is ChestClosed)
+        if (blockRight.item is Chest)
         {
             int x = user.UserCoordinates.x + 1 ;
             int y = user.UserCoordinates.y;

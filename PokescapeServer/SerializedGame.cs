@@ -60,7 +60,7 @@ namespace PokescapeServer
                     "HystericalPotion" => new HystericalPotion(),
                     "CombatCharm" => new CombatCharm(),
                     "FortificationCharm" => new FortificationCharm(),
-                    "ChestClosed" => new ChestClosed(),
+                    "ChestClosed" => new Chest(),
                     "Key" => new Key(),
 
                     _ => throw new JsonSerializationException($"Unknown object type: {typeName}")
